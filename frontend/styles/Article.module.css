@@ -1,0 +1,171 @@
+.articleContainer {
+  min-height: calc(100vh - 200px);
+  padding: 40px 20px;
+  background-color: var(--bg-gray);
+}
+
+.articleContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: white;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-dark);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 24px;
+}
+
+.backButton:hover {
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+  transform: translateX(-4px);
+}
+
+.articleCard {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.articleHeader {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+  color: white;
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.articleTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.articleSubtitle {
+  font-size: 1.1rem;
+  opacity: 0.95;
+  line-height: 1.6;
+}
+
+.articleBody {
+  padding: 48px 40px;
+}
+
+.externalLinkCard {
+  background: linear-gradient(135deg, var(--light-blue) 0%, var(--light-red) 100%);
+  border-radius: 12px;
+  padding: 48px;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.linkIcon {
+  width: 80px;
+  height: 80px;
+  background-color: var(--primary-blue);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 24px;
+}
+
+.linkDescription {
+  font-size: 1.1rem;
+  color: var(--text-dark);
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.readArticleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  background-color: var(--primary-red);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.readArticleBtn:hover {
+  background-color: #b01030;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(220, 20, 60, 0.3);
+}
+
+.infoBox {
+  background-color: var(--bg-gray);
+  border-left: 4px solid var(--primary-blue);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.infoBox h3 {
+  color: var(--primary-blue);
+  font-size: 1.25rem;
+  margin-bottom: 12px;
+}
+
+.infoBox p {
+  color: var(--text-gray);
+  line-height: 1.7;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .articleContainer {
+    padding: 24px 16px;
+  }
+
+  .articleHeader {
+    padding: 32px 24px;
+  }
+
+  .articleTitle {
+    font-size: 1.75rem;
+  }
+
+  .articleSubtitle {
+    font-size: 1rem;
+  }
+
+  .articleBody {
+    padding: 32px 24px;
+  }
+
+  .externalLinkCard {
+    padding: 32px 24px;
+  }
+
+  .linkIcon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+
+  .linkDescription {
+    font-size: 1rem;
+  }
+
+  .readArticleBtn {
+    padding: 14px 24px;
+    font-size: 1rem;
+  }
+}

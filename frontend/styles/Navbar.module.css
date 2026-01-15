@@ -1,0 +1,281 @@
+.navbar {
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 3px solid var(--primary-blue);
+}
+
+.container {
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+
+@media (min-width: 1920px) {
+  .container {
+    max-width: 1800px;
+  }
+}
+
+.logo {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+.logoRed {
+  color: var(--primary-red);
+}
+
+.logoBlue {
+  color: var(--primary-blue);
+}
+
+.navLinks {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+.navLink {
+  font-weight: 600;
+  color: var(--text-dark);
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.navLink:hover {
+  color: var(--primary-blue);
+  background-color: var(--light-blue);
+}
+
+.navLink.active {
+  color: var(--primary-blue);
+  background-color: var(--light-blue);
+}
+
+.navLink.active::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--primary-blue);
+}
+
+.authButtons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.profileLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: var(--light-blue);
+  color: var(--primary-blue);
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.profileLink:hover {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+.btnLogin {
+  padding: 10px 20px;
+  background-color: transparent;
+  color: var(--primary-blue);
+  border: 2px solid var(--primary-blue);
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btnLogin:hover {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+.btnSignup {
+  padding: 10px 20px;
+  background-color: var(--primary-red);
+  color: white;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btnSignup:hover {
+  background-color: #b01030;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+}
+
+.btnLogout {
+  padding: 10px 20px;
+  background-color: var(--primary-red);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btnLogout:hover {
+  background-color: #b01030;
+  transform: translateY(-2px);
+}
+
+.mobileMenuBtn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--primary-blue);
+  cursor: pointer;
+}
+
+.mobileMenu {
+  display: none;
+}
+
+/* Mobile Responsive */
+@media (max-width: 968px) {
+  .container {
+    padding: 0 20px;
+  }
+
+  .navLinks {
+    display: none;
+  }
+
+  .authButtons {
+    display: none;
+  }
+
+  .mobileMenuBtn {
+    display: block;
+  }
+
+  .mobileMenu {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 15px;
+  }
+}
+
+  .mobileNavLink {
+    padding: 12px 16px;
+    color: var(--text-dark);
+    font-weight: 600;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .mobileNavLink:hover {
+    background-color: var(--light-blue);
+    color: var(--primary-blue);
+  }
+
+  .mobileDivider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 12px 0;
+  }
+
+  .mobileLogout {
+    padding: 12px 16px;
+    background-color: var(--primary-red);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
+/* Trending Link Styles */
+.trendingLink {
+  background: linear-gradient(135deg, var(--primary-red), #ff6347);
+  color: white !important;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.trendingLink:hover {
+  background: linear-gradient(135deg, #b01030, var(--primary-red));
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(220, 20, 60, 0.4);
+}
+
+.trendingIcon {
+  animation: flicker 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(220, 20, 60, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(220, 20, 60, 0);
+  }
+}
+
+@keyframes flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.mobileTrendingLink {
+  background: linear-gradient(135deg, var(--primary-red), #ff6347);
+  color: white !important;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 8px 0;
+}

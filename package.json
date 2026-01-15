@@ -1,0 +1,27 @@
+{
+  "name": "newsy-tech",
+  "version": "1.0.0",
+  "description": "NEWSY TECH - Modern Tech News Platform",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "concurrently \"cd backend && npm start\" \"cd frontend && npm start\""
+  },
+  "keywords": [
+    "news",
+    "tech",
+    "nextjs",
+    "express",
+    "mongodb",
+    "react"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
