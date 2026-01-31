@@ -9,7 +9,7 @@ const Layout = ({ children, title = 'NEWSY TECH - Latest Technology News' }) => 
         <title>{title}</title>
         <meta name="description" content="Stay updated with the latest technology news covering AI, startups, software, gadgets, and cybersecurity." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="" />
       </Head>
       <div style={{ 
         minHeight: '100vh', 

@@ -75,9 +75,16 @@ export const authAPI = {
 
 // News API
 export const newsAPI = {
-  getNews: async (category = 'all', page = 1, pageSize = 20) => {
+  getNews: async (category = 'all', page = 1, pageSize = 20, search = null) => {
+    const params = { category, page, pageSize };
+    
+    // Add search parameter if provided
+    if (search) {
+      params.search = search;
+    }
+    
     const response = await api.get('/news', {
-      params: { category, page, pageSize },
+      params: params,
     });
     return response.data;
   },
@@ -93,6 +100,11 @@ export const newsAPI = {
     const response = await api.get('/news/trending', {
       params: { page, pageSize },
     });
+    return response.data;
+  },
+
+  getArticleContent: async (url) => {
+    const response = await api.post('/news/article-content', { url });
     return response.data;
   },
 };
@@ -111,6 +123,47 @@ export const savedArticlesAPI = {
 
   deleteSavedArticle: async (articleId) => {
     const response = await api.delete(`/saved/${articleId}`);
+    return response.data;
+  },
+};
+
+// My News API
+export const myNewsAPI = {
+  getMyNews: async (page = 1, pageSize = 20, refresh = false) => {
+    const params = { page, pageSize };
+    
+    // Add timestamp to force cache bypass on refresh
+    if (refresh) {
+      params._t = Date.now();
+    }
+    
+    const response = await api.get('/my-news', { params });
+    return response.data;
+  },
+
+  getPreferences: async () => {
+    const response = await api.get('/my-news/preferences');
+    return response.data;
+  },
+
+  updatePreferences: async (topics) => {
+    const response = await api.put('/my-news/preferences', { topics });
+    return response.data;
+  },
+
+  saveArticle: async (articleData) => {
+    const response = await api.post('/my-news/save', articleData);
+    return response.data;
+  },
+
+  unsaveArticle: async (articleUrl) => {
+    const encodedUrl = encodeURIComponent(articleUrl);
+    const response = await api.delete(`/my-news/save/${encodedUrl}`);
+    return response.data;
+  },
+
+  getSavedArticles: async () => {
+    const response = await api.get('/my-news/saved');
     return response.data;
   },
 };

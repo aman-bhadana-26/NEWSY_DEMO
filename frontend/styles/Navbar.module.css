@@ -5,6 +5,7 @@
   top: 0;
   z-index: 1000;
   border-bottom: 3px solid var(--primary-blue);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .container {
@@ -15,7 +16,59 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 20px;
+  height: 90px; /* Larger initial height */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scrolled state - shrink to original size */
+.navbar.scrolled .container {
   height: 70px;
+}
+
+.navbar.scrolled .logo {
+  font-size: 1.5rem;
+}
+
+.navbar.scrolled .navLink {
+  font-size: 0.95rem;
+  padding: 6px 10px;
+}
+
+.navbar.scrolled .navLink.active {
+  font-size: 1.05rem; /* Still larger when scrolled */
+  transform: scale(1.06);
+}
+
+.navbar.scrolled .authButtons .btnLogin,
+.navbar.scrolled .authButtons .btnSignup {
+  padding: 10px 20px;
+  font-size: 0.9rem;
+}
+
+.navbar.scrolled .userIcon {
+  width: 45px;
+  height: 45px;
+  font-size: 1rem;
+}
+
+.navbar.scrolled .searchInputWrapper {
+  width: 240px;
+}
+
+.navbar.scrolled .searchInputWrapper:focus-within {
+  width: 380px;
+}
+
+.navbar.scrolled .trendingLink {
+  font-size: 0.95rem;
+  padding: 6px 10px;
+}
+
+.navbar.scrolled .trendingLink.active {
+  font-size: 1.05rem;
+  padding: 8px 14px;
+  transform: scale(1.06);
 }
 
 @media (min-width: 1920px) {
@@ -25,11 +78,11 @@
 }
 
 .logo {
-  font-size: 1.75rem;
+  font-size: 2rem; /* Larger initial size */
   font-weight: 800;
   letter-spacing: -1px;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .logo:hover {
@@ -48,27 +101,29 @@
   display: flex;
   gap: 24px;
   align-items: center;
-  flex: 1;
   justify-content: center;
 }
 
 .navLink {
   font-weight: 600;
   color: var(--text-dark);
-  padding: 8px 12px;
+  padding: 10px 16px; /* Larger initial padding */
   border-radius: 6px;
-  transition: all 0.3s ease;
+  font-size: 1.05rem; /* Larger initial font */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
 
 .navLink:hover {
   color: var(--primary-blue);
-  background-color: var(--light-blue);
+  transform: translateY(-2px);
 }
 
 .navLink.active {
   color: var(--primary-blue);
-  background-color: var(--light-blue);
+  font-size: 1.15rem; /* Larger when active */
+  font-weight: 700; /* Bolder when active */
+  transform: scale(1.08); /* Slightly larger scale */
 }
 
 .navLink.active::after {
@@ -79,6 +134,7 @@
   right: 0;
   height: 3px;
   background-color: var(--primary-blue);
+  border-radius: 2px;
 }
 
 .authButtons {
@@ -105,13 +161,14 @@
 }
 
 .btnLogin {
-  padding: 10px 20px;
+  padding: 12px 24px; /* Larger initial size */
   background-color: transparent;
   color: var(--primary-blue);
   border: 2px solid var(--primary-blue);
   border-radius: 6px;
   font-weight: 600;
-  transition: all 0.3s ease;
+  font-size: 1rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btnLogin:hover {
@@ -120,12 +177,13 @@
 }
 
 .btnSignup {
-  padding: 10px 20px;
+  padding: 12px 24px; /* Larger initial size */
   background-color: var(--primary-red);
   color: white;
   border-radius: 6px;
   font-weight: 600;
-  transition: all 0.3s ease;
+  font-size: 1rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btnSignup:hover {
@@ -134,20 +192,320 @@
   box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
 }
 
-.btnLogout {
-  padding: 10px 20px;
-  background-color: var(--primary-red);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
+/* Search Bar with Filters */
+.searchContainer {
+  position: relative;
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+.searchForm {
+  position: relative;
+}
+
+.searchInputWrapper {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: 30px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  width: 280px;
+}
+
+.searchInputWrapper:focus-within {
+  border-color: var(--primary-blue);
+  box-shadow: 0 6px 20px rgba(0, 102, 204, 0.25);
+  width: 420px;
+  transform: translateY(-2px);
+}
+
+.searchIconInside {
+  padding-left: 16px;
+  color: var(--text-gray);
+  font-size: 1rem;
   transition: all 0.3s ease;
 }
 
-.btnLogout:hover {
-  background-color: #b01030;
-  transform: translateY(-2px);
+.searchInputWrapper:focus-within .searchIconInside {
+  color: var(--primary-blue);
+  transform: scale(1.15);
+}
+
+.searchInput {
+  flex: 1;
+  padding: 12px 12px 12px 12px;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  background: transparent;
+  transition: font-size 0.3s ease;
+}
+
+.searchInputWrapper:focus-within .searchInput {
+  font-size: 1rem;
+}
+
+.searchInput::placeholder {
+  color: var(--text-gray);
+  transition: color 0.3s ease;
+}
+
+.searchInputWrapper:focus-within .searchInput::placeholder {
+  color: var(--primary-blue);
+  opacity: 0.7;
+}
+
+.filterButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, var(--light-blue), rgba(0, 102, 204, 0.1));
+  border: none;
+  border-left: 1px solid var(--border-color);
+  color: var(--primary-blue);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.filterButton:hover {
+  background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+  color: white;
+  transform: scale(1.05);
+}
+
+.searchInputWrapper:focus-within .filterButton {
+  padding: 12px 18px;
+}
+
+.filterBadge {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.filterDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  z-index: 1000;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.2s ease;
+}
+
+.filterHeader {
+  padding: 14px 16px;
+  background: linear-gradient(135deg, var(--light-blue), rgba(0, 102, 204, 0.05));
+  color: var(--primary-blue);
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.filterOption {
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filterOption:hover {
+  background-color: var(--light-blue);
+  color: var(--primary-blue);
+}
+
+.filterActive {
+  background-color: rgba(0, 102, 204, 0.1);
+  color: var(--primary-blue);
+  font-weight: 600;
+}
+
+.checkmark {
+  color: var(--primary-blue);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* User Menu Dropdown */
+.userMenuContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.userIcon {
+  width: 50px; /* Larger initial size */
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+  color: white;
+  font-size: 1.1rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
+}
+
+.userIcon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.4);
+}
+
+.userDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  min-width: 280px;
+  z-index: 1000;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.2s ease;
+}
+
+/* Create invisible bridge between icon and dropdown */
+.userDropdown::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: transparent;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownHeader {
+  padding: 20px;
+  background: linear-gradient(135deg, var(--light-blue) 0%, rgba(0, 102, 204, 0.05) 100%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.userAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.userInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.userName {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userEmail {
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.emailIcon {
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 0;
+}
+
+.dropdownItem,
+.dropdownItemLogout {
+  width: 100%;
+  padding: 14px 20px;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  color: var(--text-dark);
+}
+
+.dropdownItem:hover {
+  background-color: var(--light-blue);
+  color: var(--primary-blue);
+}
+
+.dropdownItemLogout {
+  color: var(--primary-red);
+  border-top: 1px solid var(--border-color);
+}
+
+.dropdownItemLogout:hover {
+  background-color: rgba(220, 20, 60, 0.05);
+  color: #b01030;
+}
+
+.dropdownIcon {
+  font-size: 1.1rem;
 }
 
 .mobileMenuBtn {
@@ -173,8 +531,30 @@
     display: none;
   }
 
-  .authButtons {
+  /* Hide MY NEWS link on mobile (shown in mobile menu) */
+  .myNewsLink {
     display: none;
+  }
+
+  /* Hide search on mobile, show in mobile menu */
+  .searchContainer {
+    display: none;
+  }
+
+  .authButtons {
+    display: flex;
+    gap: 12px;
+  }
+  
+  /* Show user icon on mobile */
+  .userMenuContainer {
+    display: flex;
+  }
+  
+  /* Adjust dropdown position on mobile */
+  .userDropdown {
+    right: -10px;
+    min-width: 260px;
   }
 
   .mobileMenuBtn {
@@ -187,6 +567,82 @@
     background-color: white;
     padding: 20px;
     border-top: 1px solid var(--border-color);
+  }
+}
+
+@media (max-width: 1200px) {
+  .searchInputWrapper {
+    width: 260px;
+  }
+  
+  .searchInputWrapper:focus-within {
+    width: 380px;
+  }
+}
+
+@media (max-width: 968px) {
+  .searchInputWrapper {
+    width: 240px;
+  }
+  
+  .searchInputWrapper:focus-within {
+    width: 340px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    height: 75px; /* Slightly smaller for mobile */
+  }
+  
+  .navbar.scrolled .container {
+    height: 65px;
+  }
+  
+  .logo {
+    font-size: 1.6rem;
+  }
+  
+  .navbar.scrolled .logo {
+    font-size: 1.4rem;
+  }
+  
+  .searchInputWrapper {
+    width: 220px;
+  }
+  
+  .searchInputWrapper:focus-within {
+    width: 300px;
+  }
+  
+  .navbar.scrolled .searchInputWrapper {
+    width: 200px;
+  }
+  
+  .navbar.scrolled .searchInputWrapper:focus-within {
+    width: 280px;
+  }
+  
+  .searchInput {
+    font-size: 0.85rem;
+  }
+  
+  .searchInputWrapper:focus-within .searchInput {
+    font-size: 0.95rem;
+  }
+  
+  .filterBadge {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .searchInputWrapper {
+    width: 180px;
+  }
+  
+  .searchInputWrapper:focus-within {
+    width: 240px;
   }
 }
 
@@ -230,13 +686,14 @@
 .trendingLink {
   background: linear-gradient(135deg, var(--primary-red), #ff6347);
   color: white !important;
-  padding: 8px 16px;
+  padding: 10px 18px; /* Larger initial size */
   border-radius: 20px;
   font-weight: 700;
+  font-size: 1.05rem; /* Larger initial font */
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   animation: pulse 2s ease-in-out infinite;
 }
 
@@ -244,6 +701,13 @@
   background: linear-gradient(135deg, #b01030, var(--primary-red));
   transform: translateY(-2px) scale(1.05);
   box-shadow: 0 4px 12px rgba(220, 20, 60, 0.4);
+}
+
+.trendingLink.active {
+  font-size: 1.15rem; /* Larger when active */
+  padding: 12px 20px; /* More padding when active */
+  transform: scale(1.08);
+  box-shadow: 0 6px 16px rgba(220, 20, 60, 0.5);
 }
 
 .trendingIcon {
@@ -268,6 +732,167 @@
   }
 }
 
+/* My News Link Styles */
+.myNewsLink {
+  background: transparent;
+  color: var(--text-dark);
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-right: 20px; /* Space before search */
+  position: relative;
+}
+
+.myNewsLink:hover {
+  color: var(--primary-blue);
+  transform: translateY(-2px);
+}
+
+.myNewsLink.active {
+  color: var(--primary-blue);
+  font-size: 1.15rem;
+  font-weight: 700;
+  transform: scale(1.08);
+}
+
+.myNewsLink.active::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--primary-blue);
+  border-radius: 2px;
+}
+
+.myNewsIcon {
+  font-size: 1rem;
+}
+
+.navbar.scrolled .myNewsLink {
+  font-size: 0.95rem;
+  padding: 6px 10px;
+}
+
+.navbar.scrolled .myNewsLink.active {
+  font-size: 1.05rem;
+  transform: scale(1.06);
+}
+
+/* Mobile Search Styles */
+.mobileSearchForm {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.mobileSearchWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: 24px;
+  padding: 0 12px;
+}
+
+.mobileSearchIcon {
+  color: var(--text-gray);
+  font-size: 1rem;
+  margin-right: 8px;
+}
+
+.mobileSearchInput {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  background: transparent;
+}
+
+.mobileSearchInput::placeholder {
+  color: var(--text-gray);
+}
+
+.mobileFilterButton,
+.mobileSearchButton {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.mobileFilterButton {
+  background: linear-gradient(135deg, var(--light-blue), rgba(0, 102, 204, 0.2));
+  color: var(--primary-blue);
+}
+
+.mobileSearchButton {
+  background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+  color: white;
+}
+
+.mobileFilterButton:active,
+.mobileSearchButton:active {
+  transform: scale(0.95);
+}
+
+.mobileFilterOptions {
+  background: var(--light-blue);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.mobileFilterLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-gray);
+  margin-bottom: 8px;
+}
+
+.mobileFilterGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.mobileFilterChip {
+  padding: 8px 12px;
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.mobileFilterChip:active {
+  transform: scale(0.95);
+}
+
+.mobileFilterChipActive {
+  background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+  color: white;
+  border-color: var(--primary-blue);
+}
+
 .mobileTrendingLink {
   background: linear-gradient(135deg, var(--primary-red), #ff6347);
   color: white !important;
@@ -278,4 +903,22 @@
   padding: 12px 16px;
   border-radius: 8px;
   margin: 8px 0;
+}
+
+.mobileMyNewsLink {
+  background: transparent;
+  color: var(--text-dark);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 4px 0;
+  transition: all 0.3s ease;
+}
+
+.mobileMyNewsLink:hover {
+  color: var(--primary-blue);
+  background: var(--light-blue);
 }

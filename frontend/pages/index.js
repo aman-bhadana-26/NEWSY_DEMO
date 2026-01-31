@@ -9,23 +9,52 @@ import styles from '../styles/Home.module.css';
 
 export default function Home() {
   const router = useRouter();
-  const { category = 'all' } = router.query;
+  const { category = 'all', search } = router.query;
 
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [totalResults, setTotalResults] = useState(0);
 
   useEffect(() => {
-    fetchNews();
-  }, [category]);
+    // Reset when category or search changes
+    setNews([]);
+    setPage(1);
+    setHasMore(true);
+    fetchNews(1);
+  }, [category, search]);
 
   const fetchNews = async (pageNum = 1) => {
     try {
-      setLoading(true);
+      if (pageNum === 1) {
+        setLoading(true);
+      } else {
+        setLoadingMore(true);
+      }
       setError(null);
-      const data = await newsAPI.getNews(category, pageNum, 20);
+      
+      // Pass search query to API - backend will handle the search
+      const queryParams = {
+        category,
+        page: pageNum,
+        pageSize: 20
+      };
+      
+      // Add search parameter if exists
+      if (search && search.trim()) {
+        queryParams.search = search.trim();
+      }
+      
+      // Fetch news with search parameter
+      const data = await newsAPI.getNews(
+        queryParams.category,
+        queryParams.page,
+        queryParams.pageSize,
+        queryParams.search
+      );
       
       if (pageNum === 1) {
         setNews(data.articles);
@@ -33,18 +62,20 @@ export default function Home() {
         setNews((prev) => [...prev, ...data.articles]);
       }
       
-      setHasMore(data.articles.length === 20);
+      setTotalResults(data.totalResults || 0);
+      setHasMore(data.articles.length === 20 && news.length + data.articles.length < data.totalResults);
       setPage(pageNum);
     } catch (err) {
       console.error('Error fetching news:', err);
       setError('Failed to load news. Please try again later.');
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
   const loadMore = () => {
-    if (!loading && hasMore) {
+    if (!loading && !loadingMore && hasMore) {
       fetchNews(page + 1);
     }
   };
@@ -59,6 +90,14 @@ export default function Home() {
       cybersecurity: 'Cybersecurity',
     };
     return categoryNames[cat] || 'Tech News';
+  };
+
+  const getPageTitle = () => {
+    if (search) {
+      const catName = category !== 'all' ? ` in ${getCategoryName(category)}` : '';
+      return `Search Results for "${search}"${catName}`;
+    }
+    return getCategoryName(category);
   };
 
   return (
@@ -79,14 +118,21 @@ export default function Home() {
         <CategoryFilter currentCategory={category} />
 
         <div className={styles.newsSection}>
-          <h2 className={styles.sectionTitle}>{getCategoryName(category)}</h2>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>{getPageTitle()}</h2>
+            {totalResults > 0 && (
+              <p className={styles.resultsCount}>
+                Showing <strong>{news.length}</strong> of <strong>{totalResults.toLocaleString()}</strong> articles
+              </p>
+            )}
+          </div>
 
           {loading && page === 1 ? (
             <LoadingSpinner message="Loading latest news..." />
           ) : error ? (
             <div className={styles.error}>
               <p>{error}</p>
-              <button onClick={() => fetchNews(1)} className="btn btn-primary">
+              <button onClick={() => fetchNews(1)} className={styles.retryButton}>
                 Try Again
               </button>
             </div>
@@ -106,15 +152,41 @@ export default function Home() {
                 ))}
               </div>
 
+              {/* Load More Button */}
               {hasMore && (
                 <div className={styles.loadMoreContainer}>
                   <button
                     onClick={loadMore}
-                    className="btn btn-primary"
-                    disabled={loading}
+                    className={styles.loadMoreButton}
+                    disabled={loadingMore}
                   >
-                    {loading ? 'Loading...' : 'Load More Articles'}
+                    {loadingMore ? (
+                      <>
+                        <span className={styles.spinner}></span>
+                        Loading More Articles...
+                      </>
+                    ) : (
+                      <>
+                        📰 Load More News
+                      </>
+                    )}
                   </button>
+                  {!loadingMore && (
+                    <p className={styles.loadMoreHint}>
+                      {totalResults - news.length > 0 
+                        ? `${(totalResults - news.length).toLocaleString()} more articles available`
+                        : 'More articles available'}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* End of Results */}
+              {!hasMore && news.length > 0 && (
+                <div className={styles.endOfResults}>
+                  <div className={styles.endLine}></div>
+                  <p>You've reached the end of {getCategoryName(category)}</p>
+                  <div className={styles.endLine}></div>
                 </div>
               )}
             </>

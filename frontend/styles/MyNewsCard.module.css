@@ -1,0 +1,352 @@
+/* Regular Card Styles */
+.card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 102, 204, 0.15);
+  border-color: var(--primary-blue);
+}
+
+.imageLink {
+  display: block;
+  width: 100%;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background: var(--light-blue);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.05);
+}
+
+.noImagePlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--light-blue), var(--light-red));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-blue);
+}
+
+.placeholderIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.placeholderText {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.metaLeft,
+.metaRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.metaIcon {
+  color: var(--primary-blue);
+  font-size: 0.9rem;
+}
+
+.source {
+  font-weight: 600;
+  color: var(--primary-red);
+}
+
+.time {
+  color: var(--text-gray);
+}
+
+.titleLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 0 0 12px 0;
+  color: var(--text-dark);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+
+.titleLink:hover .title {
+  color: var(--primary-blue);
+}
+
+.description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-gray);
+  margin: 0 0 16px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.readMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+  color: white;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  flex: 1;
+  justify-content: center;
+}
+
+.readMore:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+}
+
+.saveButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: white;
+  color: var(--primary-red);
+  border: 2px solid var(--primary-red);
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.saveButton:hover:not(:disabled) {
+  background: var(--primary-red);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.saveButton.saved {
+  background: var(--primary-red);
+  color: white;
+}
+
+.saveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Compact Card Styles */
+.compactCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.compactCard:hover {
+  border-color: var(--primary-blue);
+  box-shadow: 0 4px 16px rgba(0, 102, 204, 0.1);
+  transform: translateX(4px);
+}
+
+.compactLink {
+  flex: 1;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  gap: 12px;
+}
+
+.compactContent {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.compactImage {
+  flex-shrink: 0;
+  width: 120px;
+  height: 80px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--light-blue);
+}
+
+.compactImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.compactInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.compactTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+  color: var(--text-dark);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.compactLink:hover .compactTitle {
+  color: var(--primary-blue);
+}
+
+.compactMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-gray);
+}
+
+.separator {
+  color: var(--border-color);
+}
+
+.compactCard .saveButton {
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-gray);
+  font-size: 1.1rem;
+  min-width: auto;
+}
+
+.compactCard .saveButton:hover:not(:disabled) {
+  background: transparent;
+  color: var(--primary-red);
+  transform: scale(1.2);
+}
+
+.compactCard .saveButton.saved {
+  background: transparent;
+  color: var(--primary-red);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .imageContainer {
+    height: 180px;
+  }
+
+  .content {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .description {
+    font-size: 0.9rem;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .readMore,
+  .saveButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .compactImage {
+    width: 100px;
+    height: 70px;
+  }
+
+  .compactTitle {
+    font-size: 0.95rem;
+  }
+
+  .compactMeta {
+    font-size: 0.75rem;
+  }
+}

@@ -37,6 +37,55 @@
   transform: scale(1.05);
 }
 
+/* No Image Placeholder */
+.noImagePlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--light-blue) 0%, var(--light-red) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.card:hover .noImagePlaceholder {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-red) 100%);
+}
+
+.placeholderIcon {
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--primary-blue);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card:hover .placeholderIcon {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.placeholderText {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.card:hover .placeholderText {
+  color: white;
+}
+
 .categoryBadge {
   position: absolute;
   top: 12px;

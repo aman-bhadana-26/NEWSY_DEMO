@@ -22,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/news', require('./routes/newsRoutes'));
+app.use('/api/my-news', require('./routes/myNewsRoutes'));
 app.use('/api/saved', require('./routes/savedArticlesRoutes'));
 
 // Health check route

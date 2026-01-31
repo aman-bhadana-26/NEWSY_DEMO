@@ -1,4 +1,6 @@
 const axios = require('axios');
+const cheerio = require('cheerio');
+const { parse } = require('node-html-parser');
 
 /**
  * @desc    Get tech news from NewsAPI
@@ -7,26 +9,49 @@ const axios = require('axios');
  */
 const getNews = async (req, res) => {
   try {
-    const { category, page = 1, pageSize = 20 } = req.query;
+    const { category, page = 1, pageSize = 20, search } = req.query;
 
-    // Define tech-related keywords for different categories
-    const categoryKeywords = {
-      ai: 'artificial intelligence OR machine learning OR AI',
-      startups: 'startup OR venture capital OR tech startup',
-      software: 'software OR programming OR developer',
-      gadgets: 'gadgets OR smartphone OR technology devices',
-      cybersecurity: 'cybersecurity OR data breach OR hacking',
-      all: 'technology OR tech OR software OR AI OR startup'
-    };
+    let searchQuery;
 
-    const searchQuery = categoryKeywords[category] || categoryKeywords.all;
+    // If user provides a search keyword, use it directly
+    if (search && search.trim()) {
+      // Combine user search with category if not 'all'
+      if (category && category !== 'all') {
+        const categoryKeywords = {
+          ai: 'artificial intelligence OR machine learning OR AI',
+          startups: 'startup OR venture capital',
+          software: 'software OR programming',
+          gadgets: 'gadgets OR smartphone OR devices',
+          cybersecurity: 'cybersecurity OR security'
+        };
+        
+        // Combine user search term with category context
+        searchQuery = `${search.trim()} AND (${categoryKeywords[category]})`;
+      } else {
+        // Just use the user's search term
+        searchQuery = search.trim();
+      }
+    } else {
+      // Default category-based search
+      const categoryKeywords = {
+        ai: 'artificial intelligence OR machine learning OR AI',
+        startups: 'startup OR venture capital OR tech startup',
+        software: 'software OR programming OR developer',
+        gadgets: 'gadgets OR smartphone OR technology devices',
+        cybersecurity: 'cybersecurity OR data breach OR hacking',
+        all: 'technology OR tech OR software OR AI OR startup'
+      };
+      searchQuery = categoryKeywords[category] || categoryKeywords.all;
+    }
+
+    console.log('NewsAPI Search Query:', searchQuery);
 
     // Fetch news from NewsAPI
     const response = await axios.get('https://newsapi.org/v2/everything', {
       params: {
         q: searchQuery,
         language: 'en',
-        sortBy: 'publishedAt',
+        sortBy: search ? 'relevancy' : 'publishedAt', // Sort by relevancy if searching
         page: page,
         pageSize: pageSize,
         apiKey: process.env.NEWS_API_KEY
@@ -38,7 +63,8 @@ const getNews = async (req, res) => {
       totalResults: response.data.totalResults,
       articles: response.data.articles,
       page: parseInt(page),
-      pageSize: parseInt(pageSize)
+      pageSize: parseInt(pageSize),
+      searchQuery: search || null
     });
   } catch (error) {
     console.error('News API Error:', error.response?.data || error.message);
@@ -315,8 +341,199 @@ const getTrendingNews = async (req, res) => {
   }
 };
 
+/**
+ * Helper function to extract article content using web scraping
+ */
+const scrapeArticleContent = async (url) => {
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+      },
+      timeout: 15000,
+      maxRedirects: 5
+    });
+
+    const html = response.data;
+    const $ = cheerio.load(html);
+
+    // Remove script, style, nav, footer, ads, etc.
+    $('script, style, nav, footer, iframe, .ad, .advertisement, .social-share, .comments, header, aside').remove();
+
+    // Try to find article content using common selectors
+    let content = '';
+    let title = '';
+    let author = '';
+
+    // Extract title
+    title = $('h1').first().text().trim() || 
+            $('title').text().trim() || 
+            $('meta[property="og:title"]').attr('content') || '';
+
+    // Extract author
+    author = $('meta[name="author"]').attr('content') || 
+             $('.author').first().text().trim() || 
+             $('[rel="author"]').first().text().trim() || '';
+
+    // Try multiple content selectors (ordered by specificity)
+    const contentSelectors = [
+      'article',
+      '[role="article"]',
+      '.article-content',
+      '.post-content',
+      '.entry-content',
+      '.content',
+      'main article',
+      'main',
+      '.story-body',
+      '.article-body'
+    ];
+
+    for (const selector of contentSelectors) {
+      const element = $(selector).first();
+      if (element.length) {
+        // Extract all paragraph text
+        const paragraphs = element.find('p').map((i, el) => $(el).text().trim()).get();
+        if (paragraphs.length > 3) { // At least 3 paragraphs
+          content = paragraphs.filter(p => p.length > 50).join('\n\n');
+          if (content.length > 500) { // At least 500 chars
+            break;
+          }
+        }
+      }
+    }
+
+    // Fallback: get all paragraphs from body
+    if (!content || content.length < 500) {
+      const allParagraphs = $('p').map((i, el) => $(el).text().trim()).get();
+      content = allParagraphs
+        .filter(p => p.length > 50 && !p.includes('cookie') && !p.includes('privacy'))
+        .slice(0, 20) // First 20 paragraphs
+        .join('\n\n');
+    }
+
+    return {
+      title,
+      author,
+      content,
+      success: content.length > 300
+    };
+  } catch (error) {
+    console.error('Scraping error:', error.message);
+    return { success: false, content: '', title: '', author: '' };
+  }
+};
+
+/**
+ * @desc    Get full article content from URL
+ * @route   POST /api/news/article-content
+ * @access  Public
+ */
+const getArticleContent = async (req, res) => {
+  try {
+    const { url } = req.body;
+
+    if (!url) {
+      return res.status(400).json({
+        success: false,
+        message: 'Article URL is required'
+      });
+    }
+
+    console.log(`Attempting to extract content from: ${url}`);
+
+    // Method 1: Try direct web scraping (most reliable)
+    const scrapedData = await scrapeArticleContent(url);
+    
+    if (scrapedData.success && scrapedData.content.length > 300) {
+      console.log('✅ Successfully extracted via web scraping');
+      return res.json({
+        success: true,
+        article: {
+          title: scrapedData.title,
+          author: scrapedData.author,
+          content: scrapedData.content,
+          publishedDate: '',
+          image: '',
+          siteName: new URL(url).hostname,
+          method: 'web-scraping'
+        }
+      });
+    }
+
+    // Method 2: Try ArticleXtractor API as fallback
+    try {
+      console.log('Trying ArticleXtractor API...');
+      const extractorResponse = await axios.post('https://articlextractor.com/api/extract', {
+        url: url
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        timeout: 10000
+      });
+
+      if (extractorResponse.data && extractorResponse.data.data) {
+        const articleData = extractorResponse.data.data;
+        const content = articleData.text || articleData.content || '';
+        
+        if (content.length > 300) {
+          console.log('✅ Successfully extracted via ArticleXtractor');
+          return res.json({
+            success: true,
+            article: {
+              title: articleData.title || '',
+              author: articleData.author || '',
+              content: content,
+              publishedDate: articleData.date || '',
+              image: articleData.image || articleData.top_image || '',
+              siteName: articleData.site_name || '',
+              method: 'articlextractor'
+            }
+          });
+        }
+      }
+    } catch (apiError) {
+      console.log('ArticleXtractor API failed:', apiError.message);
+    }
+
+    // Method 3: If both fail, return partial content or error
+    if (scrapedData.content.length > 100) {
+      console.log('⚠️ Returning partial content');
+      return res.json({
+        success: true,
+        partial: true,
+        article: {
+          title: scrapedData.title,
+          author: scrapedData.author,
+          content: scrapedData.content,
+          publishedDate: '',
+          image: '',
+          siteName: new URL(url).hostname,
+          method: 'partial-scraping'
+        }
+      });
+    }
+
+    // All methods failed
+    throw new Error('Unable to extract sufficient content from article');
+
+  } catch (error) {
+    console.error('❌ Article extraction error:', error.message);
+    
+    res.json({
+      success: false,
+      message: 'Unable to extract full article content. The article may be behind a paywall, require JavaScript rendering, or have strong anti-scraping protection.',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   getNews,
   getHeadlines,
-  getTrendingNews
+  getTrendingNews,
+  getArticleContent
 };

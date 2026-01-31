@@ -25,6 +25,27 @@ const userSchema = new mongoose.Schema({
     minlength: [6, 'Password must be at least 6 characters'],
     select: false
   },
+  preferences: {
+    topics: {
+      type: [String],
+      default: ['all'],
+      enum: ['all', 'ai', 'startups', 'software', 'gadgets', 'cybersecurity']
+    },
+    savedArticles: [{
+      title: String,
+      url: String,
+      urlToImage: String,
+      source: String,
+      author: String,
+      description: String,
+      content: String,
+      publishedAt: Date,
+      savedAt: {
+        type: Date,
+        default: Date.now
+      }
+    }]
+  },
   createdAt: {
     type: Date,
     default: Date.now

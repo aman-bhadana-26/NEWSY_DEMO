@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { formatDate } from '../utils/formatDate';
+import { FaNewspaper } from 'react-icons/fa';
 import styles from '../styles/NewsCard.module.css';
 
 const NewsCard = ({ article, category }) => {
@@ -13,29 +14,57 @@ const NewsCard = ({ article, category }) => {
   };
 
   const slug = createSlug(article.title);
-  const articleUrl = `/article/${encodeURIComponent(slug)}?url=${encodeURIComponent(article.url)}`;
+  
+  // Encode full article data in URL
+  const articleData = encodeURIComponent(JSON.stringify({
+    title: article.title,
+    description: article.description,
+    content: article.content,
+    author: article.author,
+    source: article.source?.name || 'Unknown Source',
+    publishedAt: article.publishedAt,
+    url: article.url,
+    urlToImage: article.urlToImage
+  }));
+  
+  const articleUrl = `/article/${encodeURIComponent(slug)}?data=${articleData}`;
 
-  // Fallback image if none provided
+  // Check if article has image
+  const hasImage = article.urlToImage && article.urlToImage !== '';
   const imageUrl = article.urlToImage || 'https://via.placeholder.com/800x400/0066cc/ffffff?text=Tech+News';
 
   return (
     <div className={styles.card}>
       <Link href={articleUrl} className={styles.imageLink}>
-        <div className={styles.imageContainer}>
-          <Image
-            src={imageUrl}
-            alt={article.title}
-            width={800}
-            height={400}
-            className={styles.image}
-            onError={(e) => {
-              e.target.src = 'https://via.placeholder.com/800x400/0066cc/ffffff?text=Tech+News';
-            }}
-          />
-          {category && (
-            <span className={styles.categoryBadge}>{category}</span>
-          )}
-        </div>
+        {hasImage ? (
+          <div className={styles.imageContainer}>
+            <Image
+              src={imageUrl}
+              alt={article.title}
+              width={800}
+              height={400}
+              className={styles.image}
+              onError={(e) => {
+                e.target.src = 'https://via.placeholder.com/800x400/0066cc/ffffff?text=Tech+News';
+              }}
+            />
+            {category && (
+              <span className={styles.categoryBadge}>{category}</span>
+            )}
+          </div>
+        ) : (
+          <div className={styles.imageContainer}>
+            <div className={styles.noImagePlaceholder}>
+              <div className={styles.placeholderIcon}>
+                <FaNewspaper />
+              </div>
+              <p className={styles.placeholderText}>Tech News</p>
+            </div>
+            {category && (
+              <span className={styles.categoryBadge}>{category}</span>
+            )}
+          </div>
+        )}
       </Link>
 
       <div className={styles.content}>

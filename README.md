@@ -11,6 +11,8 @@ A full-stack modern technology news web application with a professional red and 
 - ✅ **Responsive Design** - Works seamlessly on desktop, tablet, and mobile
 - ✅ **SEO-Friendly** - Optimized meta tags and semantic HTML
 - ✅ **Category Filtering** - Browse news by AI, Startups, Software, Gadgets, Cybersecurity
+- ✅ **Trending News** - Weekly trending tech stories with fire animation
+- ✅ **Full Article Reading** - Read complete articles on NEWSY TECH (no external redirects)
 - ✅ **User Authentication** - Secure login and signup with JWT
 - ✅ **User Profiles** - Personalized user dashboard
 - ✅ **Real-time News** - Live technology news from NewsAPI
@@ -22,6 +24,7 @@ A full-stack modern technology news web application with a professional red and 
 - ✅ **MongoDB Database** - Scalable NoSQL database
 - ✅ **Protected Routes** - Middleware for authenticated endpoints
 - ✅ **News API Integration** - Fetch live tech news securely
+- ✅ **Article Content Extraction** - Fetch full article content from source URLs
 
 ### Security
 - ✅ **Environment Variables** - Secure API key storage
