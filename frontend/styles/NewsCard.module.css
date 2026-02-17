@@ -7,11 +7,15 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  /* GPU acceleration for smoother animations */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .card:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  transform: translateY(-4px);
+  transform: translateY(-4px) translateZ(0);
 }
 
 .imageLink {
@@ -31,10 +35,14 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+  /* GPU acceleration */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .card:hover .image {
-  transform: scale(1.05);
+  transform: scale(1.05) translateZ(0);
 }
 
 /* No Image Placeholder */

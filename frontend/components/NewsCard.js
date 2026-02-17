@@ -44,6 +44,10 @@ const NewsCard = ({ article, category }) => {
               width={800}
               height={400}
               className={styles.image}
+              loading="lazy"
+              quality={85}
+              placeholder="blur"
+              blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2YwZjBmMCIvPjwvc3ZnPg=="
               onError={(e) => {
                 e.target.src = 'https://via.placeholder.com/800x400/0066cc/ffffff?text=Tech+News';
               }}

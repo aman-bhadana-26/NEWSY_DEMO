@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope, FaSearch, FaFilter, FaNewspaper } from 'react-icons/fa';
+import { throttle } from '../hooks/useScrollOptimization';
 import styles from '../styles/Navbar.module.css';
 
 const Navbar = () => {
@@ -15,6 +16,7 @@ const Navbar = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [isScrolled, setIsScrolled] = useState(false);
+  const [searchExpanded, setSearchExpanded] = useState(false);
 
   const categories = [
     { name: 'All', path: '/', query: 'all' },
@@ -25,18 +27,33 @@ const Navbar = () => {
     { name: 'Cybersecurity', path: '/', query: 'cybersecurity' },
   ];
 
-  // Scroll detection effect
+  // Optimized scroll detection with throttle and RAF
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
+    const handleScroll = throttle(() => {
+      window.requestAnimationFrame(() => {
+        if (window.scrollY > 50) {
+          setIsScrolled(true);
+        } else {
+          setIsScrolled(false);
+        }
+      });
+    }, 100); // Throttle to every 100ms
 
-    window.addEventListener('scroll', handleScroll);
+    // Use passive listener for better performance
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Optimized resize handler with throttle
+  useEffect(() => {
+    const handleResize = throttle(() => {
+      window.requestAnimationFrame(() => {
+        // Resize handling if needed
+      });
+    }, 200); // Throttle to every 200ms
+
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const handleLogout = () => {
@@ -92,6 +109,14 @@ const Navbar = () => {
       setSearchQuery('');
       setShowFilters(false);
       setMobileMenuOpen(false);
+      setSearchExpanded(false);
+    }
+  };
+
+  const toggleSearch = () => {
+    setSearchExpanded(!searchExpanded);
+    if (searchExpanded) {
+      setShowFilters(false);
     }
   };
 
@@ -153,27 +178,39 @@ const Navbar = () => {
         {/* Search Bar with Filters */}
         <div className={styles.searchContainer}>
           <form onSubmit={handleSearch} className={styles.searchForm}>
-            <div className={styles.searchInputWrapper}>
-              <FaSearch className={styles.searchIconInside} />
-              <input
-                type="text"
-                placeholder="Search news..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={styles.searchInput}
-              />
+            <div className={`${styles.searchInputWrapper} ${searchExpanded ? styles.expanded : ''}`}>
               <button 
                 type="button"
-                onClick={toggleFilters}
-                className={styles.filterButton}
-                title="Filter by category"
+                onClick={toggleSearch}
+                className={styles.searchIconButton}
+                title="Search"
               >
-                <FaFilter />
-                <span className={styles.filterBadge}>{selectedFilter === 'all' ? 'All' : selectedFilter.toUpperCase()}</span>
+                <FaSearch />
               </button>
+              {searchExpanded && (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Search news..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className={styles.searchInput}
+                    autoFocus
+                  />
+                  <button 
+                    type="button"
+                    onClick={toggleFilters}
+                    className={styles.filterButton}
+                    title="Filter by category"
+                  >
+                    <FaFilter />
+                    <span className={styles.filterBadge}>{selectedFilter === 'all' ? 'All' : selectedFilter.toUpperCase()}</span>
+                  </button>
+                </>
+              )}
             </div>
             
-            {showFilters && (
+            {showFilters && searchExpanded && (
               <div className={styles.filterDropdown}>
                 <div className={styles.filterHeader}>
                   <FaFilter /> Filter by Category

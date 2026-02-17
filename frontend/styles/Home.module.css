@@ -14,11 +14,45 @@
 }
 
 .heroRed {
-  color: var(--primary-red);
+  background: linear-gradient(
+    90deg,
+    #dc143c 0%,
+    #ff1744 25%,
+    #ff4757 50%,
+    #ff6348 75%,
+    #dc143c 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s linear infinite;
 }
 
 .heroBlue {
-  color: white;
+  background: linear-gradient(
+    90deg,
+    #0066cc 0%,
+    #0080ff 25%,
+    #00a8ff 50%,
+    #0080ff 75%,
+    #0066cc 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s linear infinite;
+  animation-delay: 0.5s;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 
 .heroSubtitle {
@@ -74,6 +108,8 @@
   gap: 30px;
   margin-bottom: 40px;
   width: 100%;
+  /* Optimize grid rendering */
+  contain: layout style paint;
 }
 
 /* Optimize for different screen sizes */
@@ -119,16 +155,20 @@
   gap: 12px;
   min-width: 250px;
   justify-content: center;
+  /* GPU acceleration */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .loadMoreButton:hover:not(:disabled) {
-  transform: translateY(-3px);
+  transform: translateY(-3px) translateZ(0);
   box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
   background: linear-gradient(135deg, var(--dark-blue), var(--primary-blue));
 }
 
 .loadMoreButton:active:not(:disabled) {
-  transform: translateY(-1px);
+  transform: translateY(-1px) translateZ(0);
 }
 
 .loadMoreButton:disabled {

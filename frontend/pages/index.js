@@ -4,6 +4,7 @@ import Layout from '../components/Layout';
 import NewsCard from '../components/NewsCard';
 import CategoryFilter from '../components/CategoryFilter';
 import LoadingSpinner from '../components/LoadingSpinner';
+import TopStories from '../components/TopStories';
 import { newsAPI } from '../utils/api';
 import styles from '../styles/Home.module.css';
 
@@ -116,6 +117,11 @@ export default function Home() {
 
       <div className="container">
         <CategoryFilter currentCategory={category} />
+
+        {/* Top Stories Section - Only show on homepage without search */}
+        {!search && category === 'all' && news.length > 0 && !loading && (
+          <TopStories stories={news} />
+        )}
 
         <div className={styles.newsSection}>
           <div className={styles.sectionHeader}>

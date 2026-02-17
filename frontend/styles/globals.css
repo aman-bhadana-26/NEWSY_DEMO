@@ -35,6 +35,9 @@ html {
   scroll-behavior: smooth;
   width: 100%;
   height: 100%;
+  /* Optimize scrolling performance */
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -50,6 +53,10 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
+  /* Optimize rendering performance */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Typography */
@@ -265,6 +272,12 @@ a:hover {
   .container {
     padding: 0 15px;
   }
+}
+
+/* Momentum scrolling for iOS */
+.scroll-container {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
 }
 
 /* Utility Classes */
