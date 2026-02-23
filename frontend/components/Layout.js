@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import TopUtilityBar from './TopUtilityBar';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
@@ -19,6 +20,7 @@ const Layout = ({ children, title = 'NEWSY TECH - Latest Technology News' }) => 
         margin: 0,
         padding: 0
       }}>
+        <TopUtilityBar />
         <Navbar />
         <main style={{ 
           flex: 1,

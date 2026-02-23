@@ -120,6 +120,16 @@ const Navbar = () => {
     }
   };
 
+  const handleSearchBlur = () => {
+    // Collapse search bar when it loses focus (with small delay)
+    setTimeout(() => {
+      if (!searchQuery.trim()) {
+        setSearchExpanded(false);
+        setShowFilters(false);
+      }
+    }, 150); // Small delay to allow clicking on buttons
+  };
+
   const toggleFilters = () => {
     setShowFilters(!showFilters);
   };
@@ -194,6 +204,7 @@ const Navbar = () => {
                     placeholder="Search news..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onBlur={handleSearchBlur}
                     className={styles.searchInput}
                     autoFocus
                   />

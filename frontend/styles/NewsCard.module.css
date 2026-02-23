@@ -1,12 +1,13 @@
 .card {
-  background-color: white;
+  background: linear-gradient(135deg, #0a2433 0%, #0f2d3d 100%);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(5, 22, 34, 0.4);
   transition: all 0.3s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
+  border: 1px solid #1a3444;
   /* GPU acceleration for smoother animations */
   will-change: transform;
   transform: translateZ(0);
@@ -14,8 +15,9 @@
 }
 
 .card:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(27, 160, 152, 0.2);
   transform: translateY(-4px) translateZ(0);
+  border-color: #1BA098;
 }
 
 .imageLink {
@@ -27,7 +29,7 @@
   width: 100%;
   height: 200px;
   overflow: hidden;
-  background-color: var(--bg-gray);
+  background-color: #051622;
 }
 
 .image {
@@ -49,7 +51,7 @@
 .noImagePlaceholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, var(--light-blue) 0%, var(--light-red) 100%);
+  background: linear-gradient(135deg, #0f2d3d 0%, #1a3444 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -59,32 +61,34 @@
 }
 
 .card:hover .noImagePlaceholder {
-  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-red) 100%);
+  background: linear-gradient(135deg, #1BA098 0%, #148c7f 100%);
 }
 
 .placeholderIcon {
   width: 60px;
   height: 60px;
-  background-color: white;
+  background-color: #0a2433;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
-  color: var(--primary-blue);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: #DEB992;
+  box-shadow: 0 4px 12px rgba(5, 22, 34, 0.3);
   transition: all 0.3s ease;
 }
 
 .card:hover .placeholderIcon {
   transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 16px rgba(27, 160, 152, 0.3);
+  background-color: #051622;
+  color: white;
 }
 
 .placeholderText {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--primary-blue);
+  color: #DEB992;
   text-transform: uppercase;
   letter-spacing: 1px;
   transition: all 0.3s ease;
@@ -98,7 +102,7 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background-color: var(--primary-red);
+  background: linear-gradient(135deg, #1BA098, #148c7f);
   color: white;
   padding: 6px 12px;
   border-radius: 20px;
@@ -106,6 +110,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(27, 160, 152, 0.4);
 }
 
 .content {
@@ -124,18 +129,18 @@
 }
 
 .source {
-  color: var(--primary-blue);
+  color: #1BA098;
   font-weight: 700;
 }
 
 .date {
-  color: var(--text-light);
+  color: #8b9ba8;
 }
 
 .title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text-dark);
+  color: #ffffff;
   margin-bottom: 12px;
   line-height: 1.4;
   transition: color 0.3s ease;
@@ -146,11 +151,11 @@
 }
 
 .title:hover {
-  color: var(--primary-blue);
+  color: #DEB992;
 }
 
 .description {
-  color: var(--text-gray);
+  color: #8b9ba8;
   line-height: 1.6;
   margin-bottom: 16px;
   flex: 1;
@@ -162,18 +167,18 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 12px;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid #1a3444;
 }
 
 .readMore {
-  color: var(--primary-blue);
+  color: #1BA098;
   font-weight: 700;
   font-size: 0.95rem;
   transition: all 0.3s ease;
 }
 
 .readMore:hover {
-  color: var(--primary-red);
+  color: #DEB992;
   transform: translateX(4px);
 }
 

@@ -73,7 +73,7 @@
 .sectionTitle {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--text-dark);
+  color: #ffffff;
   margin-bottom: 12px;
   position: relative;
   padding-bottom: 16px;
@@ -87,18 +87,18 @@
   transform: translateX(-50%);
   width: 80px;
   height: 4px;
-  background: linear-gradient(90deg, var(--primary-red), var(--primary-blue));
+  background: linear-gradient(90deg, #1BA098, #DEB992);
   border-radius: 2px;
 }
 
 .resultsCount {
-  color: var(--text-gray);
+  color: #8b9ba8;
   font-size: 1rem;
   margin-top: 8px;
 }
 
 .resultsCount strong {
-  color: var(--primary-blue);
+  color: #1BA098;
   font-weight: 700;
 }
 
@@ -141,7 +141,7 @@
 
 .loadMoreButton {
   padding: 16px 48px;
-  background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+  background: linear-gradient(135deg, #1BA098, #148c7f);
   color: white;
   border: none;
   border-radius: 50px;
@@ -149,7 +149,7 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+  box-shadow: 0 4px 15px rgba(27, 160, 152, 0.3);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -163,8 +163,8 @@
 
 .loadMoreButton:hover:not(:disabled) {
   transform: translateY(-3px) translateZ(0);
-  box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
-  background: linear-gradient(135deg, var(--dark-blue), var(--primary-blue));
+  box-shadow: 0 6px 20px rgba(27, 160, 152, 0.4);
+  background: linear-gradient(135deg, #24c9b8, #1BA098);
 }
 
 .loadMoreButton:active:not(:disabled) {
@@ -192,7 +192,7 @@
 }
 
 .loadMoreHint {
-  color: var(--text-gray);
+  color: #8b9ba8;
   font-size: 0.95rem;
   text-align: center;
   margin: 0;
@@ -208,7 +208,7 @@
 }
 
 .endOfResults p {
-  color: var(--text-gray);
+  color: #8b9ba8;
   font-size: 1rem;
   font-weight: 600;
   white-space: nowrap;
@@ -225,20 +225,20 @@
 .error {
   text-align: center;
   padding: 60px 20px;
-  background: linear-gradient(135deg, rgba(220, 20, 60, 0.05), rgba(255, 69, 0, 0.05));
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
   border-radius: 12px;
-  border: 2px solid rgba(220, 20, 60, 0.2);
+  border: 2px solid rgba(239, 68, 68, 0.3);
 }
 
 .error p {
-  color: var(--primary-red);
+  color: #ef4444;
   font-size: 1.1rem;
   margin-bottom: 20px;
 }
 
 .retryButton {
   padding: 12px 32px;
-  background: linear-gradient(135deg, var(--primary-red), #ff6347);
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
   border: none;
   border-radius: 8px;
@@ -246,18 +246,18 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .retryButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(220, 20, 60, 0.4);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
 }
 
 .noNews {
   text-align: center;
   padding: 60px 20px;
-  color: var(--text-gray);
+  color: #8b9ba8;
   font-size: 1.1rem;
 }
 

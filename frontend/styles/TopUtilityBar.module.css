@@ -1,0 +1,188 @@
+.topBar {
+  width: 100%;
+  background: linear-gradient(90deg, #051622 0%, #0a2433 100%);
+  color: white;
+  font-size: 16px;
+  border-bottom: 1px solid rgba(27, 160, 152, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+  height: 40px;
+  gap: 20px;
+}
+
+/* Left Section - Date */
+.leftSection {
+  display: flex;
+  align-items: center;
+}
+
+.date {
+  font-weight: 600;
+  opacity: 0.95;
+  white-space: nowrap;
+}
+
+/* Center Section - Ticker */
+.centerSection {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.tickerLabel {
+  color: #1BA098;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  margin-right: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tickerWrapper {
+  overflow: hidden;
+  flex: 1;
+  position: relative;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+}
+
+.tickerContent {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: ticker 60s linear infinite;
+  will-change: transform;
+}
+
+.tickerContent:hover {
+  animation-play-state: paused;
+}
+
+.tickerItem {
+  display: inline-block;
+  padding: 0 15px;
+  opacity: 0.9;
+}
+
+.tickerDivider {
+  margin: 0 15px;
+  opacity: 0.5;
+}
+
+@keyframes ticker {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Right Section - Weather & Icons */
+.rightSection {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+.weather {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.95;
+}
+
+.location {
+  font-weight: 500;
+}
+
+.weatherIcon {
+  font-size: 22px;
+  color: #DEB992;
+}
+
+.temp {
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: auto 1fr auto;
+    gap: 15px;
+  }
+
+  .weather {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    padding: 0 15px;
+  }
+
+  .rightSection {
+    display: none;
+  }
+
+  .tickerLabel {
+    font-size: 11px;
+    margin-right: 8px;
+  }
+
+  .date {
+    font-size: 11px;
+  }
+
+  .tickerItem {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topBar {
+    font-size: 11px;
+  }
+
+  .container {
+    height: 36px;
+    gap: 8px;
+    padding: 0 10px;
+  }
+
+  .tickerLabel {
+    font-size: 10px;
+    margin-right: 6px;
+  }
+
+  .date {
+    font-size: 10px;
+  }
+}

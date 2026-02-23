@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import NewsCard from '../components/NewsCard';
-import CategoryFilter from '../components/CategoryFilter';
 import LoadingSpinner from '../components/LoadingSpinner';
 import TopStories from '../components/TopStories';
 import { newsAPI } from '../utils/api';
@@ -103,21 +102,7 @@ export default function Home() {
 
   return (
     <Layout title={`${getCategoryName(category)} - NEWSY TECH`}>
-      <div className={styles.hero}>
-        <div className="container">
-          <h1 className={styles.heroTitle}>
-            <span className={styles.heroRed}>NEWSY</span>
-            <span className={styles.heroBlue}>TECH</span>
-          </h1>
-          <p className={styles.heroSubtitle}>
-            Your trusted source for the latest technology news
-          </p>
-        </div>
-      </div>
-
       <div className="container">
-        <CategoryFilter currentCategory={category} />
-
         {/* Top Stories Section - Only show on homepage without search */}
         {!search && category === 'all' && news.length > 0 && !loading && (
           <TopStories stories={news} />
