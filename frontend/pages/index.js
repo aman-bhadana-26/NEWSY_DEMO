@@ -4,6 +4,7 @@ import Layout from '../components/Layout';
 import NewsCard from '../components/NewsCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import TopStories from '../components/TopStories';
+import ExploreCategories from '../components/ExploreCategories';
 import { newsAPI } from '../utils/api';
 import styles from '../styles/Home.module.css';
 
@@ -106,6 +107,11 @@ export default function Home() {
         {/* Top Stories Section - Only show on homepage without search */}
         {!search && category === 'all' && news.length > 0 && !loading && (
           <TopStories stories={news} />
+        )}
+
+        {/* Explore Categories Section - Only show on homepage without search */}
+        {!search && category === 'all' && news.length > 0 && !loading && (
+          <ExploreCategories />
         )}
 
         <div className={styles.newsSection}>

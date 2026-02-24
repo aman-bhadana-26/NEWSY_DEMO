@@ -115,19 +115,30 @@ const Navbar = () => {
 
   const toggleSearch = () => {
     setSearchExpanded(!searchExpanded);
-    if (searchExpanded) {
+    if (!searchExpanded) {
+      // Focus input when expanding
+      setTimeout(() => {
+        const input = document.querySelector(`.${styles.searchInput}`);
+        if (input) input.focus();
+      }, 100);
+    } else {
       setShowFilters(false);
     }
   };
 
-  const handleSearchBlur = () => {
-    // Collapse search bar when it loses focus (with small delay)
+  const handleSearchBlur = (e) => {
+    // Capture the element reference before the timeout
+    const inputElement = e.currentTarget;
+    const searchContainer = inputElement.closest(`.${styles.searchInputWrapper}`);
+    
+    // Small delay to allow clicking on filter button or submit
     setTimeout(() => {
-      if (!searchQuery.trim()) {
+      // Check if focus moved to another element within the search container
+      if (searchContainer && !searchContainer.contains(document.activeElement)) {
         setSearchExpanded(false);
         setShowFilters(false);
       }
-    }, 150); // Small delay to allow clicking on buttons
+    }, 200);
   };
 
   const toggleFilters = () => {
@@ -206,7 +217,6 @@ const Navbar = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onBlur={handleSearchBlur}
                     className={styles.searchInput}
-                    autoFocus
                   />
                   <button 
                     type="button"
