@@ -22,6 +22,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "shadcn": "^3.8.5"
   }
 }

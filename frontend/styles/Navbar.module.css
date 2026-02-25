@@ -3,7 +3,6 @@
   box-shadow: 0 4px 12px rgba(5, 22, 34, 0.4);
   position: relative;
   z-index: 999;
-  border-bottom: 2px solid #1BA098;
   transition: all 0.3s ease;
 }
 

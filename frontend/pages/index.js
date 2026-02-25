@@ -5,6 +5,8 @@ import NewsCard from '../components/NewsCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import TopStories from '../components/TopStories';
 import ExploreCategories from '../components/ExploreCategories';
+import TopTrending from '../components/TopTrending';
+import CategoryBriefs from '../components/CategoryBriefs';
 import { newsAPI } from '../utils/api';
 import styles from '../styles/Home.module.css';
 
@@ -104,91 +106,117 @@ export default function Home() {
   return (
     <Layout title={`${getCategoryName(category)} - NEWSY TECH`}>
       <div className="container">
-        {/* Top Stories Section - Only show on homepage without search */}
-        {!search && category === 'all' && news.length > 0 && !loading && (
-          <TopStories stories={news} />
-        )}
+        {/* Homepage Sections - Only show on 'all' category without search */}
+        {!search && category === 'all' ? (
+          <>
+            {/* Loading State */}
+            {loading && page === 1 ? (
+              <LoadingSpinner message="Loading latest news..." />
+            ) : error ? (
+              <div className={styles.error}>
+                <p>{error}</p>
+                <button onClick={() => fetchNews(1)} className={styles.retryButton}>
+                  Try Again
+                </button>
+              </div>
+            ) : news.length === 0 ? (
+              <div className={styles.noNews}>
+                <p>No news articles found.</p>
+              </div>
+            ) : (
+              <>
+                {/* Top Stories Section */}
+                <TopStories stories={news} />
 
-        {/* Explore Categories Section - Only show on homepage without search */}
-        {!search && category === 'all' && news.length > 0 && !loading && (
-          <ExploreCategories />
-        )}
+                {/* Explore Categories Section */}
+                <ExploreCategories />
 
-        <div className={styles.newsSection}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{getPageTitle()}</h2>
-            {totalResults > 0 && (
-              <p className={styles.resultsCount}>
-                Showing <strong>{news.length}</strong> of <strong>{totalResults.toLocaleString()}</strong> articles
-              </p>
+                {/* Top Trending Section */}
+                <TopTrending news={news} />
+
+                {/* Category Briefs Section */}
+                <CategoryBriefs news={news} />
+              </>
+            )}
+          </>
+        ) : (
+          /* Category Pages and Search Results */
+          <div className={styles.newsSection}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>{getPageTitle()}</h2>
+              {totalResults > 0 && (
+                <p className={styles.resultsCount}>
+                  Showing <strong>{news.length}</strong> of <strong>{totalResults.toLocaleString()}</strong> articles
+                </p>
+              )}
+            </div>
+
+            {loading && page === 1 ? (
+              <LoadingSpinner message="Loading latest news..." />
+            ) : error ? (
+              <div className={styles.error}>
+                <p>{error}</p>
+                <button onClick={() => fetchNews(1)} className={styles.retryButton}>
+                  Try Again
+                </button>
+              </div>
+            ) : news.length === 0 ? (
+              <div className={styles.noNews}>
+                <p>No news articles found for this category.</p>
+              </div>
+            ) : (
+              <>
+                <div className={styles.newsGrid}>
+                  {news.map((article, index) => (
+                    <NewsCard
+                      key={`${article.url}-${index}`}
+                      article={article}
+                      category={category !== 'all' ? category : null}
+                    />
+                  ))}
+                </div>
+
+                {/* Load More Button */}
+                {hasMore && (
+                  <div className={styles.loadMoreContainer}>
+                    <button
+                      onClick={loadMore}
+                      className={styles.loadMoreButton}
+                      disabled={loadingMore}
+                    >
+                      {loadingMore ? (
+                        <>
+                          <span className={styles.spinner}></span>
+                          Loading More Articles...
+                        </>
+                      ) : (
+                        <>
+                          📰 Load More News
+                        </>
+                      )}
+                    </button>
+                    {!loadingMore && (
+                      <p className={styles.loadMoreHint}>
+                        {totalResults - news.length > 0 
+                          ? `${(totalResults - news.length).toLocaleString()} more articles available`
+                          : 'More articles available'}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* End of Results */}
+                {!hasMore && news.length > 0 && (
+                  <div className={styles.endOfResults}>
+                    <div className={styles.endLine}></div>
+                    <p>You've reached the end of {getCategoryName(category)}</p>
+                    <div className={styles.endLine}></div>
+                  </div>
+                )}
+              </>
             )}
           </div>
-
-          {loading && page === 1 ? (
-            <LoadingSpinner message="Loading latest news..." />
-          ) : error ? (
-            <div className={styles.error}>
-              <p>{error}</p>
-              <button onClick={() => fetchNews(1)} className={styles.retryButton}>
-                Try Again
-              </button>
-            </div>
-          ) : news.length === 0 ? (
-            <div className={styles.noNews}>
-              <p>No news articles found for this category.</p>
-            </div>
-          ) : (
-            <>
-              <div className={styles.newsGrid}>
-                {news.map((article, index) => (
-                  <NewsCard
-                    key={`${article.url}-${index}`}
-                    article={article}
-                    category={category !== 'all' ? category : null}
-                  />
-                ))}
-              </div>
-
-              {/* Load More Button */}
-              {hasMore && (
-                <div className={styles.loadMoreContainer}>
-                  <button
-                    onClick={loadMore}
-                    className={styles.loadMoreButton}
-                    disabled={loadingMore}
-                  >
-                    {loadingMore ? (
-                      <>
-                        <span className={styles.spinner}></span>
-                        Loading More Articles...
-                      </>
-                    ) : (
-                      <>
-                        📰 Load More News
-                      </>
-                    )}
-                  </button>
-                  {!loadingMore && (
-                    <p className={styles.loadMoreHint}>
-                      {totalResults - news.length > 0 
-                        ? `${(totalResults - news.length).toLocaleString()} more articles available`
-                        : 'More articles available'}
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {/* End of Results */}
-              {!hasMore && news.length > 0 && (
-                <div className={styles.endOfResults}>
-                  <div className={styles.endLine}></div>
-                  <p>You've reached the end of {getCategoryName(category)}</p>
-                  <div className={styles.endLine}></div>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+        )}
       </div>
     </Layout>
   );

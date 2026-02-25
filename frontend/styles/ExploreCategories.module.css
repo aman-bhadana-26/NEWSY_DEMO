@@ -1,5 +1,6 @@
 .exploreCategoriesSection {
-  width: 100%;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
   padding: 60px 0;
   background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
   margin-top: 40px;
@@ -9,7 +10,7 @@
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
-  padding: 0 60px;
+  padding: 0 40px;
 }
 
 /* Header */

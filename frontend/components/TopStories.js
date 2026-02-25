@@ -60,35 +60,43 @@ const TopStories = ({ stories }) => {
 
   return (
     <div className={styles.topStoriesSection}>
-      <div className={styles.header}>
-        <h2 className={styles.title}>Top Stories</h2>
-        <div className={styles.indicators}>
-          {topStories.map((_, index) => (
-            <button
-              key={index}
-              className={`${styles.indicator} ${index === activeStory ? styles.indicatorActive : ''}`}
-              onClick={() => setActiveStory(index)}
-              aria-label={`View story ${index + 1}`}
-            />
-          ))}
-        </div>
+      {/* Background Image Layer */}
+      <div className={styles.backgroundLayer} key={`bg-${activeStory}`}>
+        <img 
+          src={mainStory.urlToImage} 
+          alt={mainStory.title}
+          className={styles.backgroundImage}
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
+        <div className={styles.backgroundOverlay} />
       </div>
 
-      <div className={styles.storiesGrid}>
-        {/* Main Featured Story */}
-          <Link href={createSlug(mainStory)} className={styles.mainStory}>
-            <div className={styles.mainStoryImage}>
-              <img 
-                src={mainStory.urlToImage} 
-                alt={mainStory.title}
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.parentElement.classList.add(styles.imageFailed);
-                }}
+      {/* Content Layer */}
+      <div className={styles.contentLayer}>
+        <div className={styles.header}>
+          <h2 className={styles.title}>Top Stories</h2>
+          <div className={styles.indicators}>
+            {topStories.map((_, index) => (
+              <button
+                key={index}
+                className={`${styles.indicator} ${index === activeStory ? styles.indicatorActive : ''}`}
+                onClick={() => setActiveStory(index)}
+                aria-label={`View story ${index + 1}`}
               />
-              <div className={styles.overlay} />
-              <span className={styles.badge}>FEATURED</span>
-            </div>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.storiesGrid}>
+          {/* Main Featured Story */}
+          <Link 
+            key={`main-${activeStory}`}
+            href={createSlug(mainStory)} 
+            className={styles.mainStory}
+          >
+            <span className={styles.badge}>FEATURED</span>
             <div className={styles.mainStoryContent}>
               <div className={styles.mainStoryMeta}>
                 <span className={styles.source}>
@@ -108,7 +116,7 @@ const TopStories = ({ stories }) => {
           </Link>
 
           {/* Side Stories */}
-          <div className={styles.sideStories}>
+          <div className={styles.sideStories} key={`side-${activeStory}`}>
             {sideStories.map((story, index) => (
               <Link key={index} href={createSlug(story)} className={styles.sideStory}>
                 <div className={styles.sideStoryImage}>
@@ -136,6 +144,7 @@ const TopStories = ({ stories }) => {
               </Link>
             ))}
           </div>
+        </div>
       </div>
     </div>
   );

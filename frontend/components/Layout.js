@@ -2,6 +2,7 @@ import Head from 'next/head';
 import TopUtilityBar from './TopUtilityBar';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import ScrollToTop from './ScrollToTop';
 
 const Layout = ({ children, title = 'NEWSY TECH - Latest Technology News' }) => {
   return (
@@ -29,6 +30,7 @@ const Layout = ({ children, title = 'NEWSY TECH - Latest Technology News' }) => 
           padding: 0
         }}>{children}</main>
         <Footer />
+        <ScrollToTop />
       </div>
     </>
   );
