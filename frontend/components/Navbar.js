@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope, FaSearch, FaFilter, FaNewspaper } from 'react-icons/fa';
+import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope, FaSearch, FaFilter, FaNewspaper, FaHome, FaChevronDown, FaInfoCircle, FaEnvelopeOpen } from 'react-icons/fa';
 import { throttle } from '../hooks/useScrollOptimization';
 import styles from '../styles/Navbar.module.css';
 
@@ -10,8 +10,11 @@ const Navbar = () => {
   const router = useRouter();
   const { user, logout, isAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sideMenuOpen, setSideMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [categoriesDropdownOpen, setCategoriesDropdownOpen] = useState(false);
   const [dropdownTimeout, setDropdownTimeout] = useState(null);
+  const [categoriesTimeout, setCategoriesTimeout] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('all');
@@ -69,6 +72,10 @@ const Navbar = () => {
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const toggleSideMenu = () => {
+    setSideMenuOpen(!sideMenuOpen);
   };
 
   const handleMouseEnter = () => {
@@ -150,9 +157,29 @@ const Navbar = () => {
     setShowFilters(false);
   };
 
+  const handleCategoriesMouseEnter = () => {
+    if (categoriesTimeout) {
+      clearTimeout(categoriesTimeout);
+      setCategoriesTimeout(null);
+    }
+    setCategoriesDropdownOpen(true);
+  };
+
+  const handleCategoriesMouseLeave = () => {
+    const timeout = setTimeout(() => {
+      setCategoriesDropdownOpen(false);
+    }, 150);
+    setCategoriesTimeout(timeout);
+  };
+
   return (
     <nav className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}>
       <div className={styles.container}>
+        {/* Menu Button */}
+        <button className={styles.menuButton} onClick={toggleSideMenu} title="Menu">
+          <FaBars />
+        </button>
+
         <Link href="/" className={styles.logo}>
           <span className={styles.logoRed}>NEWSY</span>
           <span className={styles.logoBlue}>TECH</span>
@@ -161,27 +188,58 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <div className={styles.navLinks}>
           <Link
-            href="/trending"
-            className={`${styles.navLink} ${styles.trendingLink} ${
-              router.pathname === '/trending' ? styles.active : ''
+            href="/"
+            className={`${styles.navLink} ${
+              router.pathname === '/' && !router.query.category ? styles.active : ''
             }`}
           >
-            <FaFire className={styles.trendingIcon} /> Trending
+            Home
           </Link>
-          {categories.map((category) => (
-            <Link
-              key={category.query}
-              href={`/?category=${category.query}`}
-              className={`${styles.navLink} ${
-                router.query.category === category.query || 
-                (!router.query.category && category.query === 'all' && router.pathname !== '/trending' && router.pathname !== '/my-news')
-                  ? styles.active
-                  : ''
-              }`}
-            >
-              {category.name}
-            </Link>
-          ))}
+          
+          {/* Categories Dropdown */}
+          <div 
+            className={styles.categoriesDropdownContainer}
+            onMouseEnter={handleCategoriesMouseEnter}
+            onMouseLeave={handleCategoriesMouseLeave}
+          >
+            <button className={`${styles.navLink} ${styles.categoriesButton} ${router.query.category ? styles.active : ''}`}>
+              Categories <FaChevronDown className={styles.dropdownArrow} />
+            </button>
+            
+            {categoriesDropdownOpen && (
+              <div className={styles.categoriesDropdown}>
+                {categories.map((category) => (
+                  <Link
+                    key={category.query}
+                    href={`/?category=${category.query}`}
+                    className={`${styles.categoryDropdownItem} ${
+                      router.query.category === category.query ? styles.categoryDropdownItemActive : ''
+                    }`}
+                  >
+                    {category.name}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <Link
+            href="/about"
+            className={`${styles.navLink} ${
+              router.pathname === '/about' ? styles.active : ''
+            }`}
+          >
+            About
+          </Link>
+
+          <Link
+            href="/contact"
+            className={`${styles.navLink} ${
+              router.pathname === '/contact' ? styles.active : ''
+            }`}
+          >
+            Contact
+          </Link>
         </div>
 
         {/* MY NEWS - Left of Search */}
@@ -358,6 +416,14 @@ const Navbar = () => {
           <div className={styles.mobileDivider}></div>
           
           <Link
+            href="/"
+            className={`${styles.mobileNavLink} ${router.pathname === '/' && !router.query.category ? styles.mobileNavLinkActive : ''}`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <FaHome /> Home
+          </Link>
+          
+          <Link
             href="/trending"
             className={`${styles.mobileNavLink} ${styles.mobileTrendingLink}`}
             onClick={() => setMobileMenuOpen(false)}
@@ -373,17 +439,43 @@ const Navbar = () => {
               <FaNewspaper /> My News
             </Link>
           )}
+          
           <div className={styles.mobileDivider}></div>
-          {categories.map((category) => (
-            <Link
-              key={category.query}
-              href={`/?category=${category.query}`}
-              className={styles.mobileNavLink}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {category.name}
-            </Link>
-          ))}
+          
+          <div className={styles.mobileCategoriesSection}>
+            <p className={styles.mobileSectionTitle}>Categories</p>
+            {categories.map((category) => (
+              <Link
+                key={category.query}
+                href={`/?category=${category.query}`}
+                className={`${styles.mobileNavLink} ${
+                  router.query.category === category.query ? styles.mobileNavLinkActive : ''
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {category.name}
+              </Link>
+            ))}
+          </div>
+          
+          <div className={styles.mobileDivider}></div>
+          
+          <Link
+            href="/about"
+            className={`${styles.mobileNavLink} ${router.pathname === '/about' ? styles.mobileNavLinkActive : ''}`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <FaInfoCircle /> About
+          </Link>
+          
+          <Link
+            href="/contact"
+            className={`${styles.mobileNavLink} ${router.pathname === '/contact' ? styles.mobileNavLinkActive : ''}`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <FaEnvelopeOpen /> Contact
+          </Link>
+          
           <div className={styles.mobileDivider}></div>
           {isAuthenticated ? (
             <>
@@ -417,6 +509,113 @@ const Navbar = () => {
             </>
           )}
         </div>
+      )}
+
+      {/* Side Menu */}
+      {sideMenuOpen && (
+        <>
+          {/* Overlay */}
+          <div className={styles.sideMenuOverlay} onClick={toggleSideMenu}></div>
+          
+          {/* Side Menu Panel */}
+          <div className={styles.sideMenu}>
+            <div className={styles.sideMenuHeader}>
+              <h2 className={styles.sideMenuTitle}>Menu</h2>
+              <button className={styles.sideMenuClose} onClick={toggleSideMenu}>
+                <FaTimes />
+              </button>
+            </div>
+
+            <div className={styles.sideMenuContent}>
+              <Link
+                href="/trending"
+                className={`${styles.sideMenuItem} ${router.pathname === '/trending' ? styles.sideMenuItemActive : ''}`}
+                onClick={toggleSideMenu}
+              >
+                <FaFire className={styles.sideMenuIcon} />
+                <span>Trending This Week</span>
+              </Link>
+
+              {isAuthenticated && (
+                <Link
+                  href="/my-news"
+                  className={`${styles.sideMenuItem} ${router.pathname === '/my-news' ? styles.sideMenuItemActive : ''}`}
+                  onClick={toggleSideMenu}
+                >
+                  <FaNewspaper className={styles.sideMenuIcon} />
+                  <span>My News</span>
+                </Link>
+              )}
+
+              <div className={styles.sideMenuDivider}></div>
+
+              <div className={styles.sideMenuSection}>
+                <h3 className={styles.sideMenuSectionTitle}>Categories</h3>
+                {categories.map((category) => (
+                  <Link
+                    key={category.query}
+                    href={`/?category=${category.query}`}
+                    className={`${styles.sideMenuItem} ${
+                      router.query.category === category.query
+                        ? styles.sideMenuItemActive
+                        : ''
+                    }`}
+                    onClick={toggleSideMenu}
+                  >
+                    <span>{category.name}</span>
+                  </Link>
+                ))}
+              </div>
+
+              {isAuthenticated ? (
+                <>
+                  <div className={styles.sideMenuDivider}></div>
+                  <div className={styles.sideMenuSection}>
+                    <div className={styles.sideMenuUserInfo}>
+                      <FaUserCircle className={styles.sideMenuUserIcon} />
+                      <div>
+                        <p className={styles.sideMenuUserName}>{user?.name || 'User'}</p>
+                        <p className={styles.sideMenuUserEmail}>{user?.email || 'user@example.com'}</p>
+                      </div>
+                    </div>
+                    <Link
+                      href="/profile"
+                      className={styles.sideMenuItem}
+                      onClick={toggleSideMenu}
+                    >
+                      <FaUserCircle className={styles.sideMenuIcon} />
+                      <span>My Account</span>
+                    </Link>
+                    <button onClick={() => { handleLogout(); toggleSideMenu(); }} className={styles.sideMenuLogout}>
+                      <FaSignOutAlt className={styles.sideMenuIcon} />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className={styles.sideMenuDivider}></div>
+                  <Link
+                    href="/login"
+                    className={styles.sideMenuItem}
+                    onClick={toggleSideMenu}
+                  >
+                    <FaUser className={styles.sideMenuIcon} />
+                    <span>Login</span>
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className={`${styles.sideMenuItem} ${styles.sideMenuSignup}`}
+                    onClick={toggleSideMenu}
+                  >
+                    <FaUserCircle className={styles.sideMenuIcon} />
+                    <span>Sign Up</span>
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </>
       )}
     </nav>
   );
