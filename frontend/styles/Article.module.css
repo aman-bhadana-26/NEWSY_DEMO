@@ -1,7 +1,7 @@
 .articleContainer {
   min-height: calc(100vh - 200px);
   padding: 40px 20px;
-  background-color: var(--bg-gray);
+  background-color: var(--primary-navy);
 }
 
 .articleContent {
@@ -10,20 +10,21 @@
 }
 
 .errorMessage {
-  background-color: white;
+  background-color: rgba(27, 160, 152, 0.1);
   padding: 60px 40px;
   border-radius: 16px;
   text-align: center;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--secondary-teal);
+  box-shadow: 0 4px 16px rgba(27, 160, 152, 0.2);
 }
 
 .errorMessage h2 {
-  color: var(--primary-red);
+  color: var(--secondary-teal);
   margin-bottom: 16px;
 }
 
 .errorMessage p {
-  color: var(--text-gray);
+  color: var(--accent-gold);
   font-size: 1.1rem;
 }
 
@@ -32,10 +33,10 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background-color: white;
-  border: 2px solid var(--border-color);
+  background-color: rgba(27, 160, 152, 0.1);
+  border: 2px solid var(--secondary-teal);
   border-radius: 8px;
-  color: var(--text-dark);
+  color: var(--secondary-teal);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -43,28 +44,29 @@
 }
 
 .backButton:hover {
-  border-color: var(--primary-blue);
-  color: var(--primary-blue);
+  background-color: var(--secondary-teal);
+  color: var(--primary-navy);
   transform: translateX(-4px);
 }
 
 .articleCard {
-  background-color: white;
+  background-color: var(--navy-light);
   border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--secondary-teal);
+  box-shadow: 0 4px 16px rgba(27, 160, 152, 0.2);
   overflow: hidden;
 }
 
 .articleHeader {
   padding: 40px;
-  border-bottom: 3px solid var(--primary-blue);
+  border-bottom: 3px solid var(--secondary-teal);
 }
 
 .articleTitle {
   font-size: 2.5rem;
   font-weight: 800;
   line-height: 1.3;
-  color: var(--text-dark);
+  color: var(--accent-gold);
   margin-bottom: 24px;
 }
 
@@ -72,7 +74,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 24px;
-  color: var(--text-gray);
+  color: rgba(222, 185, 146, 0.8);
   font-size: 0.95rem;
 }
 
@@ -83,7 +85,7 @@
 }
 
 .metaIcon {
-  color: var(--primary-blue);
+  color: var(--secondary-teal);
   font-size: 1rem;
 }
 
@@ -105,32 +107,33 @@
 .noImagePlaceholder {
   width: 100%;
   height: 400px;
-  background: linear-gradient(135deg, var(--light-blue) 0%, var(--light-red) 50%, var(--light-blue) 100%);
+  background: linear-gradient(135deg, var(--primary-navy) 0%, var(--navy-light) 50%, var(--secondary-teal) 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 16px;
-  border-bottom: 3px solid var(--primary-blue);
+  border-bottom: 3px solid var(--secondary-teal);
 }
 
 .placeholderIcon {
   width: 120px;
   height: 120px;
-  background-color: white;
+  background-color: rgba(27, 160, 152, 0.2);
+  border: 3px solid var(--secondary-teal);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 4rem;
-  color: var(--primary-blue);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  color: var(--secondary-teal);
+  box-shadow: 0 8px 24px rgba(27, 160, 152, 0.3);
 }
 
 .placeholderText {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--primary-blue);
+  color: var(--accent-gold);
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -143,15 +146,15 @@
 .articleLead {
   font-size: 1.25rem;
   font-weight: 500;
-  color: var(--text-dark);
+  color: var(--accent-gold);
   line-height: 1.7;
   margin-bottom: 32px;
   padding-bottom: 32px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid rgba(27, 160, 152, 0.3);
 }
 
 .articleText {
-  color: var(--text-dark);
+  color: rgba(222, 185, 146, 0.9);
   font-size: 1.1rem;
   line-height: 1.9;
 }
@@ -171,27 +174,27 @@
 .contentNote {
   margin-top: 32px;
   padding: 20px 24px;
-  background: linear-gradient(135deg, rgba(0, 102, 204, 0.05), rgba(220, 20, 60, 0.05));
-  border-left: 4px solid var(--primary-blue);
+  background: rgba(27, 160, 152, 0.1);
+  border-left: 4px solid var(--secondary-teal);
   border-radius: 8px;
 }
 
 .contentNote p {
   margin: 0;
   font-size: 0.95rem;
-  color: var(--text-gray);
+  color: var(--accent-gold);
   font-style: italic;
 }
 
 .contentNote strong {
-  color: var(--primary-blue);
+  color: var(--secondary-teal);
   font-weight: 700;
 }
 
 .errorNote {
   margin-top: 24px;
   padding: 20px 24px;
-  background: linear-gradient(135deg, rgba(220, 20, 60, 0.05), rgba(255, 69, 0, 0.05));
+  background: rgba(220, 20, 60, 0.1);
   border-left: 4px solid var(--primary-red);
   border-radius: 8px;
 }
@@ -199,7 +202,7 @@
 .errorNote p {
   margin: 0;
   font-size: 0.95rem;
-  color: var(--text-gray);
+  color: var(--accent-gold);
   font-style: italic;
 }
 
@@ -211,7 +214,7 @@
 /* Fade out effect for preview content */
 .fadeOut {
   height: 100px;
-  background: linear-gradient(to bottom, transparent, white);
+  background: linear-gradient(to bottom, transparent, var(--navy-light));
   margin-top: -80px;
   margin-bottom: 20px;
   position: relative;
@@ -223,8 +226,8 @@
   text-align: center;
   margin: 40px 0;
   padding: 30px 0;
-  border-top: 2px solid var(--border-color);
-  border-bottom: 2px solid var(--border-color);
+  border-top: 2px solid rgba(27, 160, 152, 0.3);
+  border-bottom: 2px solid rgba(27, 160, 152, 0.3);
 }
 
 .readMoreButton {
@@ -232,41 +235,47 @@
   align-items: center;
   gap: 12px;
   padding: 16px 40px;
-  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--secondary-teal) 0%, var(--teal-light) 100%);
+  color: var(--primary-navy);
   border: none;
   border-radius: 50px;
   font-size: 1.1rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+  box-shadow: 0 4px 15px rgba(27, 160, 152, 0.3);
 }
 
 .readMoreButton:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0, 102, 204, 0.4);
-  background: linear-gradient(135deg, var(--dark-blue) 0%, var(--primary-blue) 100%);
+  box-shadow: 0 8px 25px rgba(27, 160, 152, 0.5);
+  background: linear-gradient(135deg, var(--teal-light) 0%, var(--secondary-teal) 100%);
 }
 
 .readMoreButton:active {
   transform: translateY(-1px);
 }
 
+.readMoreButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 
 .externalLinkCard {
-  background: linear-gradient(135deg, var(--light-blue) 0%, var(--light-red) 100%);
+  background: linear-gradient(135deg, rgba(27, 160, 152, 0.1) 0%, rgba(222, 185, 146, 0.1) 100%);
   border-radius: 12px;
   padding: 48px;
   text-align: center;
   margin-bottom: 32px;
+  border: 2px solid var(--secondary-teal);
 }
 
 .linkIcon {
   width: 80px;
   height: 80px;
-  background-color: var(--primary-blue);
-  color: white;
+  background-color: var(--secondary-teal);
+  color: var(--primary-navy);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -277,7 +286,7 @@
 
 .linkDescription {
   font-size: 1.1rem;
-  color: var(--text-dark);
+  color: var(--accent-gold);
   margin-bottom: 32px;
   line-height: 1.6;
 }
@@ -287,8 +296,8 @@
   align-items: center;
   gap: 12px;
   padding: 16px 32px;
-  background-color: var(--primary-red);
-  color: white;
+  background-color: var(--secondary-teal);
+  color: var(--primary-navy);
   border: none;
   border-radius: 8px;
   font-size: 1.1rem;
@@ -299,9 +308,9 @@
 }
 
 .readArticleBtn:hover {
-  background-color: #b01030;
+  background-color: var(--teal-light);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(220, 20, 60, 0.3);
+  box-shadow: 0 8px 24px rgba(27, 160, 152, 0.4);
 }
 
 

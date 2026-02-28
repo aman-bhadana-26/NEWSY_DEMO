@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope, FaSearch, FaFilter, FaNewspaper, FaHome, FaChevronDown, FaInfoCircle, FaEnvelopeOpen } from 'react-icons/fa';
 import { throttle } from '../hooks/useScrollOptimization';
+import FlowingMenu from './FlowingMenu';
 import styles from '../styles/Navbar.module.css';
 
 const Navbar = () => {
@@ -15,6 +16,7 @@ const Navbar = () => {
   const [categoriesDropdownOpen, setCategoriesDropdownOpen] = useState(false);
   const [dropdownTimeout, setDropdownTimeout] = useState(null);
   const [categoriesTimeout, setCategoriesTimeout] = useState(null);
+  const [sideMenuTimeout, setSideMenuTimeout] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('all');
@@ -76,6 +78,23 @@ const Navbar = () => {
 
   const toggleSideMenu = () => {
     setSideMenuOpen(!sideMenuOpen);
+  };
+
+  const handleSideMenuMouseEnter = () => {
+    // Clear any existing timeout
+    if (sideMenuTimeout) {
+      clearTimeout(sideMenuTimeout);
+      setSideMenuTimeout(null);
+    }
+    setSideMenuOpen(true);
+  };
+
+  const handleSideMenuMouseLeave = () => {
+    // Add small delay before closing
+    const timeout = setTimeout(() => {
+      setSideMenuOpen(false);
+    }, 200);
+    setSideMenuTimeout(timeout);
   };
 
   const handleMouseEnter = () => {
@@ -176,7 +195,12 @@ const Navbar = () => {
     <nav className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}>
       <div className={styles.container}>
         {/* Menu Button */}
-        <button className={styles.menuButton} onClick={toggleSideMenu} title="Menu">
+        <button 
+          className={styles.menuButton} 
+          onMouseEnter={handleSideMenuMouseEnter}
+          onMouseLeave={handleSideMenuMouseLeave}
+          title="Menu"
+        >
           <FaBars />
         </button>
 
@@ -515,26 +539,33 @@ const Navbar = () => {
       {sideMenuOpen && (
         <>
           {/* Overlay */}
-          <div className={styles.sideMenuOverlay} onClick={toggleSideMenu}></div>
+          <div className={styles.sideMenuOverlay}></div>
           
           {/* Side Menu Panel */}
-          <div className={styles.sideMenu}>
-            <div className={styles.sideMenuHeader}>
-              <h2 className={styles.sideMenuTitle}>Menu</h2>
-              <button className={styles.sideMenuClose} onClick={toggleSideMenu}>
-                <FaTimes />
-              </button>
-            </div>
-
+          <div 
+            className={styles.sideMenu}
+            onMouseEnter={handleSideMenuMouseEnter}
+            onMouseLeave={handleSideMenuMouseLeave}
+          >
             <div className={styles.sideMenuContent}>
-              <Link
-                href="/trending"
-                className={`${styles.sideMenuItem} ${router.pathname === '/trending' ? styles.sideMenuItemActive : ''}`}
-                onClick={toggleSideMenu}
-              >
-                <FaFire className={styles.sideMenuIcon} />
-                <span>Trending This Week</span>
-              </Link>
+              {/* Trending This Week with FlowingMenu */}
+              <div style={{ height: '200px', position: 'relative' }}>
+                <FlowingMenu
+                  items={[
+                    {
+                      link: '/trending',
+                      text: 'Trending',
+                      image: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&h=400&fit=crop'
+                    }
+                  ]}
+                  speed={15}
+                  textColor="#ffffff"
+                  bgColor="#060010"
+                  marqueeBgColor="#ffffff"
+                  marqueeTextColor="#060010"
+                  borderColor="#ffffff"
+                />
+              </div>
 
               {isAuthenticated && (
                 <Link
@@ -551,20 +582,48 @@ const Navbar = () => {
 
               <div className={styles.sideMenuSection}>
                 <h3 className={styles.sideMenuSectionTitle}>Categories</h3>
-                {categories.map((category) => (
-                  <Link
-                    key={category.query}
-                    href={`/?category=${category.query}`}
-                    className={`${styles.sideMenuItem} ${
-                      router.query.category === category.query
-                        ? styles.sideMenuItemActive
-                        : ''
-                    }`}
-                    onClick={toggleSideMenu}
-                  >
-                    <span>{category.name}</span>
-                  </Link>
-                ))}
+                <div style={{ height: '500px', position: 'relative' }}>
+                  <FlowingMenu
+                    items={[
+                      {
+                        link: '/?category=all',
+                        text: 'All',
+                        image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=600&h=400&fit=crop'
+                      },
+                      {
+                        link: '/?category=ai',
+                        text: 'AI',
+                        image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop'
+                      },
+                      {
+                        link: '/?category=startups',
+                        text: 'Startups',
+                        image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&h=400&fit=crop'
+                      },
+                      {
+                        link: '/?category=software',
+                        text: 'Software',
+                        image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop'
+                      },
+                      {
+                        link: '/?category=gadgets',
+                        text: 'Gadgets',
+                        image: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=600&h=400&fit=crop'
+                      },
+                      {
+                        link: '/?category=cybersecurity',
+                        text: 'Cybersecurity',
+                        image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&h=400&fit=crop'
+                      }
+                    ]}
+                    speed={15}
+                    textColor="#ffffff"
+                    bgColor="#060010"
+                    marqueeBgColor="#ffffff"
+                    marqueeTextColor="#060010"
+                    borderColor="#ffffff"
+                  />
+                </div>
               </div>
 
               {isAuthenticated ? (
@@ -592,27 +651,7 @@ const Navbar = () => {
                     </button>
                   </div>
                 </>
-              ) : (
-                <>
-                  <div className={styles.sideMenuDivider}></div>
-                  <Link
-                    href="/login"
-                    className={styles.sideMenuItem}
-                    onClick={toggleSideMenu}
-                  >
-                    <FaUser className={styles.sideMenuIcon} />
-                    <span>Login</span>
-                  </Link>
-                  <Link
-                    href="/signup"
-                    className={`${styles.sideMenuItem} ${styles.sideMenuSignup}`}
-                    onClick={toggleSideMenu}
-                  >
-                    <FaUserCircle className={styles.sideMenuIcon} />
-                    <span>Sign Up</span>
-                  </Link>
-                </>
-              )}
+              ) : null}
             </div>
           </div>
         </>

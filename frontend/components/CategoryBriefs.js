@@ -68,8 +68,29 @@ export default function CategoryBriefs({ news }) {
     router.push(`/?category=${categoryValue}`);
   };
 
-  const handleArticleClick = (url) => {
-    window.open(url, '_blank', 'noopener,noreferrer');
+  const handleArticleClick = (article) => {
+    // Create URL-friendly slug from title
+    const slug = article.title
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/--+/g, '-')
+      .trim();
+    
+    // Encode article data
+    const articleData = encodeURIComponent(JSON.stringify({
+      title: article.title,
+      description: article.description,
+      content: article.content,
+      url: article.url,
+      urlToImage: article.urlToImage,
+      publishedAt: article.publishedAt,
+      source: article.source?.name || 'Unknown Source',
+      author: article.author
+    }));
+    
+    // Navigate to internal article page
+    router.push(`/article/${slug}?data=${articleData}`);
   };
 
   const formatDate = (dateString) => {
@@ -114,7 +135,7 @@ export default function CategoryBriefs({ news }) {
                 {/* Featured Article - Left */}
                 <div 
                   className={styles.featuredArticle}
-                  onClick={() => handleArticleClick(featuredArticle.url)}
+                  onClick={() => handleArticleClick(featuredArticle)}
                 >
                   <div className={styles.featuredImage}>
                     {featuredArticle.urlToImage && !imageErrors[featuredArticle.url] ? (
@@ -153,7 +174,7 @@ export default function CategoryBriefs({ news }) {
                     <div 
                       key={index}
                       className={styles.smallArticle}
-                      onClick={() => handleArticleClick(article.url)}
+                      onClick={() => handleArticleClick(article)}
                     >
                       <div className={styles.smallImage}>
                         {article.urlToImage && !imageErrors[article.url] ? (
