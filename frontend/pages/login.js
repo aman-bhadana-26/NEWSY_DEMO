@@ -4,6 +4,8 @@ import Link from 'next/link';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 import styles from '../styles/Auth.module.css';
+import Particles from '../components/Particles';
+import TextType from '../components/TextType';
 
 export default function Login() {
   const router = useRouter();
@@ -45,15 +47,18 @@ export default function Login() {
   return (
     <Layout title="Login – NEWSYTECH">
       <div className={styles.authWrapper}>
-        {/* Background dot grid */}
-        <div className={styles.authBg} />
-
-        {/* Floating animated dots */}
-        <div className={styles.dotsContainer}>
-          {Array.from({ length: 18 }).map((_, i) => (
-            <span key={i} className={styles.dot} />
-          ))}
-        </div>
+        {/* Particles background */}
+        <Particles
+          particleColors={['#24c9b8', '#1BA098', '#CBA135']}
+          particleCount={200}
+          particleSpread={10}
+          speed={0.1}
+          particleBaseSize={100}
+          moveParticlesOnHover
+          alphaParticles={false}
+          disableRotation={false}
+          pixelRatio={1}
+        />
 
         {/* ── Centered Card ── */}
         <div className={styles.authCard}>
@@ -61,12 +66,17 @@ export default function Login() {
 
             {/* Brand logo */}
             <div className={styles.authBrand}>
-              <div className={styles.authBrandIcon}>
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/>
-                </svg>
-              </div>
-              <span className={styles.authBrandName}>NEWSYTECH</span>
+              <TextType
+                text={['NEWSYTECH']}
+                typingSpeed={100}
+                deletingSpeed={60}
+                pauseDuration={3000}
+                loop={true}
+                showCursor={true}
+                cursorCharacter="_"
+                cursorBlinkDuration={0.5}
+                className={styles.authBrandName}
+              />
             </div>
 
             {/* Header */}

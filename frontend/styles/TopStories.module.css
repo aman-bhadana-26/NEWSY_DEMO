@@ -120,7 +120,7 @@
   grid-template-columns: 2fr 1fr;
   gap: 24px;
   align-items: end;
-  min-height: 500px;
+  min-height: 540px;
 }
 
 /* Main Featured Story */

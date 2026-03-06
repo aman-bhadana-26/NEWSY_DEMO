@@ -1,12 +1,37 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import Layout from '../../components/Layout';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { getFullDate } from '../../utils/formatDate';
 import { newsAPI } from '../../utils/api';
-import { FaArrowLeft, FaClock, FaUser, FaNewspaper } from 'react-icons/fa';
+import { FaArrowLeft } from 'react-icons/fa';
 import styles from '../../styles/Article.module.css';
+
+// Detect category from title/source
+const detectCategory = (article) => {
+  const text = ((article?.title || '') + ' ' + (article?.source || '')).toLowerCase();
+  if (text.includes('ai') || text.includes('artificial') || text.includes('gpt') || text.includes('openai') || text.includes('machine learning')) return 'Artificial Intelligence';
+  if (text.includes('cyber') || text.includes('hack') || text.includes('security') || text.includes('breach')) return 'Cybersecurity';
+  if (text.includes('software') || text.includes('dev') || text.includes('code') || text.includes('github')) return 'Software';
+  if (text.includes('gadget') || text.includes('device') || text.includes('hardware') || text.includes('chip')) return 'Gadgets';
+  if (text.includes('startup') || text.includes('funding') || text.includes('venture')) return 'Startup';
+  return 'Technology';
+};
+
+// Get initials from name
+const getInitials = (name) => {
+  if (!name) return 'NT';
+  return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+};
+
+// Estimate read time
+const readTime = (content, description) => {
+  const text = (content || '') + (description || '');
+  const words = text.split(/\s+/).length;
+  return Math.max(2, Math.round(words / 200)) + ' min';
+};
 
 export default function Article() {
   const router = useRouter();
@@ -17,6 +42,7 @@ export default function Article() {
   const [fullContent, setFullContent] = useState(null);
   const [loadingFullContent, setLoadingFullContent] = useState(false);
   const [contentError, setContentError] = useState(null);
+  const [relatedStories, setRelatedStories] = useState([]);
 
   useEffect(() => {
     if (data) {
@@ -31,67 +57,70 @@ export default function Article() {
     }
   }, [data]);
 
-  // Function to fetch full article content
+  // Fetch sidebar stories
+  useEffect(() => {
+    const fetchRelated = async () => {
+      try {
+        const res = await newsAPI.getNews({ category: 'all', page: 1, limit: 3 });
+        if (res?.articles) {
+          setRelatedStories(res.articles.filter(a => a.title !== article?.title).slice(0, 3));
+        }
+      } catch (_) {}
+    };
+    if (article) fetchRelated();
+  }, [article]);
+
   const fetchFullContent = async () => {
-    if (!article || !article.url) return;
-    
+    if (!article?.url) return;
     setLoadingFullContent(true);
     setContentError(null);
-    
     try {
-      console.log('Fetching full content for:', article.url);
       const response = await newsAPI.getArticleContent(article.url);
-      
       if (response.success && response.article) {
         setFullContent(response.article);
         setShowFullArticle(true);
-        
-        // Show info if partial content
-        if (response.partial) {
-          setContentError('Partial content loaded. Some details may be missing.');
-        }
+        if (response.partial) setContentError('Partial content loaded. Some details may be missing.');
       } else {
         setContentError(response.message || 'Unable to load full article content');
-        console.error('Content extraction failed:', response);
       }
-    } catch (error) {
-      console.error('Error fetching full content:', error);
+    } catch {
       setContentError('Failed to load full article. The content may be protected or unavailable.');
     } finally {
       setLoadingFullContent(false);
     }
   };
 
-  // Function to clean content (remove [+XXXX chars] truncation markers)
   const cleanContent = (content) => {
     if (!content) return '';
-    // Remove the [+XXXX chars] marker that NewsAPI adds
     return content.replace(/\s*\[\+\d+\s+chars?\]/g, '');
   };
 
-  // Function to get preview content (15-20 lines)
   const getPreviewContent = (content) => {
     if (!content) return '';
-    
     const cleaned = cleanContent(content);
     const sentences = cleaned.split(/[.!?]+\s+/).filter(s => s.trim());
-    
-    // Show first 5-6 sentences (roughly 15-20 lines)
-    const previewSentences = sentences.slice(0, 6);
-    
-    return previewSentences.join('. ') + (previewSentences.length > 0 ? '.' : '');
+    return sentences.slice(0, 6).join('. ') + '.';
   };
 
   const hasMoreContent = (content) => {
     if (!content) return false;
-    const cleaned = cleanContent(content);
-    const sentences = cleaned.split(/[.!?]+\s+/).filter(s => s.trim());
-    return sentences.length > 6;
+    return cleanContent(content).split(/[.!?]+\s+/).filter(s => s.trim()).length > 6;
+  };
+
+  const createSlug = (a) => {
+    const slug = a.title.split(' - ')[0].toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const encoded = encodeURIComponent(JSON.stringify({
+      title: a.title, description: a.description, content: a.content,
+      url: a.url, urlToImage: a.urlToImage, publishedAt: a.publishedAt,
+      source: typeof a.source === 'string' ? a.source : a.source?.name || 'Unknown',
+      author: a.author
+    }));
+    return `/article/${slug}?data=${encoded}`;
   };
 
   if (loading) {
     return (
-      <Layout title="Loading Article - NEWSY TECH">
+      <Layout title="Loading Article – NEWSY TECH">
         <LoadingSpinner message="Loading article..." />
       </Layout>
     );
@@ -99,15 +128,15 @@ export default function Article() {
 
   if (!article) {
     return (
-      <Layout title="Article Not Found - NEWSY TECH">
+      <Layout title="Article Not Found – NEWSY TECH">
         <div className={styles.articleContainer}>
           <div className={styles.articleContent}>
             <button onClick={() => router.back()} className={styles.backButton}>
-              <FaArrowLeft /> Back to News
+              <FaArrowLeft /> Back
             </button>
             <div className={styles.errorMessage}>
               <h2>Article Not Found</h2>
-              <p>The article you're looking for could not be loaded.</p>
+              <p>The article you&apos;re looking for could not be loaded.</p>
             </div>
           </div>
         </div>
@@ -115,134 +144,207 @@ export default function Article() {
     );
   }
 
-  const hasImage = article.urlToImage && article.urlToImage !== '';
-  const imageUrl = article.urlToImage || 'https://via.placeholder.com/1200x600/0066cc/ffffff?text=Tech+News';
+  const hasImage = article.urlToImage && article.urlToImage.trim() !== '';
+  const category = detectCategory(article);
+  const authorInitials = getInitials(article.author);
+  const sourceName = typeof article.source === 'string' ? article.source : article.source?.name || 'NEWSY TECH';
+  const estRead = readTime(article.content, article.description);
+
+  // Build breadcrumb
+  const shortTitle = article.title?.length > 40 ? article.title.slice(0, 40) + '…' : article.title;
 
   return (
-    <Layout title={`${article.title} - NEWSY TECH`}>
-      <div className={styles.articleContainer}>
-        <div className={styles.articleContent}>
+    <Layout title={`${article.title} – NEWSY TECH`}>
+      {/* Breadcrumb */}
+      <div className={styles.breadcrumb}>
+        <span onClick={() => router.push('/')}>Home</span>
+        {' > '}
+        <span onClick={() => router.push('/')}>{category}</span>
+        {' > '}
+        {shortTitle}
+      </div>
+
+      <div className={styles.articleLayout}>
+
+        {/* ── MAIN COLUMN ── */}
+        <main className={styles.mainColumn}>
           <button onClick={() => router.back()} className={styles.backButton}>
-            <FaArrowLeft /> Back to News
+            <FaArrowLeft /> Back
           </button>
 
-          <article className={styles.articleCard}>
-            {/* Article Header */}
-            <header className={styles.articleHeader}>
-              <h1 className={styles.articleTitle}>{article.title}</h1>
-              
-              <div className={styles.articleMeta}>
-                <div className={styles.metaItem}>
-                  <FaNewspaper className={styles.metaIcon} />
-                  <span>{article.source}</span>
-                </div>
-                {article.author && (
-                  <div className={styles.metaItem}>
-                    <FaUser className={styles.metaIcon} />
-                    <span>{article.author}</span>
-                  </div>
-                )}
-                <div className={styles.metaItem}>
-                  <FaClock className={styles.metaIcon} />
-                  <span>{getFullDate(article.publishedAt)}</span>
-                </div>
-              </div>
-            </header>
+          {/* Source + Category */}
+          <div>
+            <span className={styles.sourceBadge}>{sourceName.toUpperCase()}</span>
+            <span className={styles.categoryTag}>{category.toUpperCase()}</span>
+          </div>
 
-            {/* Featured Image or Placeholder */}
-            {hasImage ? (
-              <div className={styles.featuredImage}>
-                <Image
-                  src={imageUrl}
-                  alt={article.title}
-                  width={1200}
-                  height={600}
-                  className={styles.image}
-                  priority
-                />
-              </div>
-            ) : (
-              <div className={styles.noImagePlaceholder}>
-                <div className={styles.placeholderIcon}>
-                  <FaNewspaper />
-                </div>
-                <p className={styles.placeholderText}>Technology News</p>
+          {/* Title */}
+          <h1 className={styles.articleTitle}>{article.title}</h1>
+
+          {/* Author meta */}
+          <div className={styles.authorMeta}>
+            <div className={styles.authorAvatar}>{authorInitials}</div>
+            <div className={styles.authorInfo}>
+              <div className={styles.authorName}>{article.author || 'NEWSY TECH Staff'}</div>
+              <div className={styles.authorRole}>Staff Correspondent</div>
+            </div>
+            <div className={styles.metaDivider} />
+            <span className={styles.metaDate}>
+              {getFullDate(article.publishedAt)} · {estRead}
+            </span>
+            <div className={styles.metaActions}>
+              <button className={styles.metaBtn} onClick={() => navigator?.share?.({ title: article.title, url: window.location.href })}>Share</button>
+            </div>
+          </div>
+
+          {/* Featured image / placeholder */}
+          {hasImage ? (
+            <div className={styles.featuredImage}>
+              <Image
+                src={article.urlToImage}
+                alt={article.title}
+                width={900}
+                height={320}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                priority
+              />
+            </div>
+          ) : (
+            <div className={styles.imagePlaceholder}>
+              // read image
+            </div>
+          )}
+
+          {/* Article body */}
+          <div className={styles.articleBody}>
+            {article.description && (
+              <div className={styles.articleLead}>
+                <p>{article.description}</p>
               </div>
             )}
 
-            {/* Article Body */}
-            <div className={styles.articleBody}>
-              {/* Description/Lead */}
-              {article.description && (
-                <div className={styles.articleLead}>
-                  <p>{article.description}</p>
-                </div>
-              )}
-
-              {/* Content - Preview or Full */}
-              <div className={`${styles.articleText} ${!showFullArticle ? styles.preview : ''}`}>
-                {showFullArticle && fullContent ? (
-                  // Show full extracted content
-                  <div className={styles.fullContent}>
-                    {fullContent.content.split('\n\n').map((paragraph, index) => (
-                      paragraph.trim() && <p key={index}>{paragraph}</p>
-                    ))}
-                    <div className={styles.contentNote}>
-                      <p><strong>✅ Full Article Loaded:</strong> Content extracted from {article.source}. Displaying the complete article for your convenience.</p>
-                    </div>
+            <div className={`${styles.articleText} ${!showFullArticle ? styles.preview : ''}`}>
+              {showFullArticle && fullContent ? (
+                <div>
+                  {fullContent.content.split('\n\n').map((para, i) => {
+                    if (!para.trim()) return null;
+                    // Detect pull-quote lines (shorter, quoted)
+                    if (para.startsWith('"') && para.length < 200) {
+                      return <blockquote key={i} className={styles.pullQuote}>{para}</blockquote>;
+                    }
+                    // Detect headings (short, no period at end)
+                    if (para.length < 80 && !para.endsWith('.')) {
+                      return <h3 key={i} className={styles.sectionHeading}>{para}</h3>;
+                    }
+                    return <p key={i}>{para}</p>;
+                  })}
+                  <div className={styles.contentNote}>
+                    <strong>✅ Full article loaded</strong> — content extracted from {sourceName}.
                   </div>
-                ) : article.content ? (
-                  // Show preview from NewsAPI
-                  <>
-                    <p>{getPreviewContent(article.content)}</p>
-                    {hasMoreContent(article.content) && (
-                      <div className={styles.fadeOut}></div>
-                    )}
-                  </>
-                ) : (
-                  // Fallback to description
-                  <p>{article.description || 'Article content preview...'}</p>
-                )}
-              </div>
-
-              {/* Error Message */}
-              {contentError && (
-                <div className={styles.errorNote}>
-                  <p><strong>⚠️ Notice:</strong> {contentError}</p>
                 </div>
-              )}
-
-              {/* Read Full Article Button */}
-              {!showFullArticle && (
-                <div className={styles.readMoreSection}>
-                  <button
-                    onClick={fetchFullContent}
-                    className={styles.readMoreButton}
-                    disabled={loadingFullContent}
-                  >
-                    {loadingFullContent ? (
-                      <>⏳ Loading Full Article...</>
-                    ) : (
-                      <>📖 Read Full Article on NEWSY TECH →</>
-                    )}
-                  </button>
-                </div>
-              )}
-
-              {/* Show Less Button */}
-              {showFullArticle && fullContent && (
-                <div className={styles.readMoreSection}>
-                  <button
-                    onClick={() => setShowFullArticle(false)}
-                    className={styles.readMoreButton}
-                  >
-                    <FaArrowLeft /> Show Less
-                  </button>
-                </div>
+              ) : article.content ? (
+                <>
+                  <p>{getPreviewContent(article.content)}</p>
+                  {hasMoreContent(article.content) && <div className={styles.fadeOut} />}
+                </>
+              ) : (
+                <p>{article.description || 'Article content preview…'}</p>
               )}
             </div>
-          </article>
-        </div>
+
+            {contentError && (
+              <div className={styles.errorNote}>
+                <strong>⚠ Notice:</strong> {contentError}
+              </div>
+            )}
+
+            {!showFullArticle && (
+              <div className={styles.readMoreSection}>
+                <button onClick={fetchFullContent} className={styles.readMoreButton} disabled={loadingFullContent}>
+                  {loadingFullContent ? '⏳ Loading…' : '📖 Read Full Article'}
+                </button>
+              </div>
+            )}
+
+            {showFullArticle && fullContent && (
+              <div className={styles.readMoreSection}>
+                <button onClick={() => setShowFullArticle(false)} className={styles.readMoreButton}>
+                  <FaArrowLeft /> Show Less
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Author bio card */}
+          <div className={styles.authorBioCard}>
+            <div className={styles.bioBigAvatar}>{authorInitials}</div>
+            <div className={styles.bioContent}>
+              <div className={styles.bioName}>{article.author || 'NEWSY TECH Staff'}</div>
+              <div className={styles.bioRole}>Staff Correspondent</div>
+              <p className={styles.bioText}>
+                Covering the latest in {category.toLowerCase()} and emerging technology. Published in NEWSY TECH.
+              </p>
+            </div>
+          </div>
+
+          {/* Footer bar */}
+          <div className={styles.articleFooter}>
+            <div className={styles.footerTags}>
+              Tags: <span>{category}</span> · <span>Tech</span> · <span>News</span>
+            </div>
+            <div className={styles.footerLinks}>
+              <button className={styles.footerLink} onClick={() => router.back()}>Previous</button>
+              <button
+                className={styles.footerLink}
+                onClick={() => navigator?.share?.({ title: article.title, url: window.location.href })}
+              >
+                Share
+              </button>
+            </div>
+          </div>
+        </main>
+
+        {/* ── SIDEBAR ── */}
+        <aside className={styles.sidebar}>
+
+          {/* Authors */}
+          <div className={styles.sidebarSection}>
+            <div className={styles.sidebarHeading}>
+              {article.author ? '1 Author' : 'Staff'}
+            </div>
+            <div className={styles.sideAuthorList}>
+              <div className={styles.sideAuthorItem}>
+                <div className={styles.sideAvatar}>{authorInitials}</div>
+                <div className={styles.sideAuthorName}>{article.author || 'NEWSY TECH Staff'}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Promo card */}
+          <div className={styles.promoCard}>
+            <div className={styles.promoLabel}>Sponsored</div>
+            <div className={styles.promoTitle}>Stay ahead of the curve with NEWSY TECH Premium</div>
+            <span className={styles.promoBtn}>Learn More</span>
+          </div>
+
+          {/* More Stories */}
+          {relatedStories.length > 0 && (
+            <div className={styles.sidebarSection}>
+              <div className={styles.sidebarHeading}>More Stories</div>
+              <div className={styles.moreStoryList}>
+                {relatedStories.map((story, i) => (
+                  <Link key={i} href={createSlug(story)} className={styles.moreStoryItem}>
+                    <div className={styles.moreStoryCategory}>{detectCategory(story)}</div>
+                    <div className={styles.moreStoryTitle}>
+                      {story.title?.length > 70 ? story.title.slice(0, 70) + '…' : story.title}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+        </aside>
       </div>
     </Layout>
   );
