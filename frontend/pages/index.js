@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
-import NewsCard from '../components/NewsCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import TopStories from '../components/TopStories';
 import ExploreCategories from '../components/ExploreCategories';
 import TopTrending from '../components/TopTrending';
 import CategoryBriefs from '../components/CategoryBriefs';
+import CategoryPage from '../components/CategoryPage';
 import { newsAPI } from '../utils/api';
 import styles from '../styles/Home.module.css';
 
@@ -140,17 +140,8 @@ export default function Home() {
             )}
           </>
         ) : (
-          /* Category Pages and Search Results */
-          <div className={styles.newsSection}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>{getPageTitle()}</h2>
-              {totalResults > 0 && (
-                <p className={styles.resultsCount}>
-                  Showing <strong>{news.length}</strong> of <strong>{totalResults.toLocaleString()}</strong> articles
-                </p>
-              )}
-            </div>
-
+          /* Category Pages and Search Results – Magazine Layout */
+          <>
             {loading && page === 1 ? (
               <LoadingSpinner message="Loading latest news..." />
             ) : error ? (
@@ -165,57 +156,17 @@ export default function Home() {
                 <p>No news articles found for this category.</p>
               </div>
             ) : (
-              <>
-                <div className={styles.newsGrid}>
-                  {news.map((article, index) => (
-                    <NewsCard
-                      key={`${article.url}-${index}`}
-                      article={article}
-                      category={category !== 'all' ? category : null}
-                    />
-                  ))}
-                </div>
-
-                {/* Load More Button */}
-                {hasMore && (
-                  <div className={styles.loadMoreContainer}>
-                    <button
-                      onClick={loadMore}
-                      className={styles.loadMoreButton}
-                      disabled={loadingMore}
-                    >
-                      {loadingMore ? (
-                        <>
-                          <span className={styles.spinner}></span>
-                          Loading More Articles...
-                        </>
-                      ) : (
-                        <>
-                          📰 Load More News
-                        </>
-                      )}
-                    </button>
-                    {!loadingMore && (
-                      <p className={styles.loadMoreHint}>
-                        {totalResults - news.length > 0 
-                          ? `${(totalResults - news.length).toLocaleString()} more articles available`
-                          : 'More articles available'}
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {/* End of Results */}
-                {!hasMore && news.length > 0 && (
-                  <div className={styles.endOfResults}>
-                    <div className={styles.endLine}></div>
-                    <p>You've reached the end of {getCategoryName(category)}</p>
-                    <div className={styles.endLine}></div>
-                  </div>
-                )}
-              </>
+              <CategoryPage
+                category={category}
+                news={news}
+                totalResults={totalResults}
+                hasMore={hasMore}
+                loadingMore={loadingMore}
+                onLoadMore={loadMore}
+                lastUpdated={news.length > 0 ? `${Math.floor((Date.now() - new Date(news[0]?.publishedAt)) / 60000)} minutes ago` : null}
+              />
             )}
-          </div>
+          </>
         )}
       </div>
     </Layout>
