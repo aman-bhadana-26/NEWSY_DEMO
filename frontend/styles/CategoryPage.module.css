@@ -178,6 +178,24 @@
   cursor: pointer;
   overflow: hidden;
 }
+.featuredCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #1BA098, #CBA135, #24c9b8, #1BA098);
+  background-size: 100% 200%;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.45s ease;
+  z-index: 6;
+}
+.featuredCard:hover::before {
+  transform: scaleY(1);
+  animation: lineGradientV 2s linear infinite;
+}
 
 .featuredImgWrap {
   position: absolute;
@@ -295,6 +313,24 @@
   overflow: hidden;
   border-radius: 0 0 8px 0;
 }
+.heroRightCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #1BA098, #CBA135, #24c9b8, #1BA098);
+  background-size: 100% 200%;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.45s ease;
+  z-index: 6;
+}
+.heroRightCard:hover::before {
+  transform: scaleY(1);
+  animation: lineGradientV 2s linear infinite;
+}
 
 .heroRightImgWrap {
   position: absolute;
@@ -369,6 +405,16 @@
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+/* ── Animated gradient line keyframes ── */
+@keyframes lineGradientH {
+  0%   { background-position: 0%   0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes lineGradientV {
+  0%   { background-position: 0 0%;   }
+  100% { background-position: 0 200%; }
 }
 
 /* ── No Results ── */
@@ -453,6 +499,7 @@
 }
 
 .gridCard {
+  position: relative;
   background: #0a1628;
   cursor: pointer;
   overflow: hidden;
@@ -461,6 +508,24 @@
   flex-direction: column;
 }
 .gridCard:hover { background: #0d1f35; }
+.gridCard::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #1BA098, #CBA135, #24c9b8, #1BA098);
+  background-size: 200% 100%;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+  z-index: 4;
+}
+.gridCard:hover::after {
+  transform: scaleX(1);
+  animation: lineGradientH 2s linear infinite;
+}
 
 .gridImgWrap {
   position: relative;
@@ -567,6 +632,7 @@
 .latestList { display: flex; flex-direction: column; }
 
 .latestItem {
+  position: relative;
   display: flex;
   align-items: flex-start;
   gap: 20px;
@@ -574,9 +640,28 @@
   border-bottom: 1px solid rgba(255,255,255,0.05);
   cursor: pointer;
   transition: background 0.25s;
+  overflow: hidden;
 }
 .latestItem:last-child { border-bottom: none; }
 .latestItem:hover { background: rgba(27,160,152,0.05); }
+.latestItem::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #1BA098, #CBA135, #24c9b8, #1BA098);
+  background-size: 100% 200%;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.4s ease;
+  z-index: 2;
+}
+.latestItem:hover::before {
+  transform: scaleY(1);
+  animation: lineGradientV 2s linear infinite;
+}
 
 .latestNum {
   font-size: 1.5rem;
@@ -639,6 +724,7 @@
 .editorList { display: flex; flex-direction: column; }
 
 .editorCard {
+  position: relative;
   display: flex;
   flex-direction: column;
   cursor: pointer;
@@ -648,6 +734,24 @@
 }
 .editorCard:last-child { border-bottom: none; }
 .editorCard:hover { background: rgba(27,160,152,0.04); }
+.editorCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #1BA098, #CBA135, #24c9b8, #1BA098);
+  background-size: 100% 200%;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.4s ease;
+  z-index: 3;
+}
+.editorCard:hover::before {
+  transform: scaleY(1);
+  animation: lineGradientV 2s linear infinite;
+}
 
 .editorImgWrap {
   position: relative;

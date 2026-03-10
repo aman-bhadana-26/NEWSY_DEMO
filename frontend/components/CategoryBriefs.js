@@ -118,7 +118,7 @@ export default function CategoryBriefs({ news }) {
             <div key={category.value} className={styles.categorySection}>
               {/* Category Header */}
               <div className={styles.categoryHeader}>
-                <div className={styles.headerLeft}>
+                <div className={`${styles.headerLeft} anim-slide`}>
                   <h2 className={styles.categoryTitle}>{category.name}</h2>
                   <p className={styles.categoryDescription}>{category.description}</p>
                 </div>
@@ -134,7 +134,7 @@ export default function CategoryBriefs({ news }) {
               <div className={styles.articlesLayout}>
                 {/* Featured Article - Left */}
                 <div 
-                  className={styles.featuredArticle}
+                  className={`${styles.featuredArticle} anim-scale`}
                   onClick={() => handleArticleClick(featuredArticle)}
                 >
                   <div className={styles.featuredImage}>
@@ -173,7 +173,7 @@ export default function CategoryBriefs({ news }) {
                   {smallArticles.slice(0, 4).map((article, index) => (
                     <div 
                       key={index}
-                      className={styles.smallArticle}
+                      className={`${styles.smallArticle} anim-fade-up delay-${index + 1}`}
                       onClick={() => handleArticleClick(article)}
                     >
                       <div className={styles.smallImage}>

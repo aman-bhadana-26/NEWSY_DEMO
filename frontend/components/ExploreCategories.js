@@ -79,7 +79,7 @@ export default function ExploreCategories() {
   return (
     <section className={styles.exploreCategoriesSection}>
       <div className={styles.container}>
-        <div className={styles.header}>
+        <div className={`${styles.header} anim-slide`}>
           <h2 className={styles.title}>Explore Categories</h2>
           <p className={styles.subtitle}>Discover news by your interests</p>
         </div>

@@ -560,25 +560,12 @@ const Navbar = () => {
                   ]}
                   speed={15}
                   textColor="#ffffff"
-                  bgColor="#060010"
-                  marqueeBgColor="#ffffff"
-                  marqueeTextColor="#060010"
-                  borderColor="#ffffff"
+                  bgColor="#051020"
+                  marqueeBgColor="#1BA098"
+                  marqueeTextColor="#ffffff"
+                  borderColor="rgba(27,160,152,0.3)"
                 />
               </div>
-
-              {isAuthenticated && (
-                <Link
-                  href="/my-news"
-                  className={`${styles.sideMenuItem} ${router.pathname === '/my-news' ? styles.sideMenuItemActive : ''}`}
-                  onClick={toggleSideMenu}
-                >
-                  <FaNewspaper className={styles.sideMenuIcon} />
-                  <span>My News</span>
-                </Link>
-              )}
-
-              <div className={styles.sideMenuDivider}></div>
 
               <div className={styles.sideMenuSection}>
                 <h3 className={styles.sideMenuSectionTitle}>Categories</h3>
@@ -618,40 +605,14 @@ const Navbar = () => {
                     ]}
                     speed={15}
                     textColor="#ffffff"
-                    bgColor="#060010"
-                    marqueeBgColor="#ffffff"
-                    marqueeTextColor="#060010"
-                    borderColor="#ffffff"
+                    bgColor="#051020"
+                    marqueeBgColor="#1BA098"
+                    marqueeTextColor="#ffffff"
+                    borderColor="rgba(27,160,152,0.3)"
                   />
                 </div>
               </div>
 
-              {isAuthenticated ? (
-                <>
-                  <div className={styles.sideMenuDivider}></div>
-                  <div className={styles.sideMenuSection}>
-                    <div className={styles.sideMenuUserInfo}>
-                      <FaUserCircle className={styles.sideMenuUserIcon} />
-                      <div>
-                        <p className={styles.sideMenuUserName}>{user?.name || 'User'}</p>
-                        <p className={styles.sideMenuUserEmail}>{user?.email || 'user@example.com'}</p>
-                      </div>
-                    </div>
-                    <Link
-                      href="/profile"
-                      className={styles.sideMenuItem}
-                      onClick={toggleSideMenu}
-                    >
-                      <FaUserCircle className={styles.sideMenuIcon} />
-                      <span>My Account</span>
-                    </Link>
-                    <button onClick={() => { handleLogout(); toggleSideMenu(); }} className={styles.sideMenuLogout}>
-                      <FaSignOutAlt className={styles.sideMenuIcon} />
-                      <span>Sign Out</span>
-                    </button>
-                  </div>
-                </>
-              ) : null}
             </div>
           </div>
         </>

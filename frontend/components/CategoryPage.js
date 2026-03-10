@@ -321,7 +321,7 @@ export default function CategoryPage({
       )}
 
       {/* ── Page Header ── */}
-      <div className={styles.pageHeader}>
+      <div className={`${styles.pageHeader} anim-slide`}>
         <div className={styles.breadcrumb}>
           <span className={styles.breadcrumbHome} onClick={() => router.push('/')}>HOME</span>
           <span className={styles.breadcrumbSep}>›</span>
@@ -456,13 +456,13 @@ export default function CategoryPage({
       {/* ── 3-Column Grid (starts with 3, expands on Load More) ── */}
       {visibleGridArticles.length > 0 && (
         <div className={styles.gridSection}>
-          <div className={styles.gridSectionHeading}>
+          <div className={`${styles.gridSectionHeading} anim-slide`}>
             <span className={styles.sectionHeading}>// MORE STORIES</span>
             <span className={styles.gridArticleCount}>{visibleGridArticles.length} of {allGridArticles.length} articles</span>
           </div>
           <div className={styles.threeGrid}>
             {visibleGridArticles.map((article, i) => (
-              <div key={`${article.url}-${i}`} className={styles.gridCard} onClick={() => goToArticle(article)}>
+              <div key={`${article.url}-${i}`} className={`${styles.gridCard} anim-fade-up delay-${(i % 3) + 1}`} onClick={() => goToArticle(article)}>
                 <div className={styles.gridImgWrap}>
                   <ImageOrPlaceholder
                     src={article.urlToImage}
@@ -499,13 +499,13 @@ export default function CategoryPage({
 
           {/* Latest Stories list */}
           <div className={styles.latestStories}>
-            <div className={styles.sectionHeadingRow}>
+            <div className={`${styles.sectionHeadingRow} anim-slide`}>
               <span className={styles.sectionHeading}>// LATEST STORIES</span>
               <span className={styles.storyCount}>{latestList.length} articles</span>
             </div>
             <div className={styles.latestList}>
               {latestList.map((article, i) => (
-                <div key={`latest-${i}`} className={styles.latestItem} onClick={() => goToArticle(article)}>
+                <div key={`latest-${i}`} className={`${styles.latestItem} ${i % 2 === 0 ? 'anim-fade-left' : 'anim-fade-right'} delay-${(i % 6) + 1}`} onClick={() => goToArticle(article)}>
                   <span className={styles.latestNum}>{String(i + 1).padStart(2, '0')}</span>
                   <div className={styles.latestBody}>
                     <SaveBtn article={article} />
@@ -529,12 +529,12 @@ export default function CategoryPage({
 
           {/* Editor's Picks sidebar */}
           <div className={styles.editorPicks}>
-            <div className={styles.sectionHeadingRow}>
+            <div className={`${styles.sectionHeadingRow} anim-slide`}>
               <span className={styles.sectionHeading}>EDITOR&apos;S PICKS</span>
             </div>
             <div className={styles.editorList}>
               {editorPicks.map((article, i) => (
-                <div key={`editor-${i}`} className={styles.editorCard} onClick={() => goToArticle(article)}>
+                <div key={`editor-${i}`} className={`${styles.editorCard} anim-fade-up delay-${i + 1}`} onClick={() => goToArticle(article)}>
                   <div className={styles.editorImgWrap}>
                     <ImageOrPlaceholder
                       src={article.urlToImage}

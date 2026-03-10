@@ -1,10 +1,12 @@
 .navbar {
-  background: linear-gradient(180deg, #0a2433 0%, #051622 100%);
-  box-shadow: 0 4px 12px rgba(5, 22, 34, 0.4);
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
   position: sticky;
   top: 0;
-  z-index: 998;
-  border-bottom: none;
+  z-index: 997;
+  border: none;
+  outline: none;
   transition: all 0.3s ease;
 }
 
@@ -16,8 +18,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  height: 70px;
+  gap: 24px;
+  height: 76px;
   transition: all 0.3s ease;
 }
 
@@ -28,14 +30,14 @@
 }
 
 .navbar.scrolled .trendingLink {
-  font-size: 0.95rem;
-  padding: 6px 10px;
+  font-size: 13px;
+  padding: 6px 12px;
 }
 
 .navbar.scrolled .trendingLink.active {
-  font-size: 1.05rem;
+  font-size: 13px;
   padding: 8px 14px;
-  transform: scale(1.06);
+  transform: scale(1.04);
 }
 
 @media (min-width: 1920px) {
@@ -49,16 +51,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  width: 52px;
+  height: 52px;
+  background: transparent;
+  border: none;
   border-radius: 10px;
   color: #DEB992;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(10px);
 }
 
 .menuButton:hover {
@@ -74,31 +75,27 @@
 }
 
 .logo {
-  font-size: 2rem; /* Larger initial size */
-  font-weight: 800;
-  letter-spacing: -1px;
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  background: linear-gradient(135deg, #ffffff 0%, #DEB992 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  transition: opacity 0.2s ease;
+  color: #eef2f4;
+  text-decoration: none;
 }
 
 .logo:hover {
-  transform: scale(1.05);
-  background: linear-gradient(135deg, #DEB992 0%, #1BA098 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  opacity: 0.85;
 }
 
 .logoRed {
-  color: #1BA098;
+  color: #eef2f4;
 }
 
 .logoBlue {
-  color: #DEB992;
+  color: #1BA098;
 }
 
 .navLinks {
@@ -110,12 +107,16 @@
 }
 
 .navLink {
-  font-weight: 600;
-  color: #ffffff;
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  font-weight: 700;
+  color: #cdd5d8;
   padding: 10px 16px;
-  border-radius: 6px;
-  font-size: 1.05rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 4px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.2s ease;
   position: relative;
   display: flex;
   align-items: center;
@@ -153,8 +154,8 @@
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  background: linear-gradient(180deg, #0a2433 0%, #051622 100%);
-  border: 1px solid rgba(27, 160, 152, 0.3);
+  background: linear-gradient(180deg, #0a1628 0%, #051020 100%);
+  border: 1px solid rgba(27, 160, 152, 0.25);
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   min-width: 200px;
@@ -166,14 +167,18 @@
 
 .categoryDropdownItem {
   display: block;
-  padding: 12px 20px;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.95rem;
-  font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 13px 22px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
   border-left: 3px solid transparent;
   position: relative;
   overflow: hidden;
+  text-decoration: none;
 }
 
 .categoryDropdownItem::before {
@@ -219,30 +224,28 @@
 
 .navLink:hover {
   color: #1BA098;
-  transform: translateY(-2px);
 }
 
 .navLink.active {
-  color: #DEB992;
-  font-size: 1.15rem;
-  font-weight: 700;
-  transform: scale(1.08);
+  color: #1BA098;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .navLink.active::after {
   content: '';
   position: absolute;
   bottom: -3px;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #1BA098 0%, #DEB992 100%);
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: #1BA098;
   border-radius: 2px;
 }
 
 .authButtons {
   display: flex;
-  gap: 12px;
+  gap: 6px;
   align-items: center;
 }
 
@@ -264,43 +267,52 @@
 }
 
 .btnLogin {
-  padding: 12px 24px; /* Larger initial size */
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  padding: 10px 24px;
   background-color: transparent;
   color: #1BA098;
-  border: 2px solid #1BA098;
-  border-radius: 6px;
+  border: 1px solid #1BA098;
+  border-radius: 4px;
   font-weight: 600;
-  font-size: 1rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
 }
 
 .btnLogin:hover {
-  background-color: #1BA098;
-  color: white;
-  box-shadow: 0 4px 12px rgba(27, 160, 152, 0.3);
+  background-color: rgba(27, 160, 152, 0.12);
+  color: #24c9b8;
+  border-color: #24c9b8;
 }
 
 .btnSignup {
-  padding: 10px 28px;
-  background: linear-gradient(135deg, #DEB992 0%, #c29a6f 100%);
-  color: #051622;
-  border-radius: 6px;
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  padding: 10px 24px;
+  background: #1BA098;
+  color: #000;
+  border: none;
+  border-radius: 4px;
   font-weight: 600;
-  font-size: 1rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  text-decoration: none;
 }
 
 .btnSignup:hover {
-  background: linear-gradient(135deg, #f0d4b3 0%, #DEB992 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(222, 185, 146, 0.3);
+  opacity: 0.85;
 }
 
 /* Search Bar with Filters - shadcn/ui inspired */
 .searchContainer {
   position: relative;
   margin-left: auto;
-  margin-right: 20px;
+  margin-right: 6px;
 }
 
 .searchForm {
@@ -485,82 +497,79 @@
 }
 
 .userIcon {
-  width: 50px; /* Larger initial size */
-  height: 50px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
-  background: transparent;
-  color: #374151;
-  font-size: 1.2rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 2px solid #d1d5db;
+  background: rgba(27, 160, 152, 0.1);
+  color: #1BA098;
+  font-size: 1.35rem;
+  transition: all 0.3s ease;
+  border: 1.5px solid rgba(27, 160, 152, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: none;
 }
 
 .userIcon:hover {
-  transform: scale(1.05);
-  border-color: var(--primary-blue);
-  color: var(--primary-blue);
-  background: rgba(0, 102, 204, 0.05);
+  transform: scale(1.07);
+  border-color: #1BA098;
+  color: #24c9b8;
+  background: rgba(27, 160, 152, 0.18);
+  box-shadow: 0 0 14px rgba(27, 160, 152, 0.3);
 }
 
 .userDropdown {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 10px);
   right: 0;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  min-width: 280px;
+  background: linear-gradient(145deg, #0d1f38, #0a1628);
+  border: 1px solid rgba(27, 160, 152, 0.25);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), 0 0 30px rgba(27, 160, 152, 0.08);
+  min-width: 270px;
   z-index: 1000;
   overflow: hidden;
   animation: dropdownFadeIn 0.2s ease;
 }
 
-/* Create invisible bridge between icon and dropdown */
+/* Invisible hover bridge between icon and dropdown */
 .userDropdown::before {
   content: '';
   position: absolute;
-  top: -8px;
+  top: -10px;
   left: 0;
   right: 0;
-  height: 8px;
+  height: 10px;
   background: transparent;
 }
 
 @keyframes dropdownFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
 }
 
 .dropdownHeader {
   padding: 20px;
-  background: linear-gradient(135deg, var(--light-blue) 0%, rgba(0, 102, 204, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(27, 160, 152, 0.12), rgba(27, 160, 152, 0.04));
+  border-bottom: 1px solid rgba(27, 160, 152, 0.15);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .userAvatar {
-  width: 50px;
-  height: 50px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
-  color: white;
+  background: linear-gradient(135deg, #1BA098, #24c9b8);
+  color: #051020;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(27, 160, 152, 0.35);
 }
 
 .userInfo {
@@ -569,72 +578,82 @@
 }
 
 .userName {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-dark);
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  color: #eef2f4;
   margin: 0 0 4px 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: 0.2px;
 }
 
 .userEmail {
-  font-size: 0.85rem;
-  color: var(--text-gray);
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.45);
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .emailIcon {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   flex-shrink: 0;
+  color: #1BA098;
 }
 
 .dropdownDivider {
   height: 1px;
-  background-color: var(--border-color);
+  background: rgba(255, 255, 255, 0.07);
   margin: 0;
 }
 
 .dropdownItem,
 .dropdownItemLogout {
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
   width: 100%;
-  padding: 14px 20px;
+  padding: 14px 22px;
   background: none;
   border: none;
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
-  color: var(--text-dark);
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .dropdownItem:hover {
-  background-color: var(--light-blue);
-  color: var(--primary-blue);
+  background: rgba(27, 160, 152, 0.1);
+  color: #24c9b8;
+  padding-left: 26px;
 }
 
 .dropdownItemLogout {
-  color: var(--primary-red);
-  border-top: 1px solid var(--border-color);
+  color: rgba(255, 100, 100, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .dropdownItemLogout:hover {
-  background-color: rgba(220, 20, 60, 0.05);
-  color: #b01030;
+  background: rgba(220, 50, 50, 0.1);
+  color: #ff6b6b;
+  padding-left: 26px;
 }
 
 .dropdownIcon {
-  font-size: 1.1rem;
+  font-size: 1rem;
+  flex-shrink: 0;
 }
 
 .mobileMenuBtn {
@@ -794,16 +813,19 @@
 
 /* Trending Link Styles */
 .trendingLink {
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
   background: linear-gradient(135deg, var(--primary-red), #ff6347);
   color: white !important;
-  padding: 10px 18px;
+  padding: 10px 22px;
   border-radius: 20px;
-  font-weight: 700;
-  font-size: 1.05rem;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   animation: pulse 2s ease-in-out infinite;
 }
 
@@ -814,9 +836,9 @@
 }
 
 .trendingLink.active {
-  font-size: 1.15rem;
-  padding: 12px 20px;
-  transform: scale(1.08);
+  font-size: 11px;
+  padding: 10px 20px;
+  transform: scale(1.04);
   box-shadow: 0 6px 16px rgba(220, 20, 60, 0.5);
 }
 
@@ -844,40 +866,42 @@
 
 /* My News Link Styles */
 .myNewsLink {
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
   background: transparent;
-  color: #ffffff;
+  color: #cdd5d8;
   padding: 10px 16px;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 1.05rem;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-right: 20px; /* Space before search */
+  transition: color 0.2s ease;
+  margin-right: 20px;
   position: relative;
+  text-decoration: none;
 }
 
 .myNewsLink:hover {
   color: #1BA098;
-  transform: translateY(-2px);
 }
 
 .myNewsLink.active {
-  color: #DEB992;
-  font-size: 1.15rem;
-  font-weight: 700;
-  transform: scale(1.08);
+  color: #1BA098;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .myNewsLink.active::after {
   content: '';
   position: absolute;
   bottom: -3px;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #1BA098 0%, #DEB992 100%);
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: #1BA098;
   border-radius: 2px;
 }
 
@@ -886,13 +910,13 @@
 }
 
 .navbar.scrolled .myNewsLink {
-  font-size: 0.95rem;
+  font-size: 13px;
   padding: 6px 10px;
 }
 
 .navbar.scrolled .myNewsLink.active {
-  font-size: 1.05rem;
-  transform: scale(1.06);
+  font-size: 13px;
+  transform: none;
 }
 
 /* Mobile Search Styles - Dense & High Contrast */
@@ -1098,7 +1122,7 @@
   left: 0;
   width: 320px;
   height: 100vh;
-  background: linear-gradient(180deg, #0a2433 0%, #051622 100%);
+  background: linear-gradient(180deg, #0a1628 0%, #051020 100%);
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
   z-index: 9999;
   overflow-y: auto;

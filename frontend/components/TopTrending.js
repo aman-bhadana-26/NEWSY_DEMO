@@ -78,7 +78,7 @@ export default function TopTrending({ news }) {
   return (
     <section className={styles.topTrendingSection}>
       <div className={styles.container}>
-        <div className={styles.header}>
+        <div className={`${styles.header} anim-slide`}>
           <h2 className={styles.title}>
             Top{' '}
             <span className={styles.rotatingTextWrapper}>
@@ -100,7 +100,7 @@ export default function TopTrending({ news }) {
             {trendingArticles.map((article, index) => (
               <div
                 key={`${article.url}-${index}`}
-                className={styles.trendingCard}
+                className={`${styles.trendingCard} anim-scale delay-${(index % 6) + 1}`}
                 onClick={() => handleArticleClick(article)}
               >
                 <div className={styles.cardImage}>
