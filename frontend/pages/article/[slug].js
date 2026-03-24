@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '../../components/Layout';
-import LoadingSpinner from '../../components/LoadingSpinner';
+import { ArticleSkeleton } from '../../components/Skeleton';
 import { getFullDate } from '../../utils/formatDate';
 import { newsAPI } from '../../utils/api';
 import { FaArrowLeft } from 'react-icons/fa';
@@ -121,7 +121,7 @@ export default function Article() {
   if (loading) {
     return (
       <Layout title="Loading Article – NEWSY TECH">
-        <LoadingSpinner message="Loading article..." />
+        <ArticleSkeleton />
       </Layout>
     );
   }

@@ -1,0 +1,1032 @@
+/* ═══════════════════════════════════════════════════════════════
+   NewsyTech – Apple-style scroll storytelling landing page styles
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Page wrapper ──────────────────────────────────────────── */
+.page {
+  background: #051622;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Gradient text utility ─────────────────────────────────── */
+.gradientText {
+  background: linear-gradient(105deg, #1BA098, #24c9b8 45%, #DEB992);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCENE 1 – HERO
+═══════════════════════════════════════════════════════════════ */
+.heroSticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: #051622;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Navbar merged into hero ───────────────────────────────── */
+.heroNavbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  /* subtle frosted glass tint so nav text stays readable over the aurora */
+  background: linear-gradient(
+    180deg,
+    rgba(5, 22, 34, 0.55) 0%,
+    rgba(5, 22, 34, 0.0) 100%
+  );
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.heroNavbarGlow {
+  display: none;
+}
+
+.glowOrbRight {
+  position: absolute;
+  top: 15%;
+  right: 6%;
+  width: clamp(280px, 38vw, 560px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(27,160,152,0.08) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.glowOrbLeft {
+  position: absolute;
+  bottom: 8%;
+  left: 2%;
+  width: clamp(180px, 24vw, 380px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(222,185,146,0.05) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Hero 2-col layout — padded so content clears the floating navbar */
+.heroGrid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 76px clamp(16px, 4vw, 60px) 0;
+  gap: 0;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+/* Center copy column — full width so headline can breathe */
+.heroCopy {
+  flex: 0 0 auto;
+  max-width: 1100px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Eyebrow pill */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  background: rgba(27,160,152,0.08);
+  border: 1px solid rgba(27,160,152,0.22);
+}
+
+.eyebrowText {
+  color: #1BA098;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+}
+
+/* Live pulsing dot */
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.35; transform: scale(0.75); }
+}
+
+.liveDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #1BA098;
+  box-shadow: 0 0 8px rgba(27,160,152,0.9);
+  animation: livePulse 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+/* H1 — cinematic headline, viewport-fitted */
+.heroH1 {
+  font-size: clamp(2.6rem, 6vw, 6.5rem);
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: #eef2f4;
+  margin: 0 0 24px;
+  word-break: break-word;
+}
+
+/* Subtext */
+.heroSub {
+  font-size: clamp(0.9rem, 1.4vw, 1.08rem);
+  color: #5a7a8a;
+  line-height: 1.72;
+  max-width: 520px;
+  margin: 0 0 36px;
+  font-family: 'Courier New', monospace;
+  text-align: center;
+}
+
+/* CTA buttons row */
+.heroBtns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+/* Stats row */
+.statsRow {
+  display: flex;
+  gap: clamp(20px, 3vw, 44px);
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statVal {
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-weight: 800;
+  color: #eef2f4;
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.62rem;
+  color: '#3d5565';
+  color: #3d5565;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'Courier New', monospace;
+}
+
+/* Right card column */
+.heroCardWrapper {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Scroll hint */
+.scrollHint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+}
+
+.scrollLabel {
+  color: '#2a4455';
+  color: #2a4455;
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0) rotate(45deg); opacity: 0.45; }
+  50%       { transform: translateY(7px) rotate(45deg); opacity: 0.9; }
+}
+
+.scrollChevron {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid #1BA098;
+  border-bottom: 2px solid #1BA098;
+  transform: rotate(45deg);
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+/* ── Glass UI card ─────────────────────────────────────────── */
+
+/* Gradient border wrapper */
+.cardBorderWrap {
+  width: clamp(280px, 28vw, 400px);
+  border-radius: 20px;
+  padding: 1px;
+  background: linear-gradient(
+    140deg,
+    rgba(27,160,152,0.65),
+    rgba(222,185,146,0.30) 40%,
+    rgba(27,160,152,0.55) 70%,
+    rgba(222,185,146,0.20)
+  );
+  box-shadow:
+    0 0 70px rgba(27,160,152,0.14),
+    0 28px 80px rgba(0,0,0,0.7);
+}
+
+/* Inner dark glass */
+.cardInner {
+  width: 100%;
+  border-radius: 19px;
+  background: rgba(5, 12, 24, 0.95);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  overflow: hidden;
+}
+
+/* Card header */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.cardLiveDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #1BA098;
+  box-shadow: 0 0 10px rgba(27,160,152,0.9);
+  animation: livePulse 1.5s ease-in-out infinite;
+}
+
+.cardLogo {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.liveChip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(27,160,152,0.10);
+  border: 1px solid rgba(27,160,152,0.25);
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1BA098;
+  font-family: 'Courier New', monospace;
+}
+
+/* Category pills */
+.cardPills {
+  display: flex;
+  gap: 6px;
+  padding: 11px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.pill {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  background: rgba(255,255,255,0.04);
+  color: #3d5565;
+  border: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+  font-family: 'Courier New', monospace;
+}
+
+.pillActive {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  background: rgba(27,160,152,0.18);
+  color: #1BA098;
+  border: 1px solid rgba(27,160,152,0.32);
+  flex-shrink: 0;
+  font-family: 'Courier New', monospace;
+}
+
+/* Featured article */
+.cardFeatured {
+  margin: 13px 16px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.cardImgPlaceholder {
+  height: 104px;
+  background: linear-gradient(
+    90deg,
+    rgba(27,160,152,0.04) 25%,
+    rgba(27,160,152,0.10) 50%,
+    rgba(27,160,152,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.4s ease-in-out infinite;
+  position: relative;
+}
+
+.cardBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+}
+
+.cardTime {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-size: 0.5rem;
+  color: #3d5565;
+  background: rgba(0,0,0,0.45);
+  font-family: 'Courier New', monospace;
+}
+
+.cardFeaturedTitle {
+  padding: 10px 12px;
+  font-size: 0.70rem;
+  color: #b8ccda;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Article list */
+.cardList {
+  padding: 0 16px 12px;
+}
+
+.cardListItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 0;
+}
+
+.cardColorBar {
+  width: 3px;
+  height: 40px;
+  border-radius: 2px;
+  opacity: 0.72;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.cardListCat {
+  font-size: 0.50rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.cardListTitle {
+  font-size: 0.66rem;
+  color: #7a9aaa;
+  font-weight: 600;
+  line-height: 1.42;
+  margin: 0;
+}
+
+/* Card footer stats bar */
+.cardFooterBar {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 16px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.cardStat {
+  font-size: 0.55rem;
+  color: #2a4455;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCENE 2 – PLATFORM INTRODUCTION
+═══════════════════════════════════════════════════════════════ */
+@keyframes gradientShift {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+.platformSection {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(80px, 12vw, 140px) clamp(24px, 7vw, 100px);
+  background: linear-gradient(-45deg, #040d18, #051622, #061c2a, #040e1b);
+  background-size: 400% 400%;
+  animation: gradientShift 14s ease infinite;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.dividerTop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(27,160,152,0.38), transparent);
+}
+
+.dividerBottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(222,185,146,0.20), transparent);
+}
+
+.eyebrowRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 38px;
+}
+
+.eyebrowLine {
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: #1BA098;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+.eyebrowLabel {
+  color: #1BA098;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+}
+
+.platformHeadline {
+  font-size: clamp(2.4rem, 6vw, 5.4rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: #eef2f4;
+  max-width: 920px;
+  margin-bottom: 56px;
+}
+
+.pillarsRow {
+  display: flex;
+  gap: clamp(22px, 5vw, 68px);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pillar {
+  text-align: center;
+  max-width: 220px;
+}
+
+.pillarLine {
+  width: 34px;
+  height: 2px;
+  border-radius: 2px;
+  margin: 0 auto 14px;
+}
+
+.pillarLabel {
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  font-weight: 800;
+  color: #eef2f4;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+
+.pillarDesc {
+  font-size: 0.75rem;
+  color: #3d5565;
+  line-height: 1.68;
+  margin: 0;
+  font-family: 'Courier New', monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCENE 3 – CATEGORIES
+═══════════════════════════════════════════════════════════════ */
+.categoriesSection {
+  padding: clamp(80px, 10vw, 120px) clamp(24px, 7vw, 100px);
+  background: linear-gradient(180deg, #051622 0%, #040e1b 50%, #051622 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.catGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(ellipse at center, rgba(27,160,152,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.sectionInner {
+  max-width: 1320px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.sectionHeader {
+  margin-bottom: 52px;
+}
+
+.sectionEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sectionEyebrowText {
+  color: #1BA098;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+}
+
+.sectionH2 {
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #eef2f4;
+  margin: 0;
+  line-height: 1.06;
+}
+
+.catGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.catTile {
+  padding: 28px 24px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.catCornerGlow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+  border-radius: 0 16px 0 0;
+}
+
+.catIcon {
+  font-size: 2rem;
+  margin-bottom: 16px;
+}
+
+.catLabel {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+
+.catDesc {
+  font-size: 0.72rem;
+  color: #3d5565;
+  line-height: 1.62;
+  margin: 0;
+  font-family: 'Courier New', monospace;
+}
+
+.catArrow {
+  margin-top: 18px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCENE 4 – TRENDING
+═══════════════════════════════════════════════════════════════ */
+.trendingSection {
+  padding: clamp(80px, 10vw, 120px) 0;
+  background: #051622;
+  overflow: hidden;
+  position: relative;
+}
+
+.trendingHeader {
+  padding: 0 clamp(24px, 7vw, 100px);
+  margin-bottom: 44px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.viewAllLink {
+  color: #1BA098;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.viewAllLink:hover {
+  color: #24c9b8;
+}
+
+.trendingTrack {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding-left: clamp(24px, 7vw, 100px);
+  padding-right: clamp(24px, 7vw, 100px);
+  padding-bottom: 20px;
+  scrollbar-width: none;
+  cursor: grab;
+  mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+}
+
+.trendingTrack::-webkit-scrollbar {
+  display: none;
+}
+
+.trendingCard {
+  flex-shrink: 0;
+  width: 264px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.06);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+}
+
+.tCardImg {
+  height: 152px;
+  overflow: hidden;
+  background: #071825;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.tCardImgSkeleton {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    90deg,
+    rgba(27,160,152,0.04) 25%,
+    rgba(27,160,152,0.10) 50%,
+    rgba(27,160,152,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.4s ease-in-out infinite;
+}
+
+.tCardImgOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(4,14,24,0.55) 0%, transparent 52%);
+}
+
+.tCardBadge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+}
+
+.tCardBody {
+  flex: 1;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tCardTitle {
+  color: #bcceda;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tCardTime {
+  margin-top: auto;
+  font-size: 0.60rem;
+  color: #2a4455;
+  font-family: 'Courier New', monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCENE 5 – VISION STATEMENT
+═══════════════════════════════════════════════════════════════ */
+.visionSection {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(80px, 12vw, 140px) clamp(24px, 7vw, 100px);
+  background: linear-gradient(160deg, #040d18 0%, #051622 42%, #061c2a 72%, #040d18 100%);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.visionGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 85% 65% at 50% 50%, rgba(27,160,152,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.visionH2 {
+  font-size: clamp(2rem, 5.5vw, 4.8rem);
+  font-weight: 900;
+  line-height: 1.1;
+  color: #eef2f4;
+  margin: 0 0 32px;
+}
+
+.visionSub {
+  font-size: clamp(0.82rem, 1.3vw, 0.95rem);
+  color: #3d5565;
+  line-height: 1.82;
+  max-width: 580px;
+  margin: 0 auto;
+  font-family: 'Courier New', monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCENE 6 – CTA
+═══════════════════════════════════════════════════════════════ */
+.ctaSection {
+  min-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(80px, 10vw, 120px) clamp(24px, 7vw, 100px);
+  background: linear-gradient(160deg, #040b16 0%, #051622 50%, #040b16 100%);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.ctaDivider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(222,185,146,0.26), transparent);
+}
+
+.ctaGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 65%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(27,160,152,0.055) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.ctaInner {
+  position: relative;
+  z-index: 2;
+  max-width: 680px;
+}
+
+.ctaH2 {
+  font-size: clamp(2.2rem, 5.5vw, 4.6rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #eef2f4;
+  line-height: 1.06;
+  margin-bottom: 20px;
+}
+
+.ctaSub {
+  color: #3d5565;
+  font-size: clamp(0.80rem, 1.2vw, 0.93rem);
+  line-height: 1.80;
+  margin-bottom: 48px;
+  font-family: 'Courier New', monospace;
+}
+
+.ctaBtns {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUTTONS (shared)
+═══════════════════════════════════════════════════════════════ */
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 30px;
+  border-radius: 6px;
+  background: #1BA098;
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.btnPrimary:hover {
+  background: #24c9b8;
+  box-shadow: 0 0 30px rgba(27,160,152,0.52);
+  transform: translateY(-2px);
+}
+
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 6px;
+  background: transparent;
+  color: #DEB992;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid rgba(222,185,146,0.35);
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.btnSecondary:hover {
+  background: rgba(222,185,146,0.08);
+  border-color: rgba(222,185,146,0.65);
+  box-shadow: 0 0 24px rgba(222,185,146,0.18);
+  transform: translateY(-2px);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .heroGrid {
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 20px;
+  }
+
+  .heroCardWrapper {
+    display: none;
+  }
+
+  .heroCopy {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .heroH1 {
+    font-size: clamp(2.2rem, 8vw, 4rem);
+    line-height: 1.02;
+  }
+
+  .heroBtns,
+  .statsRow,
+  .eyebrow {
+    justify-content: center;
+  }
+
+  .heroSub {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .trendingHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .catGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .pillarsRow {
+    flex-direction: column;
+    align-items: center;
+  }
+}

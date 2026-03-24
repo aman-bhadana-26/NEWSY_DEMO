@@ -17,7 +17,7 @@
   padding: 0 40px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 24px;
   height: 76px;
   transition: all 0.3s ease;
@@ -103,7 +103,8 @@
   gap: 24px;
   align-items: center;
   justify-content: center;
-  margin-left: 200px; /* Add space between logo and nav links */
+  flex: 1;
+  margin-left: 0;
 }
 
 .navLink {
@@ -128,6 +129,91 @@
 
 .navIcon {
   font-size: 1rem;
+}
+
+/* Home Dropdown */
+.homeDropdownContainer {
+  position: relative;
+}
+
+.homeNavButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdownArrowOpen {
+  transform: rotate(180deg);
+}
+
+.homeDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: linear-gradient(180deg, #0a1628 0%, #051020 100%);
+  border: 1px solid rgba(27, 160, 152, 0.25);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  min-width: 180px;
+  z-index: 1050;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.homeDropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 22px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.homeDropdownItem::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(27, 160, 152, 0.2), rgba(27, 160, 152, 0.05));
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+}
+
+.homeDropdownItem:hover::before {
+  width: 100%;
+}
+
+.homeDropdownItem:hover {
+  color: #1BA098;
+  border-left-color: #1BA098;
+  padding-left: 24px;
+}
+
+.homeDropdownIcon {
+  position: relative;
+  z-index: 1;
+  font-size: 0.85rem;
+  color: #1BA098;
+}
+
+.homeDropdownItem > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* Categories Dropdown */
@@ -247,6 +333,7 @@
   display: flex;
   gap: 6px;
   align-items: center;
+  margin-left: auto;
 }
 
 .profileLink {
@@ -315,6 +402,7 @@
   margin-right: 6px;
 }
 
+
 .searchForm {
   position: relative;
 }
@@ -322,8 +410,8 @@
 .searchInputWrapper {
   display: flex;
   align-items: center;
-  background: #0f2d3d;
-  border: 2px solid #1a3444;
+  background: rgba(10, 22, 40, 0.75);
+  border: 1.5px solid rgba(27, 160, 152, 0.25);
   border-radius: 50%;
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -432,26 +520,28 @@
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  background: #0f2d3d;
-  border: 2px solid #1a3444;
+  background: linear-gradient(180deg, #0a1628 0%, #051020 100%);
+  border: 1px solid rgba(27, 160, 152, 0.25);
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(5, 22, 34, 0.5), 0 4px 10px rgba(27, 160, 152, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(27, 160, 152, 0.06);
   min-width: 220px;
   z-index: 1000;
   overflow: hidden;
   animation: dropdownFadeIn 0.15s ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .filterHeader {
   padding: 12px 16px;
-  background: linear-gradient(135deg, #1BA098, #148c7f);
-  color: #ffffff;
+  background: linear-gradient(135deg, rgba(27, 160, 152, 0.2), rgba(27, 160, 152, 0.08));
+  color: #1BA098;
   font-weight: 700;
   font-size: 0.8125rem;
   display: flex;
   align-items: center;
   gap: 8px;
-  border-bottom: 2px solid #d1d5db;
+  border-bottom: 1px solid rgba(27, 160, 152, 0.2);
   text-transform: uppercase;
   letter-spacing: 0.075em;
 }
@@ -462,31 +552,50 @@
   background: none;
   border: none;
   text-align: left;
-  color: #374151;
+  color: rgba(255, 255, 255, 0.65);
   cursor: pointer;
-  transition: all 0.15s ease;
-  font-size: 0.9375rem;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  font-weight: 500;
+  letter-spacing: 0.5px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-weight: 500;
+  border-left: 3px solid transparent;
+  position: relative;
+  overflow: hidden;
 }
 
+.filterOption::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 0; height: 100%;
+  background: linear-gradient(90deg, rgba(27, 160, 152, 0.15), rgba(27, 160, 152, 0.04));
+  transition: width 0.3s ease;
+  z-index: 0;
+}
+
+.filterOption:hover::before { width: 100%; }
+
 .filterOption:hover {
-  background-color: #f3f4f6;
-  color: #1f2937;
+  color: #1BA098;
+  border-left-color: #1BA098;
+  padding-left: 20px;
 }
 
 .filterActive {
-  background: linear-gradient(135deg, rgba(0, 102, 204, 0.1), rgba(0, 102, 204, 0.05));
-  color: var(--primary-blue);
+  background: linear-gradient(90deg, rgba(27, 160, 152, 0.18), rgba(27, 160, 152, 0.06), transparent);
+  color: #DEB992;
+  border-left: 3px solid #DEB992;
   font-weight: 700;
 }
 
 .checkmark {
-  color: var(--primary-blue);
+  color: #1BA098;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 /* User Menu Dropdown */
@@ -712,9 +821,9 @@
   .mobileMenu {
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background: linear-gradient(180deg, #0a1628 0%, #051020 100%);
     padding: 20px;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid rgba(27, 160, 152, 0.2);
   }
 }
 
@@ -930,29 +1039,28 @@
   flex: 1;
   display: flex;
   align-items: center;
-  background: white;
-  border: 2px solid #d1d5db;
+  background: rgba(10, 22, 40, 0.8);
+  border: 1.5px solid rgba(27, 160, 152, 0.25);
   border-radius: 10px;
   padding: 0 14px;
   height: 44px;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 .mobileSearchWrapper:focus-within {
-  border-color: var(--primary-blue);
-  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15), 0 2px 6px rgba(0, 0, 0, 0.1);
+  border-color: #1BA098;
+  box-shadow: 0 0 0 3px rgba(27, 160, 152, 0.15);
 }
 
 .mobileSearchIcon {
-  color: #6b7280;
+  color: rgba(255,255,255,0.4);
   font-size: 1rem;
   margin-right: 10px;
   flex-shrink: 0;
 }
 
 .mobileSearchWrapper:focus-within .mobileSearchIcon {
-  color: var(--primary-blue);
+  color: #1BA098;
 }
 
 .mobileSearchInput {
@@ -962,13 +1070,13 @@
   outline: none;
   font-size: 0.9375rem;
   background: transparent;
-  color: #1f2937;
+  color: #eef2f4;
   height: 100%;
   font-weight: 500;
 }
 
 .mobileSearchInput::placeholder {
-  color: #9ca3af;
+  color: rgba(222, 185, 146, 0.4);
   font-weight: 400;
 }
 
@@ -977,7 +1085,7 @@
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  border: 2px solid #d1d5db;
+  border: 1.5px solid rgba(27, 160, 152, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -985,30 +1093,30 @@
   transition: all 0.2s ease;
   font-size: 1rem;
   flex-shrink: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 .mobileFilterButton {
-  background: white;
-  color: #374151;
+  background: rgba(10, 22, 40, 0.8);
+  color: #DEB992;
   font-weight: 600;
 }
 
 .mobileFilterButton:hover {
-  background: #f3f4f6;
-  border-color: var(--primary-blue);
+  background: rgba(27, 160, 152, 0.15);
+  border-color: #1BA098;
+  color: #1BA098;
 }
 
 .mobileSearchButton {
-  background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+  background: linear-gradient(135deg, #1BA098, #148c7f);
   color: white;
-  border-color: var(--primary-blue);
+  border-color: #1BA098;
   font-weight: 700;
 }
 
 .mobileSearchButton:hover {
-  background: linear-gradient(135deg, var(--dark-blue), var(--primary-blue));
-  box-shadow: 0 4px 8px rgba(0, 102, 204, 0.3);
+  background: linear-gradient(135deg, #24c9b8, #1BA098);
+  box-shadow: 0 4px 12px rgba(27, 160, 152, 0.35);
 }
 
 .mobileFilterButton:active,
@@ -1017,18 +1125,17 @@
 }
 
 .mobileFilterOptions {
-  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  background: linear-gradient(135deg, rgba(10, 22, 40, 0.9), rgba(5, 16, 32, 0.9));
   padding: 14px;
   border-radius: 10px;
   margin-bottom: 16px;
-  border: 2px solid #d1d5db;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(27, 160, 152, 0.2);
 }
 
 .mobileFilterLabel {
   font-size: 0.8125rem;
   font-weight: 700;
-  color: #374151;
+  color: #1BA098;
   margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 0.075em;
@@ -1042,23 +1149,22 @@
 
 .mobileFilterChip {
   padding: 10px 12px;
-  background: white;
-  border: 2px solid #d1d5db;
+  background: rgba(10, 22, 40, 0.6);
+  border: 1.5px solid rgba(27, 160, 152, 0.2);
   border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #374151;
+  color: rgba(255, 255, 255, 0.65);
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .mobileFilterChip:hover {
-  background: #f9fafb;
-  border-color: var(--primary-blue);
+  background: rgba(27, 160, 152, 0.15);
+  border-color: #1BA098;
+  color: #1BA098;
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .mobileFilterChip:active {
@@ -1066,11 +1172,10 @@
 }
 
 .mobileFilterChipActive {
-  background: linear-gradient(135deg, rgba(0, 102, 204, 0.15), rgba(0, 102, 204, 0.1));
-  color: var(--primary-blue);
-  border-color: var(--primary-blue);
+  background: linear-gradient(135deg, rgba(27, 160, 152, 0.2), rgba(27, 160, 152, 0.08));
+  color: #DEB992;
+  border-color: #DEB992;
   font-weight: 700;
-  box-shadow: 0 2px 4px rgba(0, 102, 204, 0.2);
 }
 
 .mobileTrendingLink {

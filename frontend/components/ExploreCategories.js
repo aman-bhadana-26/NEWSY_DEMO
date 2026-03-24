@@ -49,9 +49,9 @@ export default function ExploreCategories() {
 
   const handleCategoryClick = (query) => {
     if (query === 'all') {
-      router.push('/');
+      router.push('/home');
     } else {
-      router.push(`/?category=${query}`);
+      router.push(`/home?category=${query}`);
     }
   };
 

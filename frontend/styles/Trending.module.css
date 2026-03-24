@@ -19,7 +19,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   color: #8b9ba8;
@@ -74,7 +74,7 @@
 }
 
 .viewAll {
-  font-size: 0.82rem;
+  font-size: 0.96rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: #1BA098;
@@ -89,7 +89,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  font-size: 0.82rem;
+  font-size: 0.96rem;
   color: #6b7b88;
   flex-wrap: wrap;
 }
@@ -184,14 +184,14 @@
 .tickerItem:hover { opacity: 0.75; }
 
 .tickerRank {
-  font-size: 0.7rem;
+  font-size: 0.84rem;
   font-weight: 800;
   color: #1BA098;
   letter-spacing: 0.04em;
 }
 
 .tickerTitle {
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   color: #c8d4db;
   max-width: 260px;
   overflow: hidden;
@@ -403,7 +403,7 @@
 }
 
 .heroCategory {
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.16em;
   color: #1BA098;
@@ -411,7 +411,7 @@
 }
 
 .heroTitle {
-  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-size: clamp(1.3rem, 2.4vw, 1.65rem);
   font-weight: 800;
   line-height: 1.35;
   color: #e8edf2;
@@ -423,7 +423,7 @@
 .heroTitle:hover { color: #24c9b8; }
 
 .heroDesc {
-  font-size: 0.82rem;
+  font-size: 0.97rem;
   color: #7a8d9a;
   line-height: 1.6;
   font-family: 'Courier New', monospace;
@@ -440,13 +440,13 @@
 }
 
 .heroSource {
-  font-size: 0.72rem;
+  font-size: 0.86rem;
   font-weight: 700;
   color: #1BA098;
 }
 
 .heroMeta {
-  font-size: 0.72rem;
+  font-size: 0.86rem;
   color: #6b7b88;
 }
 
@@ -454,7 +454,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.72rem;
+  font-size: 0.86rem;
   color: #e05555;
   margin-left: auto;
 }
@@ -548,7 +548,7 @@
 }
 
 .sideCategory {
-  font-size: 0.6rem;
+  font-size: 0.74rem;
   font-weight: 800;
   letter-spacing: 0.14em;
   color: #8b9ba8;
@@ -556,7 +556,7 @@
 }
 
 .sideTitle {
-  font-size: 0.88rem;
+  font-size: 1.06rem;
   font-weight: 700;
   color: #d8e4eb;
   line-height: 1.4;
@@ -572,7 +572,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.7rem;
+  font-size: 0.84rem;
   color: #5a6a77;
 }
 
@@ -589,7 +589,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 1.05rem;
+  font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: 0.06em;
   color: #c8d4db;
@@ -625,7 +625,7 @@
 }
 
 .fullRowRank {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   font-weight: 800;
   color: #1BA098;
   min-width: 38px;
@@ -641,7 +641,7 @@
 }
 
 .fullRowCategory {
-  font-size: 0.6rem;
+  font-size: 0.74rem;
   font-weight: 800;
   letter-spacing: 0.12em;
   color: #6b7b88;
@@ -649,7 +649,7 @@
 }
 
 .fullRowTitle {
-  font-size: 0.86rem;
+  font-size: 1.02rem;
   font-weight: 600;
   color: #c8d4db;
   white-space: nowrap;
@@ -661,7 +661,7 @@
 .fullRow:hover .fullRowTitle { color: #24c9b8; }
 
 .fullRowMeta {
-  font-size: 0.68rem;
+  font-size: 0.82rem;
   color: #4a5a67;
 }
 
@@ -697,10 +697,10 @@
     height: 180px;
   }
   .heroTitle {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
   .sideRank {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
   }
   .fullRow {
     padding: 12px 14px;

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope, FaSearch, FaFilter, FaNewspaper, FaHome, FaChevronDown, FaInfoCircle, FaEnvelopeOpen } from 'react-icons/fa';
+import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope, FaSearch, FaFilter, FaNewspaper, FaHome, FaChevronDown, FaInfoCircle, FaEnvelopeOpen, FaTachometerAlt } from 'react-icons/fa';
 import { throttle } from '../hooks/useScrollOptimization';
 import FlowingMenu from './FlowingMenu';
 import styles from '../styles/Navbar.module.css';
@@ -14,8 +14,10 @@ const Navbar = () => {
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [categoriesDropdownOpen, setCategoriesDropdownOpen] = useState(false);
+  const [homeDropdownOpen, setHomeDropdownOpen] = useState(false);
   const [dropdownTimeout, setDropdownTimeout] = useState(null);
   const [categoriesTimeout, setCategoriesTimeout] = useState(null);
+  const [homeTimeout, setHomeTimeout] = useState(null);
   const [sideMenuTimeout, setSideMenuTimeout] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
@@ -24,12 +26,12 @@ const Navbar = () => {
   const [searchExpanded, setSearchExpanded] = useState(false);
 
   const categories = [
-    { name: 'All', path: '/', query: 'all' },
-    { name: 'AI', path: '/', query: 'ai' },
-    { name: 'Startups', path: '/', query: 'startups' },
-    { name: 'Software', path: '/', query: 'software' },
-    { name: 'Gadgets', path: '/', query: 'gadgets' },
-    { name: 'Cybersecurity', path: '/', query: 'cybersecurity' },
+    { name: 'All', path: '/home', query: 'all' },
+    { name: 'AI', path: '/home', query: 'ai' },
+    { name: 'Startups', path: '/home', query: 'startups' },
+    { name: 'Software', path: '/home', query: 'software' },
+    { name: 'Gadgets', path: '/home', query: 'gadgets' },
+    { name: 'Cybersecurity', path: '/home', query: 'cybersecurity' },
   ];
 
   // Optimized scroll detection with throttle and RAF
@@ -128,8 +130,8 @@ const Navbar = () => {
     if (searchQuery.trim()) {
       // Construct search URL with filter
       const searchUrl = selectedFilter === 'all' 
-        ? `/?search=${encodeURIComponent(searchQuery.trim())}`
-        : `/?category=${selectedFilter}&search=${encodeURIComponent(searchQuery.trim())}`;
+        ? `/home?search=${encodeURIComponent(searchQuery.trim())}`
+        : `/home?category=${selectedFilter}&search=${encodeURIComponent(searchQuery.trim())}`;
       
       router.push(searchUrl);
       setSearchQuery('');
@@ -191,35 +193,72 @@ const Navbar = () => {
     setCategoriesTimeout(timeout);
   };
 
+  const handleHomeMouseEnter = () => {
+    if (homeTimeout) {
+      clearTimeout(homeTimeout);
+      setHomeTimeout(null);
+    }
+    setHomeDropdownOpen(true);
+  };
+
+  const handleHomeMouseLeave = () => {
+    const timeout = setTimeout(() => {
+      setHomeDropdownOpen(false);
+    }, 150);
+    setHomeTimeout(timeout);
+  };
+
   return (
     <nav className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}>
       <div className={styles.container}>
-        {/* Menu Button */}
-        <button 
-          className={styles.menuButton} 
-          onMouseEnter={handleSideMenuMouseEnter}
-          onMouseLeave={handleSideMenuMouseLeave}
-          title="Menu"
-        >
-          <FaBars />
-        </button>
+        {/* Menu Button — hidden on landing page */}
+        {router.pathname !== '/' && (
+          <button 
+            className={styles.menuButton} 
+            onMouseEnter={handleSideMenuMouseEnter}
+            onMouseLeave={handleSideMenuMouseLeave}
+            title="Menu"
+          >
+            <FaBars />
+          </button>
+        )}
 
-        <Link href="/" className={styles.logo}>
+        <Link href="/home" className={styles.logo}>
           <span className={styles.logoRed}>NEWSY</span>
           <span className={styles.logoBlue}>TECH</span>
         </Link>
 
         {/* Desktop Navigation */}
         <div className={styles.navLinks}>
-          <Link
-            href="/"
-            className={`${styles.navLink} ${
-              router.pathname === '/' && !router.query.category ? styles.active : ''
-            }`}
+          {/* Home Dropdown */}
+          <div
+            className={styles.homeDropdownContainer}
+            onMouseEnter={handleHomeMouseEnter}
+            onMouseLeave={handleHomeMouseLeave}
           >
-            Home
-          </Link>
-          
+            <Link
+              href="/home"
+              className={`${styles.navLink} ${styles.homeNavButton} ${
+                router.pathname === '/home' ? styles.active : ''
+              }`}
+            >
+              Home <FaChevronDown className={`${styles.dropdownArrow} ${homeDropdownOpen ? styles.dropdownArrowOpen : ''}`} />
+            </Link>
+
+            {homeDropdownOpen && (
+              <div className={styles.homeDropdown}>
+                <Link
+                  href="/"
+                  className={styles.homeDropdownItem}
+                  onClick={() => setHomeDropdownOpen(false)}
+                >
+                  <FaTachometerAlt className={styles.homeDropdownIcon} />
+                  Dashboard
+                </Link>
+              </div>
+            )}
+          </div>
+
           {/* Categories Dropdown */}
           <div 
             className={styles.categoriesDropdownContainer}
@@ -235,7 +274,7 @@ const Navbar = () => {
                 {categories.map((category) => (
                   <Link
                     key={category.query}
-                    href={`/?category=${category.query}`}
+                    href={`/home?category=${category.query}`}
                     className={`${styles.categoryDropdownItem} ${
                       router.query.category === category.query ? styles.categoryDropdownItemActive : ''
                     }`}
@@ -278,8 +317,8 @@ const Navbar = () => {
           </Link>
         )}
 
-        {/* Search Bar with Filters */}
-        <div className={styles.searchContainer}>
+        {/* Search Bar with Filters — hidden on landing page */}
+        <div className={styles.searchContainer} style={router.pathname === '/' ? { display: 'none' } : {}}>
           <form onSubmit={handleSearch} className={styles.searchForm}>
             <div className={`${styles.searchInputWrapper} ${searchExpanded ? styles.expanded : ''}`}>
               <button 
@@ -471,7 +510,7 @@ const Navbar = () => {
             {categories.map((category) => (
               <Link
                 key={category.query}
-                href={`/?category=${category.query}`}
+                href={`/home?category=${category.query}`}
                 className={`${styles.mobileNavLink} ${
                   router.query.category === category.query ? styles.mobileNavLinkActive : ''
                 }`}
@@ -573,32 +612,32 @@ const Navbar = () => {
                   <FlowingMenu
                     items={[
                       {
-                        link: '/?category=all',
+                        link: '/home?category=all',
                         text: 'All',
                         image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=600&h=400&fit=crop'
                       },
                       {
-                        link: '/?category=ai',
+                        link: '/home?category=ai',
                         text: 'AI',
                         image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop'
                       },
                       {
-                        link: '/?category=startups',
+                        link: '/home?category=startups',
                         text: 'Startups',
                         image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&h=400&fit=crop'
                       },
                       {
-                        link: '/?category=software',
+                        link: '/home?category=software',
                         text: 'Software',
                         image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop'
                       },
                       {
-                        link: '/?category=gadgets',
+                        link: '/home?category=gadgets',
                         text: 'Gadgets',
                         image: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=600&h=400&fit=crop'
                       },
                       {
-                        link: '/?category=cybersecurity',
+                        link: '/home?category=cybersecurity',
                         text: 'Cybersecurity',
                         image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&h=400&fit=crop'
                       }
