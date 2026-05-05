@@ -60,7 +60,6 @@ const getTodayDate = () => {
   return d.toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
 };
 
-/* ─── ticker item ──────────────────────────────────────────── */
 const TickerItem = ({ article, rank }) => (
   <Link href={buildArticleUrl(article)} className={styles.tickerItem}>
     <span className={styles.tickerRank}>#{rank}</span>
@@ -69,7 +68,6 @@ const TickerItem = ({ article, rank }) => (
   </Link>
 );
 
-/* ─── hero card (rank #1) ──────────────────────────────────── */
 const HeroCard = ({ article, rank }) => {
   const score = getScore(rank - 1);
   const views = getViews(rank - 1);
@@ -236,10 +234,6 @@ export default function Trending() {
 
         {/* ── PAGE HEADER ── */}
         <div className={styles.pageHeader}>
-          <div className={styles.liveBar}>
-            <FaCircle className={styles.livePulse} />
-            <span>UPDATED LIVE EVERY 5 MINUTES</span>
-          </div>
           <div className={styles.titleRow}>
             <h1 className={styles.mainTitle}>
               TRENDING <span className={styles.nowText}>NOW</span>

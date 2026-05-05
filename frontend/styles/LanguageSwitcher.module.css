@@ -1,0 +1,182 @@
+.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.trigger {
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(10, 22, 40, 0.75);
+  border: 1.5px solid rgba(27, 160, 152, 0.25);
+  color: #DEB992;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(5, 22, 34, 0.3);
+  white-space: nowrap;
+}
+
+.trigger:hover {
+  border-color: #1BA098;
+  color: #1BA098;
+  background: rgba(27, 160, 152, 0.08);
+  box-shadow: 0 2px 8px rgba(27, 160, 152, 0.25);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid #1BA098;
+  outline-offset: 2px;
+}
+
+.triggerOpen {
+  border-color: #1BA098;
+  color: #1BA098;
+  background: rgba(27, 160, 152, 0.12);
+  box-shadow: 0 0 0 3px rgba(27, 160, 152, 0.15), 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.globeIcon {
+  font-size: 0.95rem;
+  color: #1BA098;
+  flex-shrink: 0;
+}
+
+.code {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #eef2f4;
+}
+
+.trigger:hover .code,
+.triggerOpen .code {
+  color: #ffffff;
+}
+
+.chevron {
+  font-size: 0.7rem;
+  transition: transform 0.25s ease;
+  opacity: 0.85;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+/* Dropdown */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  min-width: 200px;
+  background: linear-gradient(145deg, #0d1f38, #0a1628);
+  border: 1px solid rgba(27, 160, 152, 0.25);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), 0 0 30px rgba(27, 160, 152, 0.08);
+  z-index: 1000;
+  overflow: hidden;
+  animation: langDropdownFadeIn 0.18s ease;
+}
+
+.dropdown::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: transparent;
+}
+
+@keyframes langDropdownFadeIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+.option {
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: #eef2f4;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.option:hover {
+  background: rgba(27, 160, 152, 0.12);
+  color: #ffffff;
+}
+
+.option:focus-visible {
+  outline: 2px solid #1BA098;
+  outline-offset: -2px;
+}
+
+.optionActive {
+  background: linear-gradient(90deg, rgba(27, 160, 152, 0.22), rgba(27, 160, 152, 0.06));
+  color: #DEB992;
+  font-weight: 700;
+}
+
+.optionShort {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(27, 160, 152, 0.18);
+  color: #1BA098;
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.optionActive .optionShort {
+  background: #1BA098;
+  color: #051020;
+}
+
+.optionLabel {
+  flex: 1;
+}
+
+.checkIcon {
+  color: #1BA098;
+  font-size: 0.85rem;
+}
+
+/* Mobile tweaks */
+@media (max-width: 768px) {
+  .trigger {
+    height: 42px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  .dropdown {
+    right: 0;
+    left: auto;
+    min-width: 180px;
+  }
+}
