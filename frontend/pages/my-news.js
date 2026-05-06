@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { myNewsAPI } from '../utils/api';
 import Layout from '../components/Layout';
 import TopicSelector from '../components/TopicSelector';
@@ -11,6 +12,7 @@ import styles from '../styles/MyNews.module.css';
 
 const MyNews = () => {
   const router = useRouter();
+  const { t } = useLanguage();
   const { isAuthenticated, loading: authLoading } = useAuth();
   const [activeTab, setActiveTab] = useState('feed'); // 'feed' or 'saved'
 
@@ -93,7 +95,7 @@ const MyNews = () => {
       setHasMore(notLastPage && receivedFullPage);
     } catch (err) {
       console.error('Error fetching news:', err);
-      setError('Failed to load personalized news. Please try again later.');
+      setError(t('myNews.error'));
     } finally {
       setLoading(false);
       setLoadingMore(false);
@@ -119,7 +121,7 @@ const MyNews = () => {
       fetchNews(1);
     } catch (err) {
       console.error('Error saving preferences:', err);
-      alert('Failed to save preferences. Please try again.');
+      alert(t('myNews.savePrefError'));
     }
   };
 
@@ -164,7 +166,7 @@ const MyNews = () => {
                 className={`${styles.tab} ${activeTab === 'feed' ? styles.activeTab : ''}`}
               >
                 <FaNewspaper />
-                My Feed
+                {t('myNews.feed')}
                 {news.length > 0 && <span className={styles.badge}>{news.length}</span>}
               </button>
               <button
@@ -172,7 +174,7 @@ const MyNews = () => {
                 className={`${styles.tab} ${activeTab === 'saved' ? styles.activeTab : ''}`}
               >
                 <FaBookmark />
-                Saved Articles
+                {t('myNews.savedTab')}
                 {savedArticles.length > 0 && <span className={styles.badge}>{savedArticles.length}</span>}
               </button>
             </div>
@@ -183,7 +185,7 @@ const MyNews = () => {
               disabled={loading || savedLoading}
             >
               <FaSync className={(loading || savedLoading) ? styles.spinning : ''} />
-              Refresh
+              {t('myNews.refresh')}
             </button>
           </div>
 
@@ -203,22 +205,22 @@ const MyNews = () => {
             {loading ? (
               <div className={styles.stateContainer}>
                 <LoadingSpinner />
-                <p className={styles.stateText}>Loading your personalized news…</p>
+                <p className={styles.stateText}>{t('myNews.loading')}</p>
               </div>
             ) : error ? (
               <div className={styles.stateContainer}>
                 <FaExclamationCircle className={styles.errorIcon} />
                 <p className={styles.stateText}>{error}</p>
                 <button onClick={() => fetchNews(1)} className={styles.actionBtn}>
-                  Try Again
+                  {t('common.tryAgain')}
                 </button>
               </div>
             ) : news.length === 0 ? (
               <div className={styles.stateContainer}>
                 <FaNewspaper className={styles.emptyIcon} />
-                <h3 className={styles.emptyTitle}>No news articles found</h3>
+                <h3 className={styles.emptyTitle}>{t('myNews.empty.feed.title')}</h3>
                 <p className={styles.stateText}>
-                  Try selecting different topics or check back later for updates.
+                  {t('myNews.empty.feed.text')}
                 </p>
               </div>
             ) : (
@@ -243,17 +245,17 @@ const MyNews = () => {
             {savedLoading ? (
               <div className={styles.stateContainer}>
                 <LoadingSpinner />
-                <p className={styles.stateText}>Loading saved articles…</p>
+                <p className={styles.stateText}>{t('myNews.savedLoading')}</p>
               </div>
             ) : savedArticles.length === 0 ? (
               <div className={styles.stateContainer}>
                 <FaBookmark className={styles.emptyIcon} />
-                <h3 className={styles.emptyTitle}>No saved articles yet</h3>
+                <h3 className={styles.emptyTitle}>{t('myNews.empty.saved.title')}</h3>
                 <p className={styles.stateText}>
-                  Articles you save will appear here for easy access later.
+                  {t('myNews.empty.saved.text')}
                 </p>
                 <button onClick={() => setActiveTab('feed')} className={styles.actionBtn}>
-                  Browse My Feed
+                  {t('myNews.browseFeed')}
                 </button>
               </div>
             ) : (

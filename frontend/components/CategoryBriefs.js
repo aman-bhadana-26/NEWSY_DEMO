@@ -1,42 +1,45 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import { formatTimeAgo } from '../utils/timeAgo';
 import styles from '../styles/CategoryBriefs.module.css';
 
 export default function CategoryBriefs({ news }) {
   const router = useRouter();
+  const { t } = useLanguage();
   const [imageErrors, setImageErrors] = useState({});
 
   const categories = [
-    { 
-      name: 'AI', 
+    {
+      name: t('briefs.cat.ai.name'),
       value: 'ai',
-      description: 'Latest developments in artificial intelligence, machine learning, and automation',
-      keywords: ['AI', 'artificial intelligence', 'machine learning', 'neural', 'GPT', 'algorithm', 'automation', 'deep learning']
+      description: t('briefs.cat.ai.desc'),
+      keywords: ['AI', 'artificial intelligence', 'machine learning', 'neural', 'GPT', 'algorithm', 'automation', 'deep learning'],
     },
-    { 
-      name: 'Startup', 
+    {
+      name: t('briefs.cat.startups.name'),
       value: 'startups',
-      description: 'Breaking news from the startup ecosystem, funding rounds, and entrepreneurship',
-      keywords: ['startup', 'founder', 'entrepreneur', 'venture', 'funding', 'raise', 'investment', 'unicorn']
+      description: t('briefs.cat.startups.desc'),
+      keywords: ['startup', 'founder', 'entrepreneur', 'venture', 'funding', 'raise', 'investment', 'unicorn'],
     },
-    { 
-      name: 'Software', 
+    {
+      name: t('briefs.cat.software.name'),
       value: 'software',
-      description: 'Programming trends, developer tools, frameworks, and software engineering',
-      keywords: ['software', 'programming', 'code', 'developer', 'app', 'application', 'framework', 'API']
+      description: t('briefs.cat.software.desc'),
+      keywords: ['software', 'programming', 'code', 'developer', 'app', 'application', 'framework', 'API'],
     },
-    { 
-      name: 'Gadgets', 
+    {
+      name: t('briefs.cat.gadgets.name'),
       value: 'gadgets',
-      description: 'Latest tech devices, product launches, reviews, and consumer electronics',
-      keywords: ['gadget', 'device', 'phone', 'laptop', 'hardware', 'product', 'smartphone', 'tablet']
+      description: t('briefs.cat.gadgets.desc'),
+      keywords: ['gadget', 'device', 'phone', 'laptop', 'hardware', 'product', 'smartphone', 'tablet'],
     },
-    { 
-      name: 'Cybersecurity', 
+    {
+      name: t('briefs.cat.cybersecurity.name'),
       value: 'cybersecurity',
-      description: 'Security threats, data breaches, privacy issues, and protection strategies',
-      keywords: ['security', 'hack', 'breach', 'cyber', 'malware', 'threat', 'vulnerability', 'encryption']
-    }
+      description: t('briefs.cat.cybersecurity.desc'),
+      keywords: ['security', 'hack', 'breach', 'cyber', 'malware', 'threat', 'vulnerability', 'encryption'],
+    },
   ];
 
   const handleImageError = (articleUrl) => {
@@ -93,16 +96,7 @@ export default function CategoryBriefs({ news }) {
     router.push(`/article/${slug}?data=${articleData}`);
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
-    
-    if (diffInHours < 1) return 'Just now';
-    if (diffInHours < 24) return `${diffInHours}h ago`;
-    if (diffInHours < 48) return 'Yesterday';
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
+  const formatDate = (dateString) => formatTimeAgo(dateString, t);
 
   return (
     <section className={styles.categoryBriefs}>
@@ -126,7 +120,7 @@ export default function CategoryBriefs({ news }) {
                   className={styles.viewAllBtn}
                   onClick={() => handleViewAll(category.value)}
                 >
-                  All {category.name} →
+                  {t('briefs.allPrefix')} {category.name} →
                 </button>
               </div>
 
@@ -148,7 +142,7 @@ export default function CategoryBriefs({ news }) {
                     ) : (
                       <div className={styles.imagePlaceholder}>
                         <div className={styles.placeholderIcon}>📰</div>
-                        <p className={styles.placeholderText}>No Image</p>
+                        <p className={styles.placeholderText}>{t('briefs.noImage')}</p>
                       </div>
                     )}
                     <div className={styles.featuredOverlay}></div>
@@ -158,10 +152,10 @@ export default function CategoryBriefs({ news }) {
                     <span className={styles.featuredBadge}>{category.name}</span>
                     <h3 className={styles.featuredTitle}>{featuredArticle.title}</h3>
                     <p className={styles.featuredDescription}>
-                      {featuredArticle.description || 'Read the full story to learn more about this developing news.'}
+                      {featuredArticle.description || t('briefs.fallbackDescription')}
                     </p>
                     <div className={styles.featuredMeta}>
-                      <span className={styles.metaSource}>{featuredArticle.source?.name || 'Unknown Source'}</span>
+                      <span className={styles.metaSource}>{featuredArticle.source?.name || t('common.unknownSource')}</span>
                       <span className={styles.metaDivider}>•</span>
                       <span className={styles.metaDate}>{formatDate(featuredArticle.publishedAt)}</span>
                     </div>
@@ -194,7 +188,7 @@ export default function CategoryBriefs({ news }) {
                       <div className={styles.smallContent}>
                         <h4 className={styles.smallTitle}>{article.title}</h4>
                         <div className={styles.smallMeta}>
-                          <span className={styles.smallSource}>{article.source?.name || 'Unknown'}</span>
+                          <span className={styles.smallSource}>{article.source?.name || t('common.unknown')}</span>
                           <span className={styles.metaDivider}>•</span>
                           <span className={styles.smallDate}>{formatDate(article.publishedAt)}</span>
                         </div>

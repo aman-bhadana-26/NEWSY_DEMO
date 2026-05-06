@@ -8,6 +8,8 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { newsAPI } from '../utils/api';
+import { useLanguage } from '../context/LanguageContext';
+import { formatTimeAgo } from '../utils/timeAgo';
 import Navbar from '../components/Navbar';
 import { NewsCardSkeleton } from '../components/Skeleton';
 import styles from '../styles/Landing.module.css';
@@ -40,6 +42,7 @@ const stagger = {
    SCENE 1 – CINEMATIC HERO  (sticky, 200vh)
 ══════════════════════════════════════════════════════════════ */
 function HeroScene() {
+  const { t } = useLanguage();
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -50,6 +53,10 @@ function HeroScene() {
   const copyY       = useTransform(scrollYProgress, [0, 1],    ['0%', '-24%']);
   const copyOpacity = useTransform(scrollYProgress, [0, 0.7],  [1, 0]);
 
+  // Split the localized headline into words. Words from index 2 onward
+  // get the gradient accent (matches the original "for the Modern World." styling).
+  const heroWords = t('landing.hero.h1').split(/\s+/).filter(Boolean);
+  const ACCENT_FROM = Math.min(2, heroWords.length);
 
   return (
     <div ref={containerRef} style={{ height: '100vh', position: 'relative' }}>
@@ -94,12 +101,12 @@ function HeroScene() {
             {/* Eyebrow badge */}
             <motion.div variants={fadeUp} className={styles.eyebrow}>
               <span className={styles.liveDot} />
-              <span className={styles.eyebrowText}>Technology Intelligence Platform</span>
+              <span className={styles.eyebrowText}>{t('landing.eyebrow')}</span>
             </motion.div>
 
             {/* H1 — word-by-word blur-in */}
             <h1 className={styles.heroH1}>
-              {['Technology', 'Intelligence', 'for', 'the', 'Modern', 'World.'].map((word, i) => (
+              {heroWords.map((word, i) => (
                 <motion.span
                   key={i}
                   initial={{ opacity: 0, y: 36, filter: 'blur(10px)' }}
@@ -108,7 +115,7 @@ function HeroScene() {
                   style={{
                     display: 'inline-block',
                     marginRight: '0.28em',
-                    ...(i >= 2 ? {
+                    ...(i >= ACCENT_FROM ? {
                       background: 'linear-gradient(105deg, #1BA098, #24c9b8 40%, #DEB992)',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
@@ -126,14 +133,14 @@ function HeroScene() {
 
             {/* Subtext */}
             <motion.p variants={fadeUp} className={styles.heroSub}>
-              AI, startups, cybersecurity, software and gadget news —{' '}
-              <span style={{ color: '#6a8a9a' }}>curated for innovators.</span>
+              {t('landing.hero.sub1')}{' '}
+              <span style={{ color: '#6a8a9a' }}>{t('landing.hero.sub2')}</span>
             </motion.p>
 
             {/* CTA buttons */}
             <motion.div variants={fadeUp} className={styles.heroBtns}>
-              <Link href="/home" className={styles.btnPrimary}>Explore News →</Link>
-              <Link href="/trending" className={styles.btnSecondary}>View Trending</Link>
+              <Link href="/home" className={styles.btnPrimary}>{t('landing.hero.exploreNews')}</Link>
+              <Link href="/trending" className={styles.btnSecondary}>{t('landing.hero.viewTrending')}</Link>
             </motion.div>
 
           </motion.div>
@@ -148,7 +155,7 @@ function HeroScene() {
           transition={{ delay: 2 }}
           style={{ opacity: copyOpacity }}
         >
-          <span className={styles.scrollLabel}>Scroll</span>
+          <span className={styles.scrollLabel}>{t('common.scroll')}</span>
           <div className={styles.scrollChevron} />
         </motion.div>
       </div>
@@ -161,10 +168,12 @@ function HeroScene() {
    SCENE 2 – PLATFORM INTRODUCTION
 ══════════════════════════════════════════════════════════════ */
 function PlatformScene() {
+  const { t } = useLanguage();
   const ref = useRef(null);
   const inView = useInView(ref, { once: false, margin: '-100px' });
-  const WORDS = ['Built', 'for', 'the', 'Next', 'Generation', 'of', 'Innovators.'];
-  const ACCENT_IDX = new Set([3, 4, 5]);
+  const WORDS = t('landing.platform.h2').split(/\s+/).filter(Boolean);
+  // Accent the second half of the headline.
+  const accentFrom = Math.ceil(WORDS.length / 2);
 
   return (
     <section className={styles.platformSection}>
@@ -179,7 +188,7 @@ function PlatformScene() {
         transition={{ duration: 0.7 }}
       >
         <span className={styles.eyebrowLine} />
-        <span className={styles.eyebrowLabel}>Our Mission</span>
+        <span className={styles.eyebrowLabel}>{t('landing.platform.eyebrow')}</span>
         <span className={styles.eyebrowLine} />
       </motion.div>
 
@@ -194,7 +203,7 @@ function PlatformScene() {
             style={{
               display: 'inline-block',
               marginRight: '0.28em',
-              ...(ACCENT_IDX.has(i) ? {
+              ...(i >= accentFrom ? {
                 background: 'linear-gradient(105deg, #1BA098, #24c9b8 40%, #DEB992)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
@@ -210,9 +219,9 @@ function PlatformScene() {
       {/* Three pillars */}
       <div className={styles.pillarsRow}>
         {[
-          { label: 'Real-time',        desc: 'Updated every 15 min from 1,000+ global sources',    color: '#1BA098' },
-          { label: 'AI-Curated',       desc: 'Machine learning filters noise, surfaces signal',     color: '#a78bfa' },
-          { label: 'Editorial Quality',desc: 'Human editorial oversight ensures accuracy',          color: '#DEB992' },
+          { label: t('landing.pillars.realtime.label'),  desc: t('landing.pillars.realtime.desc'),  color: '#1BA098' },
+          { label: t('landing.pillars.curated.label'),   desc: t('landing.pillars.curated.desc'),   color: '#a78bfa' },
+          { label: t('landing.pillars.editorial.label'), desc: t('landing.pillars.editorial.desc'), color: '#DEB992' },
         ].map((p, i) => (
           <motion.div
             key={p.label}
@@ -239,17 +248,18 @@ function PlatformScene() {
    SCENE 4 – TRENDING NEWS VISUALIZATION
 ══════════════════════════════════════════════════════════════ */
 function TrendingScene({ articles }) {
+  const { t } = useLanguage();
   const trackRef   = useRef(null);
   const isDragging = useRef(false);
   const startX     = useRef(0);
   const scrollLeft = useRef(0);
 
   const detectCat = (a) => {
-    const t = `${a.title} ${a.description || ''}`.toLowerCase();
-    if (/\bai\b|gpt|machine learning|openai/.test(t)) return { label: 'AI',       color: '#a78bfa', bg: 'rgba(167,139,250,' };
-    if (/security|hack|breach|cyber/.test(t))          return { label: 'SECURITY', color: '#f87171', bg: 'rgba(248,113,113,' };
-    if (/startup|funding|unicorn/.test(t))              return { label: 'STARTUP',  color: '#DEB992', bg: 'rgba(222,185,146,' };
-    if (/software|code|developer/.test(t))              return { label: 'SOFTWARE', color: '#60a5fa', bg: 'rgba(96,165,250,'  };
+    const text = `${a.title} ${a.description || ''}`.toLowerCase();
+    if (/\bai\b|gpt|machine learning|openai/.test(text)) return { label: 'AI',       color: '#a78bfa', bg: 'rgba(167,139,250,' };
+    if (/security|hack|breach|cyber/.test(text))          return { label: 'SECURITY', color: '#f87171', bg: 'rgba(248,113,113,' };
+    if (/startup|funding|unicorn/.test(text))              return { label: 'STARTUP',  color: '#DEB992', bg: 'rgba(222,185,146,' };
+    if (/software|code|developer/.test(text))              return { label: 'SOFTWARE', color: '#60a5fa', bg: 'rgba(96,165,250,'  };
     return { label: 'TECH', color: '#1BA098', bg: 'rgba(27,160,152,' };
   };
 
@@ -286,14 +296,14 @@ function TrendingScene({ articles }) {
           <div>
             <div className={styles.sectionEyebrow}>
               <span className={styles.eyebrowLine} />
-              <span className={styles.sectionEyebrowText}>🔥 Trending Now</span>
+              <span className={styles.sectionEyebrowText}>{t('landing.trending.eyebrow')}</span>
             </div>
             <h2 className={styles.sectionH2}>
-              What&apos;s{' '}
-              <span className={styles.gradientText}>Hot</span>{' '}Right Now
+              {t('landing.trending.h2_part1')}{' '}
+              <span className={styles.gradientText}>{t('landing.trending.h2_part2')}</span>{' '}{t('landing.trending.h2_part3')}
             </h2>
           </div>
-          <a href="/trending" className={styles.viewAllLink}>View All →</a>
+          <a href="/trending" className={styles.viewAllLink}>{t('common.viewAllArrow')}</a>
         </motion.div>
 
         {/* Draggable card track */}
@@ -318,8 +328,7 @@ function TrendingScene({ articles }) {
           {articles.slice(0, 10).map((a, i) => {
             const cat  = detectCat(a);
             const url  = buildUrl(a);
-            const mins = Math.round((Date.now() - new Date(a.publishedAt)) / 60000);
-            const ago  = mins < 60 ? `${mins}m ago` : mins < 1440 ? `${Math.round(mins / 60)}h ago` : `${Math.round(mins / 1440)}d ago`;
+            const ago  = formatTimeAgo(a.publishedAt, t);
 
             return (
               <motion.a
@@ -388,6 +397,7 @@ function TrendingScene({ articles }) {
    SCENE 5 – VISION STATEMENT
 ══════════════════════════════════════════════════════════════ */
 function VisionScene() {
+  const { t } = useLanguage();
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -412,14 +422,14 @@ function VisionScene() {
           style={{ justifyContent: 'center', marginBottom: '42px' }}
         >
           <span className={styles.eyebrowLine} style={{ background: '#DEB992' }} />
-          <span className={styles.eyebrowLabel} style={{ color: '#DEB992' }}>Our Vision</span>
+          <span className={styles.eyebrowLabel} style={{ color: '#DEB992' }}>{t('landing.vision.eyebrow')}</span>
           <span className={styles.eyebrowLine} style={{ background: '#DEB992' }} />
         </motion.div>
 
         <motion.h2 className={styles.visionH2} style={{ letterSpacing }}>
-          NewsyTech delivers the most important{' '}
-          <span className={styles.gradientText}>technology insights</span>{' '}
-          from around the world.
+          {t('landing.vision.h2_part1')}{' '}
+          <span className={styles.gradientText}>{t('landing.vision.h2_part2')}</span>{' '}
+          {t('landing.vision.h2_part3')}
         </motion.h2>
 
         <motion.p
@@ -429,8 +439,7 @@ function VisionScene() {
           viewport={{ once: false }}
           transition={{ duration: 1, delay: 0.35 }}
         >
-          Join thousands of professionals who trust NewsyTech to stay ahead of
-          the curve in AI, cybersecurity, startups, and emerging technologies.
+          {t('landing.vision.sub')}
         </motion.p>
       </motion.div>
     </section>
@@ -441,6 +450,7 @@ function VisionScene() {
    SCENE 6 – FINAL CTA
 ══════════════════════════════════════════════════════════════ */
 function CTAScene() {
+  const { t } = useLanguage();
   return (
     <section className={styles.ctaSection}>
       <div className={styles.ctaDivider} />
@@ -456,26 +466,25 @@ function CTAScene() {
         {/* Eyebrow */}
         <div className={styles.eyebrowRow} style={{ justifyContent: 'center', marginBottom: '26px' }}>
           <span className={styles.eyebrowLine} style={{ background: '#DEB992' }} />
-          <span className={styles.eyebrowLabel} style={{ color: '#DEB992' }}>Stay Informed</span>
+          <span className={styles.eyebrowLabel} style={{ color: '#DEB992' }}>{t('landing.cta.eyebrow')}</span>
           <span className={styles.eyebrowLine} style={{ background: '#DEB992' }} />
         </div>
 
         {/* Headline */}
         <h2 className={styles.ctaH2}>
-          Explore the Future of{' '}
-          <span className={styles.gradientText}>Technology.</span>
+          {t('landing.cta.h2_part1')}{' '}
+          <span className={styles.gradientText}>{t('landing.cta.h2_part2')}</span>
         </h2>
 
         {/* Body copy */}
         <p className={styles.ctaSub}>
-          Join thousands of professionals who rely on NewsyTech for crisp,
-          curated, real-time technology news from around the globe.
+          {t('landing.cta.sub')}
         </p>
 
         {/* Buttons */}
         <div className={styles.ctaBtns}>
-          <Link href="/home" className={styles.btnPrimary}>Explore News →</Link>
-          <Link href="/trending" className={styles.btnSecondary}>View Trending</Link>
+          <Link href="/home" className={styles.btnPrimary}>{t('landing.hero.exploreNews')}</Link>
+          <Link href="/trending" className={styles.btnSecondary}>{t('landing.hero.viewTrending')}</Link>
         </div>
       </motion.div>
     </section>

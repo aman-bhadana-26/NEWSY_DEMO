@@ -6,18 +6,20 @@ import Layout from '../../components/Layout';
 import { ArticleSkeleton } from '../../components/Skeleton';
 import { getFullDate } from '../../utils/formatDate';
 import { newsAPI } from '../../utils/api';
+import { useLanguage } from '../../context/LanguageContext';
 import { FaArrowLeft } from 'react-icons/fa';
 import styles from '../../styles/Article.module.css';
 
-// Detect category from title/source
-const detectCategory = (article) => {
+// Detect category key from title/source. Returns a translation key suffix
+// (e.g. 'ai', 'cybersecurity'); the caller resolves it via t('article.cat.<key>').
+const detectCategoryKey = (article) => {
   const text = ((article?.title || '') + ' ' + (article?.source || '')).toLowerCase();
-  if (text.includes('ai') || text.includes('artificial') || text.includes('gpt') || text.includes('openai') || text.includes('machine learning')) return 'Artificial Intelligence';
-  if (text.includes('cyber') || text.includes('hack') || text.includes('security') || text.includes('breach')) return 'Cybersecurity';
-  if (text.includes('software') || text.includes('dev') || text.includes('code') || text.includes('github')) return 'Software';
-  if (text.includes('gadget') || text.includes('device') || text.includes('hardware') || text.includes('chip')) return 'Gadgets';
-  if (text.includes('startup') || text.includes('funding') || text.includes('venture')) return 'Startup';
-  return 'Technology';
+  if (text.includes('ai') || text.includes('artificial') || text.includes('gpt') || text.includes('openai') || text.includes('machine learning')) return 'ai';
+  if (text.includes('cyber') || text.includes('hack') || text.includes('security') || text.includes('breach')) return 'cybersecurity';
+  if (text.includes('software') || text.includes('dev') || text.includes('code') || text.includes('github')) return 'software';
+  if (text.includes('gadget') || text.includes('device') || text.includes('hardware') || text.includes('chip')) return 'gadgets';
+  if (text.includes('startup') || text.includes('funding') || text.includes('venture')) return 'startups';
+  return 'tech';
 };
 
 // Get initials from name
@@ -27,14 +29,15 @@ const getInitials = (name) => {
 };
 
 // Estimate read time
-const readTime = (content, description) => {
+const readTime = (content, description, t) => {
   const text = (content || '') + (description || '');
   const words = text.split(/\s+/).length;
-  return Math.max(2, Math.round(words / 200)) + ' min';
+  return Math.max(2, Math.round(words / 200)) + ' ' + t('time.min');
 };
 
 export default function Article() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { data } = router.query;
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -79,12 +82,12 @@ export default function Article() {
       if (response.success && response.article) {
         setFullContent(response.article);
         setShowFullArticle(true);
-        if (response.partial) setContentError('Partial content loaded. Some details may be missing.');
+        if (response.partial) setContentError(t('article.partialLoaded'));
       } else {
-        setContentError(response.message || 'Unable to load full article content');
+        setContentError(response.message || t('article.unableLoad'));
       }
     } catch {
-      setContentError('Failed to load full article. The content may be protected or unavailable.');
+      setContentError(t('article.failedLoad'));
     } finally {
       setLoadingFullContent(false);
     }
@@ -132,11 +135,11 @@ export default function Article() {
         <div className={styles.articleContainer}>
           <div className={styles.articleContent}>
             <button onClick={() => router.back()} className={styles.backButton}>
-              <FaArrowLeft /> Back
+              <FaArrowLeft /> {t('article.back')}
             </button>
             <div className={styles.errorMessage}>
-              <h2>Article Not Found</h2>
-              <p>The article you&apos;re looking for could not be loaded.</p>
+              <h2>{t('article.notFound.title')}</h2>
+              <p>{t('article.notFound.text')}</p>
             </div>
           </div>
         </div>
@@ -145,10 +148,11 @@ export default function Article() {
   }
 
   const hasImage = article.urlToImage && article.urlToImage.trim() !== '';
-  const category = detectCategory(article);
+  const categoryKey = detectCategoryKey(article);
+  const category = t(`article.cat.${categoryKey}`);
   const authorInitials = getInitials(article.author);
   const sourceName = typeof article.source === 'string' ? article.source : article.source?.name || 'NEWSY TECH';
-  const estRead = readTime(article.content, article.description);
+  const estRead = readTime(article.content, article.description, t);
 
   // Build breadcrumb
   const shortTitle = article.title?.length > 40 ? article.title.slice(0, 40) + '…' : article.title;
@@ -157,7 +161,7 @@ export default function Article() {
     <Layout title={`${article.title} – NEWSY TECH`}>
       {/* Breadcrumb */}
       <div className={styles.breadcrumb}>
-        <span onClick={() => router.push('/')}>Home</span>
+        <span onClick={() => router.push('/')}>{t('nav.home')}</span>
         {' > '}
         <span onClick={() => router.push('/')}>{category}</span>
         {' > '}
@@ -169,7 +173,7 @@ export default function Article() {
         {/* ── MAIN COLUMN ── */}
         <main className={styles.mainColumn}>
           <button onClick={() => router.back()} className={styles.backButton}>
-            <FaArrowLeft /> Back
+            <FaArrowLeft /> {t('article.back')}
           </button>
 
           {/* Source + Category */}
@@ -185,15 +189,15 @@ export default function Article() {
           <div className={styles.authorMeta}>
             <div className={styles.authorAvatar}>{authorInitials}</div>
             <div className={styles.authorInfo}>
-              <div className={styles.authorName}>{article.author || 'NEWSY TECH Staff'}</div>
-              <div className={styles.authorRole}>Staff Correspondent</div>
+              <div className={styles.authorName}>{article.author || t('article.author.staff')}</div>
+              <div className={styles.authorRole}>{t('article.author.role')}</div>
             </div>
             <div className={styles.metaDivider} />
             <span className={styles.metaDate}>
               {getFullDate(article.publishedAt)} · {estRead}
             </span>
             <div className={styles.metaActions}>
-              <button className={styles.metaBtn} onClick={() => navigator?.share?.({ title: article.title, url: window.location.href })}>Share</button>
+              <button className={styles.metaBtn} onClick={() => navigator?.share?.({ title: article.title, url: window.location.href })}>{t('article.share')}</button>
             </div>
           </div>
 
@@ -211,7 +215,7 @@ export default function Article() {
             </div>
           ) : (
             <div className={styles.imagePlaceholder}>
-              // read image
+              {t('article.imagePlaceholder')}
             </div>
           )}
 
@@ -239,7 +243,7 @@ export default function Article() {
                     return <p key={i}>{para}</p>;
                   })}
                   <div className={styles.contentNote}>
-                    <strong>✅ Full article loaded</strong> — content extracted from {sourceName}.
+                    <strong>{t('article.fullLoadedPrefix')}</strong> — {t('article.fullLoadedSuffix')} {sourceName}.
                   </div>
                 </div>
               ) : article.content ? (
@@ -248,20 +252,20 @@ export default function Article() {
                   {hasMoreContent(article.content) && <div className={styles.fadeOut} />}
                 </>
               ) : (
-                <p>{article.description || 'Article content preview…'}</p>
+                <p>{article.description || t('article.preview')}</p>
               )}
             </div>
 
             {contentError && (
               <div className={styles.errorNote}>
-                <strong>⚠ Notice:</strong> {contentError}
+                <strong>{t('article.warning')}</strong> {contentError}
               </div>
             )}
 
             {!showFullArticle && (
               <div className={styles.readMoreSection}>
                 <button onClick={fetchFullContent} className={styles.readMoreButton} disabled={loadingFullContent}>
-                  {loadingFullContent ? '⏳ Loading…' : '📖 Read Full Article'}
+                  {loadingFullContent ? t('article.loadingFull') : t('article.readFull')}
                 </button>
               </div>
             )}
@@ -269,7 +273,7 @@ export default function Article() {
             {showFullArticle && fullContent && (
               <div className={styles.readMoreSection}>
                 <button onClick={() => setShowFullArticle(false)} className={styles.readMoreButton}>
-                  <FaArrowLeft /> Show Less
+                  <FaArrowLeft /> {t('article.showLess')}
                 </button>
               </div>
             )}
@@ -279,10 +283,10 @@ export default function Article() {
           <div className={styles.authorBioCard}>
             <div className={styles.bioBigAvatar}>{authorInitials}</div>
             <div className={styles.bioContent}>
-              <div className={styles.bioName}>{article.author || 'NEWSY TECH Staff'}</div>
-              <div className={styles.bioRole}>Staff Correspondent</div>
+              <div className={styles.bioName}>{article.author || t('article.author.staff')}</div>
+              <div className={styles.bioRole}>{t('article.author.role')}</div>
               <p className={styles.bioText}>
-                Covering the latest in {category.toLowerCase()} and emerging technology. Published in NEWSY TECH.
+                {t('article.bioPrefix')} {category.toLowerCase()} {t('article.bioSuffix')}
               </p>
             </div>
           </div>
@@ -290,15 +294,15 @@ export default function Article() {
           {/* Footer bar */}
           <div className={styles.articleFooter}>
             <div className={styles.footerTags}>
-              Tags: <span>{category}</span> · <span>Tech</span> · <span>News</span>
+              {t('article.tags')} <span>{category}</span> · <span>{t('common.tech')}</span> · <span>{t('common.news')}</span>
             </div>
             <div className={styles.footerLinks}>
-              <button className={styles.footerLink} onClick={() => router.back()}>Previous</button>
+              <button className={styles.footerLink} onClick={() => router.back()}>{t('article.previous')}</button>
               <button
                 className={styles.footerLink}
                 onClick={() => navigator?.share?.({ title: article.title, url: window.location.href })}
               >
-                Share
+                {t('article.share')}
               </button>
             </div>
           </div>
@@ -310,31 +314,31 @@ export default function Article() {
           {/* Authors */}
           <div className={styles.sidebarSection}>
             <div className={styles.sidebarHeading}>
-              {article.author ? '1 Author' : 'Staff'}
+              {article.author ? t('article.author.one') : t('article.author.staffLabel')}
             </div>
             <div className={styles.sideAuthorList}>
               <div className={styles.sideAuthorItem}>
                 <div className={styles.sideAvatar}>{authorInitials}</div>
-                <div className={styles.sideAuthorName}>{article.author || 'NEWSY TECH Staff'}</div>
+                <div className={styles.sideAuthorName}>{article.author || t('article.author.staff')}</div>
               </div>
             </div>
           </div>
 
           {/* Promo card */}
           <div className={styles.promoCard}>
-            <div className={styles.promoLabel}>Sponsored</div>
-            <div className={styles.promoTitle}>Stay ahead of the curve with NEWSY TECH Premium</div>
-            <span className={styles.promoBtn}>Learn More</span>
+            <div className={styles.promoLabel}>{t('article.sponsored')}</div>
+            <div className={styles.promoTitle}>{t('article.promoTitle')}</div>
+            <span className={styles.promoBtn}>{t('article.learnMore')}</span>
           </div>
 
           {/* More Stories */}
           {relatedStories.length > 0 && (
             <div className={styles.sidebarSection}>
-              <div className={styles.sidebarHeading}>More Stories</div>
+              <div className={styles.sidebarHeading}>{t('article.moreStories')}</div>
               <div className={styles.moreStoryList}>
                 {relatedStories.map((story, i) => (
                   <Link key={i} href={createSlug(story)} className={styles.moreStoryItem}>
-                    <div className={styles.moreStoryCategory}>{detectCategory(story)}</div>
+                    <div className={styles.moreStoryCategory}>{t(`article.cat.${detectCategoryKey(story)}`)}</div>
                     <div className={styles.moreStoryTitle}>
                       {story.title?.length > 70 ? story.title.slice(0, 70) + '…' : story.title}
                     </div>

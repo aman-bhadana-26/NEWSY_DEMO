@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaClock, FaArrowRight, FaNewspaper } from 'react-icons/fa';
+import { useLanguage } from '../context/LanguageContext';
+import { formatTimeAgo } from '../utils/timeAgo';
 import styles from '../styles/TopStories.module.css';
 
 const TopStories = ({ stories }) => {
+  const { t } = useLanguage();
   const [activeStory, setActiveStory] = useState(0);
 
   // Filter stories with images and get top 5
@@ -26,16 +29,7 @@ const TopStories = ({ stories }) => {
   const mainStory = topStories[activeStory];
   const sideStories = topStories.filter((_, index) => index !== activeStory).slice(0, 3);
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
-    
-    if (diffInHours < 1) return 'Just now';
-    if (diffInHours < 24) return `${diffInHours}h ago`;
-    if (diffInHours < 48) return 'Yesterday';
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  };
+  const formatDate = (dateString) => formatTimeAgo(dateString, t);
 
   const createSlug = (article) => {
     const title = article.title.split(' - ')[0];
@@ -76,7 +70,7 @@ const TopStories = ({ stories }) => {
       {/* Content Layer */}
       <div className={styles.contentLayer}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Top Stories</h2>
+          <h2 className={styles.title}>{t('topStories.title')}</h2>
           <div className={styles.indicators}>
             {topStories.map((_, index) => (
               <button
@@ -96,11 +90,11 @@ const TopStories = ({ stories }) => {
             href={createSlug(mainStory)} 
             className={styles.mainStory}
           >
-            <span className={styles.badge}>FEATURED</span>
+            <span className={styles.badge}>{t('topStories.featured')}</span>
             <div className={styles.mainStoryContent}>
               <div className={styles.mainStoryMeta}>
                 <span className={styles.source}>
-                  {typeof mainStory.source === 'string' ? mainStory.source : mainStory.source?.name || 'Unknown'}
+                  {typeof mainStory.source === 'string' ? mainStory.source : mainStory.source?.name || t('common.unknown')}
                 </span>
                 <span className={styles.separator}>•</span>
                 <span className={styles.time}>
@@ -110,7 +104,7 @@ const TopStories = ({ stories }) => {
               <h3 className={styles.mainStoryTitle}>{mainStory.title}</h3>
               <p className={styles.mainStoryDescription}>{mainStory.description}</p>
               <div className={styles.readMore}>
-                Read Full Story <FaArrowRight />
+                {t('topStories.readFullStory')} <FaArrowRight />
               </div>
             </div>
           </Link>
@@ -132,7 +126,7 @@ const TopStories = ({ stories }) => {
                 <div className={styles.sideStoryContent}>
                   <div className={styles.sideStoryMeta}>
                     <span className={styles.sideSource}>
-                      {typeof story.source === 'string' ? story.source : story.source?.name || 'Unknown'}
+                      {typeof story.source === 'string' ? story.source : story.source?.name || t('common.unknown')}
                     </span>
                     <span className={styles.separator}>•</span>
                     <span className={styles.sideTime}>

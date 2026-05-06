@@ -3,12 +3,14 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import styles from '../styles/Auth.module.css';
 import Particles from '../components/Particles';
 import TextType from '../components/TextType';
 
 export default function Signup() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { register, isAuthenticated } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -35,19 +37,19 @@ export default function Signup() {
     setLoading(true);
 
     if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-      setError('Please fill in all fields');
+      setError(t('auth.fillFields'));
       setLoading(false);
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError(t('auth.passwordMin'));
       setLoading(false);
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('auth.passwordsMismatch'));
       setLoading(false);
       return;
     }
@@ -105,14 +107,14 @@ export default function Signup() {
             <div className={styles.formHeader}>
               <div className={styles.formEyebrow}>
                 <span className={styles.formEyebrowLine} />
-                <span className={styles.formEyebrowText}>Get Started</span>
+                <span className={styles.formEyebrowText}>{t('auth.getStarted')}</span>
                 <span className={styles.formEyebrowLine} />
               </div>
-              <h1 className={styles.formTitle}>Create your account</h1>
+              <h1 className={styles.formTitle}>{t('auth.createAccount')}</h1>
               <p className={styles.formSubtitle}>
-                Already have an account?{' '}
+                {t('auth.haveAccount')}{' '}
                 <Link href="/login" className={styles.formFooterLink}>
-                  Sign in here
+                  {t('auth.signInHere')}
                 </Link>
               </p>
             </div>
@@ -125,7 +127,7 @@ export default function Signup() {
 
               {/* Full Name */}
               <div className={styles.fieldGroup}>
-                <label htmlFor="name" className={styles.fieldLabel}>Full Name</label>
+                <label htmlFor="name" className={styles.fieldLabel}>{t('auth.fullName')}</label>
                 <div className={styles.fieldInputWrapper}>
                   <span className={styles.fieldIcon}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -140,7 +142,7 @@ export default function Signup() {
                     value={formData.name}
                     onChange={handleChange}
                     className={styles.fieldInput}
-                    placeholder="John Doe"
+                    placeholder={t('auth.namePlaceholder')}
                     autoComplete="name"
                     required
                   />
@@ -149,7 +151,7 @@ export default function Signup() {
 
               {/* Email */}
               <div className={styles.fieldGroup}>
-                <label htmlFor="email" className={styles.fieldLabel}>Email Address</label>
+                <label htmlFor="email" className={styles.fieldLabel}>{t('auth.email')}</label>
                 <div className={styles.fieldInputWrapper}>
                   <span className={styles.fieldIcon}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -164,7 +166,7 @@ export default function Signup() {
                     value={formData.email}
                     onChange={handleChange}
                     className={styles.fieldInput}
-                    placeholder="you@example.com"
+                    placeholder={t('auth.emailPlaceholder')}
                     autoComplete="email"
                     required
                   />
@@ -173,7 +175,7 @@ export default function Signup() {
 
               {/* Password */}
               <div className={styles.fieldGroup}>
-                <label htmlFor="password" className={styles.fieldLabel}>Password</label>
+                <label htmlFor="password" className={styles.fieldLabel}>{t('auth.password')}</label>
                 <div className={styles.fieldInputWrapper}>
                   <span className={styles.fieldIcon}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -188,7 +190,7 @@ export default function Signup() {
                     value={formData.password}
                     onChange={handleChange}
                     className={styles.fieldInput}
-                    placeholder="Min. 6 characters"
+                    placeholder={t('auth.passwordMinPlaceholder')}
                     autoComplete="new-password"
                     required
                   />
@@ -196,15 +198,15 @@ export default function Signup() {
                 {formData.password.length > 0 && (
                   <p className={styles.passwordHint}>
                     {formData.password.length < 6
-                      ? `${6 - formData.password.length} more character${6 - formData.password.length > 1 ? 's' : ''} needed`
-                      : '✓ Password length is good'}
+                      ? `${6 - formData.password.length} ${t('auth.charactersNeeded')}`
+                      : t('auth.passwordGood')}
                   </p>
                 )}
               </div>
 
               {/* Confirm Password */}
               <div className={styles.fieldGroup}>
-                <label htmlFor="confirmPassword" className={styles.fieldLabel}>Confirm Password</label>
+                <label htmlFor="confirmPassword" className={styles.fieldLabel}>{t('auth.confirmPassword')}</label>
                 <div className={styles.fieldInputWrapper}>
                   <span className={styles.fieldIcon}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -219,14 +221,14 @@ export default function Signup() {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     className={styles.fieldInput}
-                    placeholder="Re-enter your password"
+                    placeholder={t('auth.confirmPasswordPlaceholder')}
                     autoComplete="new-password"
                     required
                   />
                 </div>
                 {formData.confirmPassword.length > 0 && formData.password !== formData.confirmPassword && (
                   <p className={styles.passwordHint} style={{ color: '#ff7b89' }}>
-                    Passwords don&apos;t match
+                    {t('auth.passwordsDontMatch')}
                   </p>
                 )}
               </div>
@@ -234,16 +236,16 @@ export default function Signup() {
               {/* Submit */}
               <button type="submit" className={styles.submitBtn} disabled={loading}>
                 {loading && <span className={styles.btnSpinner} />}
-                {loading ? 'Creating Account…' : 'Create Account'}
+                {loading ? t('auth.creating') : t('auth.signupBtn')}
               </button>
             </form>
 
             {/* Footer */}
             <div className={styles.formFooter}>
               <p className={styles.formFooterText}>
-                Already have an account?
+                {t('auth.haveAccount')}
                 <Link href="/login" className={styles.formFooterLink}>
-                  Sign in
+                  {t('auth.signin')}
                 </Link>
               </p>
             </div>

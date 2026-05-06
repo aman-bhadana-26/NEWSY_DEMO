@@ -2,9 +2,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { formatDate } from '../utils/formatDate';
 import { FaNewspaper } from 'react-icons/fa';
+import { useLanguage } from '../context/LanguageContext';
 import styles from '../styles/NewsCard.module.css';
 
 const NewsCard = ({ article, category }) => {
+  const { t } = useLanguage();
   // Create a URL-friendly slug from the title
   const createSlug = (title) => {
     return title
@@ -62,7 +64,7 @@ const NewsCard = ({ article, category }) => {
               <div className={styles.placeholderIcon}>
                 <FaNewspaper />
               </div>
-              <p className={styles.placeholderText}>Tech News</p>
+              <p className={styles.placeholderText}>{t('newsCard.techNews')}</p>
             </div>
             {category && (
               <span className={styles.categoryBadge}>{category}</span>
@@ -73,7 +75,7 @@ const NewsCard = ({ article, category }) => {
 
       <div className={styles.content}>
         <div className={styles.meta}>
-          <span className={styles.source}>{article.source?.name || 'Unknown Source'}</span>
+          <span className={styles.source}>{article.source?.name || t('common.unknownSource')}</span>
           <span className={styles.date}>{formatDate(article.publishedAt)}</span>
         </div>
 
@@ -91,7 +93,7 @@ const NewsCard = ({ article, category }) => {
 
         <div className={styles.footer}>
           <Link href={articleUrl} className={styles.readMore}>
-            Read More →
+            {t('newsCard.readMore')}
           </Link>
         </div>
       </div>

@@ -3,12 +3,14 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import styles from '../styles/Auth.module.css';
 import Particles from '../components/Particles';
 import TextType from '../components/TextType';
 
 export default function Login() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { login, isAuthenticated } = useAuth();
 
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -30,7 +32,7 @@ export default function Login() {
     setLoading(true);
 
     if (!formData.email || !formData.password) {
-      setError('Please fill in all fields');
+      setError(t('auth.fillFields'));
       setLoading(false);
       return;
     }
@@ -83,14 +85,14 @@ export default function Login() {
             <div className={styles.formHeader}>
               <div className={styles.formEyebrow}>
                 <span className={styles.formEyebrowLine} />
-                <span className={styles.formEyebrowText}>Welcome Back</span>
+                <span className={styles.formEyebrowText}>{t('auth.welcomeBack')}</span>
                 <span className={styles.formEyebrowLine} />
               </div>
-              <h1 className={styles.formTitle}>Sign in to your account</h1>
+              <h1 className={styles.formTitle}>{t('auth.signInTitle')}</h1>
               <p className={styles.formSubtitle}>
-                Don&apos;t have an account?{' '}
+                {t('auth.noAccount')}{' '}
                 <Link href="/signup" className={styles.formFooterLink}>
-                  Create one free
+                  {t('auth.createOne')}
                 </Link>
               </p>
             </div>
@@ -103,7 +105,7 @@ export default function Login() {
 
               {/* Email */}
               <div className={styles.fieldGroup}>
-                <label htmlFor="email" className={styles.fieldLabel}>Email Address</label>
+                <label htmlFor="email" className={styles.fieldLabel}>{t('auth.email')}</label>
                 <div className={styles.fieldInputWrapper}>
                   <span className={styles.fieldIcon}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -118,7 +120,7 @@ export default function Login() {
                     value={formData.email}
                     onChange={handleChange}
                     className={styles.fieldInput}
-                    placeholder="you@example.com"
+                    placeholder={t('auth.emailPlaceholder')}
                     autoComplete="email"
                     required
                   />
@@ -127,7 +129,7 @@ export default function Login() {
 
               {/* Password */}
               <div className={styles.fieldGroup}>
-                <label htmlFor="password" className={styles.fieldLabel}>Password</label>
+                <label htmlFor="password" className={styles.fieldLabel}>{t('auth.password')}</label>
                 <div className={styles.fieldInputWrapper}>
                   <span className={styles.fieldIcon}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -142,7 +144,7 @@ export default function Login() {
                     value={formData.password}
                     onChange={handleChange}
                     className={styles.fieldInput}
-                    placeholder="Enter your password"
+                    placeholder={t('auth.passwordPlaceholder')}
                     autoComplete="current-password"
                     required
                   />
@@ -152,16 +154,16 @@ export default function Login() {
               {/* Submit */}
               <button type="submit" className={styles.submitBtn} disabled={loading}>
                 {loading && <span className={styles.btnSpinner} />}
-                {loading ? 'Signing in…' : 'Sign In'}
+                {loading ? t('auth.signingIn') : t('auth.signIn')}
               </button>
             </form>
 
             {/* Footer */}
             <div className={styles.formFooter}>
               <p className={styles.formFooterText}>
-                New to NEWSYTECH?
+                {t('auth.newToBrand')}
                 <Link href="/signup" className={styles.formFooterLink}>
-                  Create a free account
+                  {t('auth.createFreeAccount')}
                 </Link>
               </p>
             </div>

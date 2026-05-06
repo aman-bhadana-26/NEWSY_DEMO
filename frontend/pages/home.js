@@ -8,10 +8,13 @@ import TopTrending from '../components/TopTrending';
 import CategoryBriefs from '../components/CategoryBriefs';
 import CategoryPage from '../components/CategoryPage';
 import { newsAPI } from '../utils/api';
+import { useLanguage } from '../context/LanguageContext';
+import { formatTimeAgo } from '../utils/timeAgo';
 import styles from '../styles/Home.module.css';
 
 export default function Home() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { category = 'all', search } = router.query;
 
   const [news, setNews] = useState([]);
@@ -70,7 +73,7 @@ export default function Home() {
       setPage(pageNum);
     } catch (err) {
       console.error('Error fetching news:', err);
-      setError('Failed to load news. Please try again later.');
+      setError(t('home.error'));
     } finally {
       setLoading(false);
       setLoadingMore(false);
@@ -85,22 +88,14 @@ export default function Home() {
 
   const getCategoryName = (cat) => {
     const categoryNames = {
-      all: 'Latest Tech News',
-      ai: 'Artificial Intelligence',
-      startups: 'Startups',
-      software: 'Software Development',
-      gadgets: 'Gadgets & Devices',
-      cybersecurity: 'Cybersecurity',
+      all: t('home.latestTechNews'),
+      ai: t('footer.artificialIntelligence'),
+      startups: t('cat.startups'),
+      software: t('home.softwareDevelopment'),
+      gadgets: t('home.gadgetsDevices'),
+      cybersecurity: t('cat.cybersecurity'),
     };
-    return categoryNames[cat] || 'Tech News';
-  };
-
-  const getPageTitle = () => {
-    if (search) {
-      const catName = category !== 'all' ? ` in ${getCategoryName(category)}` : '';
-      return `Search Results for "${search}"${catName}`;
-    }
-    return getCategoryName(category);
+    return categoryNames[cat] || t('home.techNews');
   };
 
   return (
@@ -116,12 +111,12 @@ export default function Home() {
               <div className={styles.error}>
                 <p>{error}</p>
                 <button onClick={() => fetchNews(1)} className={styles.retryButton}>
-                  Try Again
+                  {t('common.tryAgain')}
                 </button>
               </div>
             ) : news.length === 0 ? (
               <div className={styles.noNews}>
-                <p>No news articles found.</p>
+                <p>{t('home.noNews')}</p>
               </div>
             ) : (
               <>
@@ -148,12 +143,12 @@ export default function Home() {
               <div className={styles.error}>
                 <p>{error}</p>
                 <button onClick={() => fetchNews(1)} className={styles.retryButton}>
-                  Try Again
+                  {t('common.tryAgain')}
                 </button>
               </div>
             ) : news.length === 0 ? (
               <div className={styles.noNews}>
-                <p>No news articles found for this category.</p>
+                <p>{t('home.noNewsCategory')}</p>
               </div>
             ) : (
               <CategoryPage
@@ -163,7 +158,7 @@ export default function Home() {
                 hasMore={hasMore}
                 loadingMore={loadingMore}
                 onLoadMore={loadMore}
-                lastUpdated={news.length > 0 ? `${Math.floor((Date.now() - new Date(news[0]?.publishedAt)) / 60000)} minutes ago` : null}
+                lastUpdated={news.length > 0 ? formatTimeAgo(news[0]?.publishedAt, t) : null}
               />
             )}
           </>

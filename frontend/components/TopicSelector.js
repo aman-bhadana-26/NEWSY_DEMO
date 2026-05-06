@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
 import { FaCheckCircle, FaCircle, FaSave, FaRedo } from 'react-icons/fa';
+import { useLanguage } from '../context/LanguageContext';
 import styles from '../styles/TopicSelector.module.css';
 
 const TopicSelector = ({ initialTopics = ['all'], onSave, loading = false }) => {
+  const { t } = useLanguage();
   const [selectedTopics, setSelectedTopics] = useState(initialTopics);
   const [hasChanges, setHasChanges] = useState(false);
 
   const availableTopics = [
-    { id: 'all', name: 'All Topics', icon: '🌐', description: 'General technology news' },
-    { id: 'ai', name: 'AI & Machine Learning', icon: '🤖', description: 'Artificial intelligence and ML' },
-    { id: 'startups', name: 'Startups & Funding', icon: '🚀', description: 'Startup news and venture capital' },
-    { id: 'software', name: 'Software Development', icon: '💻', description: 'Programming and development' },
-    { id: 'gadgets', name: 'Gadgets & Hardware', icon: '📱', description: 'Latest devices and hardware' },
-    { id: 'cybersecurity', name: 'Cybersecurity', icon: '🔒', description: 'Security and data protection' },
+    { id: 'all',           name: t('topics.all.name'),           icon: '🌐', description: t('topics.all.desc') },
+    { id: 'ai',            name: t('topics.ai.name'),            icon: '🤖', description: t('topics.ai.desc') },
+    { id: 'startups',      name: t('topics.startups.name'),      icon: '🚀', description: t('topics.startups.desc') },
+    { id: 'software',      name: t('topics.software.name'),      icon: '💻', description: t('topics.software.desc') },
+    { id: 'gadgets',       name: t('topics.gadgets.name'),       icon: '📱', description: t('topics.gadgets.desc') },
+    { id: 'cybersecurity', name: t('topics.cybersecurity.name'), icon: '🔒', description: t('topics.cybersecurity.desc') },
   ];
 
   useEffect(() => {
@@ -59,14 +61,14 @@ const TopicSelector = ({ initialTopics = ['all'], onSave, loading = false }) => 
   return (
     <div className={styles.topicSelector}>
       <div className={styles.header}>
-        <h3 className={styles.title}>Customize Your News Feed</h3>
+        <h3 className={styles.title}>{t('topics.title')}</h3>
         {hasChanges && (
           <button
             onClick={handleSave}
             className={styles.saveButton}
             disabled={loading}
           >
-            <FaSave /> {loading ? 'Saving...' : 'Save'}
+            <FaSave /> {loading ? t('topics.saving') : t('topics.save')}
           </button>
         )}
       </div>

@@ -5,6 +5,7 @@ import Layout from '../components/Layout';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { newsAPI } from '../utils/api';
 import { formatDate } from '../utils/formatDate';
+import { useLanguage } from '../context/LanguageContext';
 import { FaFire, FaEye, FaArrowUp, FaArrowDown, FaCircle } from 'react-icons/fa';
 import styles from '../styles/Trending.module.css';
 
@@ -50,14 +51,15 @@ const detectCategory = (article) => {
   return 'TECH';
 };
 
-const getReadTime = (article) => {
+const getReadTime = (article, t) => {
   const words = `${article.content || ''} ${article.description || ''} ${article.title}`.split(/\s+/).length;
-  return `${Math.max(2, Math.round(words / 200))} min read`;
+  return `${Math.max(2, Math.round(words / 200))} ${t('time.minRead')}`;
 };
 
-const getTodayDate = () => {
+const LOCALE_MAP = { en: 'en-US', hi: 'hi-IN', es: 'es-ES', fr: 'fr-FR', de: 'de-DE' };
+const getTodayDate = (lang) => {
   const d = new Date();
-  return d.toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
+  return d.toLocaleDateString(LOCALE_MAP[lang] || 'en-US', { month: 'long', day: '2-digit', year: 'numeric' });
 };
 
 const TickerItem = ({ article, rank }) => (
@@ -68,7 +70,7 @@ const TickerItem = ({ article, rank }) => (
   </Link>
 );
 
-const HeroCard = ({ article, rank }) => {
+const HeroCard = ({ article, rank, t }) => {
   const score = getScore(rank - 1);
   const views = getViews(rank - 1);
   const category = detectCategory(article);
@@ -80,7 +82,7 @@ const HeroCard = ({ article, rank }) => {
       <div className={styles.heroCardHeader}>
         <div className={styles.rankBadge}>
           <span className={styles.rankNum}>{rank}</span>
-          <span className={styles.rankLabel}>RANK</span>
+          <span className={styles.rankLabel}>{t('trending.rank')}</span>
         </div>
         <div className={`${styles.scoreBadge} ${isUp ? styles.scoreUp : styles.scoreDown}`}>
           {isUp ? <FaArrowUp /> : <FaArrowDown />}
@@ -100,7 +102,7 @@ const HeroCard = ({ article, rank }) => {
           />
         ) : (
           <div className={styles.heroImagePlaceholder}>
-            <span className={styles.heroImagePlaceholderText}>// HERO IMAGE</span>
+            <span className={styles.heroImagePlaceholderText}>{t('trending.heroImagePlaceholder')}</span>
           </div>
         )}
       </Link>
@@ -118,11 +120,11 @@ const HeroCard = ({ article, rank }) => {
           </p>
         )}
         <div className={styles.heroFooter}>
-          <span className={styles.heroSource}>{article.source?.name || 'Unknown Source'}</span>
+          <span className={styles.heroSource}>{article.source?.name || t('trending.unknownSource')}</span>
           <span className={styles.heroMeta}>• {formatDate(article.publishedAt)}</span>
-          <span className={styles.heroMeta}>• {getReadTime(article)}</span>
+          <span className={styles.heroMeta}>• {getReadTime(article, t)}</span>
           <span className={styles.heroViews}>
-            <FaCircle className={styles.viewDot} /> {fmtViews(views)} views
+            <FaCircle className={styles.viewDot} /> {fmtViews(views)} {t('trending.viewsLabel')}
           </span>
         </div>
       </div>
@@ -131,7 +133,7 @@ const HeroCard = ({ article, rank }) => {
 };
 
 /* ─── side list card (ranks #2–5) ─────────────────────────── */
-const SideCard = ({ article, rank }) => {
+const SideCard = ({ article, rank, t }) => {
   const score = getScore(rank - 1);
   const category = detectCategory(article);
   const url = buildArticleUrl(article);
@@ -152,7 +154,7 @@ const SideCard = ({ article, rank }) => {
           <h3 className={styles.sideTitle}>{article.title}</h3>
         </Link>
         <div className={styles.sideMeta}>
-          <span className={styles.sideSource}>{article.source?.name || 'Unknown Source'}</span>
+          <span className={styles.sideSource}>{article.source?.name || t('trending.unknownSource')}</span>
           <span className={styles.sideDot}>•</span>
           <span className={styles.sideTime}>{formatDate(article.publishedAt)}</span>
         </div>
@@ -188,6 +190,7 @@ const FullListRow = ({ article, rank }) => {
 
 /* ─── page ─────────────────────────────────────────────────── */
 export default function Trending() {
+  const { t, language } = useLanguage();
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -218,7 +221,7 @@ export default function Trending() {
         }));
       }
     } catch (err) {
-      setError('Failed to load trending news. Please try again.');
+      setError(t('trending.error'));
     } finally {
       setLoading(false);
     }
@@ -236,15 +239,15 @@ export default function Trending() {
         <div className={styles.pageHeader}>
           <div className={styles.titleRow}>
             <h1 className={styles.mainTitle}>
-              TRENDING <span className={styles.nowText}>NOW</span>
+              {t('trending.title.line1')} <span className={styles.nowText}>{t('trending.title.line2')}</span>
               <FaFire className={styles.fireIcon} />
             </h1>
-            <a href="#allTrending" className={styles.viewAll}>VIEW ALL TRENDING →</a>
+            <a href="#allTrending" className={styles.viewAll}>{t('trending.viewAll')}</a>
           </div>
           <div className={styles.subtitleRow}>
-            <span>Top stories right now</span>
-            <span className={styles.liveBadge}><FaCircle className={styles.liveDot} /> Live</span>
-            <span>{getTodayDate()}</span>
+            <span>{t('trending.subtitleStories')}</span>
+            <span className={styles.liveBadge}><FaCircle className={styles.liveDot} /> {t('time.live')}</span>
+            <span>{getTodayDate(language)}</span>
           </div>
         </div>
 
@@ -252,7 +255,7 @@ export default function Trending() {
         {topFive.length > 0 && (
           <div className={styles.tickerBar}>
             <div className={styles.tickerLabel}>
-              <FaFire /> TRENDING
+              <FaFire /> {t('trending.tickerLabel')}
             </div>
             <div className={styles.tickerTrack}>
               <div className={styles.tickerScroll}>
@@ -265,11 +268,11 @@ export default function Trending() {
         )}
 
         {loading ? (
-          <div className={styles.loadingWrap}><LoadingSpinner message="Loading trending news…" /></div>
+          <div className={styles.loadingWrap}><LoadingSpinner message={t('trending.loading')} /></div>
         ) : error ? (
           <div className={styles.error}>
             <p>{error}</p>
-            <button onClick={fetchTrending} className={styles.retryBtn}>Try Again</button>
+            <button onClick={fetchTrending} className={styles.retryBtn}>{t('common.tryAgain')}</button>
           </div>
         ) : (
           <>
@@ -277,12 +280,12 @@ export default function Trending() {
             {news.length > 0 && (
               <div className={styles.mainGrid}>
                 {/* Hero */}
-                {news[0] && <HeroCard article={news[0]} rank={1} />}
+                {news[0] && <HeroCard article={news[0]} rank={1} t={t} />}
 
                 {/* Side list #2–5 */}
                 <div className={styles.sideList}>
                   {topFive.slice(1).map((a, i) => (
-                    <SideCard key={a.url + i} article={a} rank={i + 2} />
+                    <SideCard key={a.url + i} article={a} rank={i + 2} t={t} />
                   ))}
                 </div>
               </div>
@@ -308,7 +311,7 @@ export default function Trending() {
             {news.length > 5 && (
               <div id="allTrending" className={styles.fullListSection}>
                 <h2 className={styles.fullListHeading}>
-                  <FaFire className={styles.fullListIcon} /> All Trending Stories
+                  <FaFire className={styles.fullListIcon} /> {t('trending.allStories')}
                 </h2>
                 <div className={styles.fullList}>
                   {news.slice(5).map((a, i) => (

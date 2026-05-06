@@ -1,16 +1,18 @@
 import { useRouter } from 'next/router';
+import { useLanguage } from '../context/LanguageContext';
 import styles from '../styles/CategoryFilter.module.css';
 
 const CategoryFilter = ({ currentCategory }) => {
   const router = useRouter();
+  const { t } = useLanguage();
 
   const categories = [
-    { name: 'All News', value: 'all', icon: '📰' },
-    { name: 'Artificial Intelligence', value: 'ai', icon: '🤖' },
-    { name: 'Startups', value: 'startups', icon: '🚀' },
-    { name: 'Software', value: 'software', icon: '💻' },
-    { name: 'Gadgets', value: 'gadgets', icon: '📱' },
-    { name: 'Cybersecurity', value: 'cybersecurity', icon: '🔒' },
+    { name: t('catFilter.all'),           value: 'all',           icon: '📰' },
+    { name: t('catFilter.ai'),            value: 'ai',            icon: '🤖' },
+    { name: t('catFilter.startups'),      value: 'startups',      icon: '🚀' },
+    { name: t('catFilter.software'),      value: 'software',      icon: '💻' },
+    { name: t('catFilter.gadgets'),       value: 'gadgets',       icon: '📱' },
+    { name: t('catFilter.cybersecurity'), value: 'cybersecurity', icon: '🔒' },
   ];
 
   const handleCategoryChange = (category) => {
@@ -19,7 +21,7 @@ const CategoryFilter = ({ currentCategory }) => {
 
   return (
     <div className={styles.filterContainer}>
-      <h2 className={styles.title}>Browse by Category</h2>
+      <h2 className={styles.title}>{t('catFilter.title')}</h2>
       <div className={styles.categories}>
         {categories.map((category) => (
           <button

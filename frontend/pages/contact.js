@@ -1,10 +1,12 @@
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import styles from '../styles/StaticPage.module.css';
 import { FaEnvelopeOpen, FaPaperPlane, FaUser, FaEnvelope, FaComment } from 'react-icons/fa';
 
 export default function Contact() {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -43,22 +45,22 @@ export default function Contact() {
       <div className={styles.pageContainer}>
         <div className={styles.pageHeader}>
           <FaEnvelopeOpen className={styles.pageIcon} />
-          <h1 className={styles.pageTitle}>Contact Us</h1>
-          <p className={styles.pageSubtitle}>We'd love to hear from you</p>
+          <h1 className={styles.pageTitle}>{t('contact.title')}</h1>
+          <p className={styles.pageSubtitle}>{t('contact.subtitle')}</p>
         </div>
 
         <div className={styles.contactContainer}>
           <div className={styles.contactInfo}>
-            <h2 className={styles.contactInfoTitle}>Get In Touch</h2>
+            <h2 className={styles.contactInfoTitle}>{t('contact.getInTouch')}</h2>
             <p className={styles.contactInfoText}>
-              Have a question, suggestion, or feedback? Fill out the form and we'll get back to you as soon as possible.
+              {t('contact.intro')}
             </p>
-            
+
             <div className={styles.contactDetails}>
               <div className={styles.contactDetail}>
                 <FaEnvelope className={styles.contactDetailIcon} />
                 <div>
-                  <h4>Email</h4>
+                  <h4>{t('contact.emailLabel')}</h4>
                   <p>contact@newsytech.com</p>
                 </div>
               </div>
@@ -69,14 +71,14 @@ export default function Contact() {
             {submitted ? (
               <div className={styles.successMessage}>
                 <FaPaperPlane className={styles.successIcon} />
-                <h3>Message Sent!</h3>
-                <p>Thank you for contacting us. We'll get back to you soon.</p>
+                <h3>{t('contact.sent.title')}</h3>
+                <p>{t('contact.sent.text')}</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
                   <label htmlFor="name" className={styles.formLabel}>
-                    <FaUser className={styles.formLabelIcon} /> Name
+                    <FaUser className={styles.formLabelIcon} /> {t('contact.name')}
                   </label>
                   <input
                     type="text"
@@ -85,14 +87,14 @@ export default function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     className={styles.formInput}
-                    placeholder="Your name"
+                    placeholder={t('contact.namePlaceholder')}
                     required
                   />
                 </div>
 
                 <div className={styles.formGroup}>
                   <label htmlFor="email" className={styles.formLabel}>
-                    <FaEnvelope className={styles.formLabelIcon} /> Email
+                    <FaEnvelope className={styles.formLabelIcon} /> {t('contact.emailFieldLabel')}
                   </label>
                   <input
                     type="email"
@@ -101,14 +103,14 @@ export default function Contact() {
                     value={formData.email}
                     onChange={handleChange}
                     className={styles.formInput}
-                    placeholder="your.email@example.com"
+                    placeholder={t('contact.emailFieldPlaceholder')}
                     required
                   />
                 </div>
 
                 <div className={styles.formGroup}>
                   <label htmlFor="subject" className={styles.formLabel}>
-                    <FaComment className={styles.formLabelIcon} /> Subject
+                    <FaComment className={styles.formLabelIcon} /> {t('contact.subject')}
                   </label>
                   <input
                     type="text"
@@ -117,14 +119,14 @@ export default function Contact() {
                     value={formData.subject}
                     onChange={handleChange}
                     className={styles.formInput}
-                    placeholder="What's this about?"
+                    placeholder={t('contact.subjectPlaceholder')}
                     required
                   />
                 </div>
 
                 <div className={styles.formGroup}>
                   <label htmlFor="message" className={styles.formLabel}>
-                    <FaComment className={styles.formLabelIcon} /> Message
+                    <FaComment className={styles.formLabelIcon} /> {t('contact.message')}
                   </label>
                   <textarea
                     id="message"
@@ -132,14 +134,14 @@ export default function Contact() {
                     value={formData.message}
                     onChange={handleChange}
                     className={styles.formTextarea}
-                    placeholder="Your message..."
+                    placeholder={t('contact.messagePlaceholder')}
                     rows="6"
                     required
                   />
                 </div>
 
                 <button type="submit" className={styles.submitButton}>
-                  <FaPaperPlane /> Send Message
+                  <FaPaperPlane /> {t('contact.send')}
                 </button>
               </form>
             )}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
+import { enUS, hi, es, fr, de } from 'date-fns/locale';
 import { 
   WiDaySunny, 
   WiNightClear, 
@@ -11,12 +12,16 @@ import {
   WiFog,
   WiDayHaze
 } from 'react-icons/wi';
+import { useLanguage } from '../context/LanguageContext';
 import styles from '../styles/TopUtilityBar.module.css';
 
+const DATE_LOCALES = { en: enUS, hi, es, fr, de };
+
 export default function TopUtilityBar() {
+  const { t, language } = useLanguage();
   const [currentDate, setCurrentDate] = useState('');
   const [weather, setWeather] = useState({
-    city: 'Loading...',
+    city: t('common.loading'),
     temp: '--',
     condition: 'clear',
     isDay: true
@@ -24,17 +29,15 @@ export default function TopUtilityBar() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set current date
-    setCurrentDate(format(new Date(), 'MMMM dd, yyyy'));
+    setCurrentDate(format(new Date(), 'MMMM dd, yyyy', { locale: DATE_LOCALES[language] || enUS }));
 
     // Fetch weather data
     fetchWeather();
 
-    // Refresh weather every 30 minutes
     const weatherInterval = setInterval(fetchWeather, 30 * 60 * 1000);
 
     return () => clearInterval(weatherInterval);
-  }, []);
+  }, [language]);
 
   const fetchWeather = async () => {
     try {
@@ -153,13 +156,12 @@ export default function TopUtilityBar() {
     }
   };
 
-  // Latest news ticker items (you can fetch these from API later)
   const tickerItems = [
-    'Mobile Data, Not Internet Service Providers, To Be Blocked In Bali During Nyepi March 19, 2022',
-    'OpenAI Announces GPT-5 With Revolutionary Breakthrough In AI Reasoning',
-    'Tesla Unveils New Affordable Electric Vehicle Starting At $25,000',
-    'Meta Launches Advanced VR Headset With Brain-Computer Interface',
-    'Apple Announces Major iOS Update With AI-Powered Features'
+    t('topBar.ticker.1'),
+    t('topBar.ticker.2'),
+    t('topBar.ticker.3'),
+    t('topBar.ticker.4'),
+    t('topBar.ticker.5'),
   ];
 
   return (
@@ -172,7 +174,7 @@ export default function TopUtilityBar() {
 
         {/* Center: Ticker */}
         <div className={styles.centerSection}>
-          <span className={styles.tickerLabel}>LATEST NEWS</span>
+          <span className={styles.tickerLabel}>{t('topBar.latestNews')}</span>
           <div className={styles.tickerWrapper}>
             <div className={styles.tickerContent}>
               {tickerItems.map((item, index) => (

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { FaChevronUp } from 'react-icons/fa';
+import { useLanguage } from '../context/LanguageContext';
 import styles from '../styles/ScrollToTop.module.css';
 
 export default function ScrollToTop() {
+  const { t } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
 
   // Show button when page is scrolled down
@@ -36,7 +38,7 @@ export default function ScrollToTop() {
         <button
           onClick={scrollToTop}
           className={styles.scrollToTop}
-          aria-label="Scroll to top"
+          aria-label={t('common.scrollToTop')}
         >
           <FaChevronUp />
         </button>

@@ -3,9 +3,11 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { FaClock, FaNewspaper, FaBookmark, FaRegBookmark, FaExternalLinkAlt } from 'react-icons/fa';
 import { formatDate } from '../utils/formatDate';
+import { useLanguage } from '../context/LanguageContext';
 import styles from '../styles/MyNewsCard.module.css';
 
 const MyNewsCard = ({ article, onSave, onUnsave, isSaved = false, compact = false }) => {
+  const { t } = useLanguage();
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(isSaved);
 
@@ -40,10 +42,9 @@ const MyNewsCard = ({ article, onSave, onUnsave, isSaved = false, compact = fals
 
   const slug = createSlug(article.title);
   
-  // Normalize article data - convert source object to string
   const normalizedArticle = {
     ...article,
-    source: typeof article.source === 'string' ? article.source : article.source?.name || 'Unknown Source'
+    source: typeof article.source === 'string' ? article.source : article.source?.name || t('common.unknownSource')
   };
   
   const articleData = encodeURIComponent(JSON.stringify(normalizedArticle));
@@ -84,7 +85,7 @@ const MyNewsCard = ({ article, onSave, onUnsave, isSaved = false, compact = fals
           onClick={handleSaveToggle}
           className={`${styles.saveButton} ${saved ? styles.saved : ''}`}
           disabled={saving}
-          title={saved ? 'Remove from saved' : 'Save article'}
+          title={saved ? t('myCard.removeSaved') : t('myCard.saveArticle')}
         >
           {saved ? <FaBookmark /> : <FaRegBookmark />}
         </button>
@@ -112,7 +113,7 @@ const MyNewsCard = ({ article, onSave, onUnsave, isSaved = false, compact = fals
               <div className={styles.placeholderIcon}>
                 <FaNewspaper />
               </div>
-              <p className={styles.placeholderText}>Tech News</p>
+              <p className={styles.placeholderText}>{t('newsCard.techNews')}</p>
             </div>
           )}
         </div>
@@ -140,16 +141,16 @@ const MyNewsCard = ({ article, onSave, onUnsave, isSaved = false, compact = fals
 
         <div className={styles.actions}>
           <Link href={articleUrl} className={styles.readMore}>
-            Read Full Article <FaExternalLinkAlt />
+            {t('myCard.readFull')} <FaExternalLinkAlt />
           </Link>
           <button
             onClick={handleSaveToggle}
             className={`${styles.saveButton} ${saved ? styles.saved : ''}`}
             disabled={saving}
-            title={saved ? 'Remove from saved' : 'Save article'}
+            title={saved ? t('myCard.removeSaved') : t('myCard.saveArticle')}
           >
             {saved ? <FaBookmark /> : <FaRegBookmark />}
-            {saved ? 'Saved' : 'Save'}
+            {saved ? t('myCard.saved') : t('myCard.save')}
           </button>
         </div>
       </div>

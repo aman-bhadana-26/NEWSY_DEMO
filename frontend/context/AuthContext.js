@@ -16,21 +16,17 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in on mount
-    const checkAuth = () => {
-      try {
-        const currentUser = authAPI.getCurrentUser();
-        if (currentUser) {
-          setUser(currentUser);
-        }
-      } catch (error) {
-        console.error('Auth check error:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
+    // Always start the app in a logged-out state. Any token/user persisted
+    // from a previous browser session is cleared on launch so the website
+    // never auto-logs in with the last used account.
+    try {
+      authAPI.logout();
+    } catch (error) {
+      console.error('Auth reset error:', error);
+    } finally {
+      setUser(null);
+      setLoading(false);
+    }
   }, []);
 
   const login = async (credentials) => {

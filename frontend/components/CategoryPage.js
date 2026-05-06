@@ -2,8 +2,49 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { formatDate } from '../utils/formatDate';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { myNewsAPI } from '../utils/api';
 import styles from '../styles/CategoryPage.module.css';
+
+// Map filter id (English, stable) → translation key suffix.
+// Using stable English ids keeps keyword matching in `applyFilter` working.
+const FILTER_KEY_MAP = {
+  'All':             'all',
+  'Language Models': 'languageModels',
+  'Research':        'research',
+  'Robotics':        'robotics',
+  'Computer Vision': 'computerVision',
+  'Funding':         'funding',
+  'Founders':        'founders',
+  'IPO':             'ipo',
+  'Acquisitions':    'acquisitions',
+  'Deep Tech':       'deepTech',
+  'Dev Tools':       'devTools',
+  'Open Source':     'openSource',
+  'Cloud':           'cloud',
+  'Web':             'web',
+  'Mobile':          'mobile',
+  'Phones':          'phones',
+  'Laptops':         'laptops',
+  'Wearables':       'wearables',
+  'Audio':           'audio',
+  'Gaming':          'gaming',
+  'Threats':         'threats',
+  'Privacy':         'privacy',
+  'Breaches':        'breaches',
+  'Tools':           'tools',
+  'Policy':          'policy',
+  'AI':              'ai',
+  'Startups':        'startups',
+  'Software':        'software',
+  'Gadgets':         'gadgets',
+  'Cybersecurity':   'cybersecurity',
+};
+
+const filterLabel = (id, t) => {
+  const key = FILTER_KEY_MAP[id];
+  return key ? t(`catPage.filter.${key}`) : id;
+};
 
 // Sub-filters per category
 const subFilters = {
@@ -102,15 +143,16 @@ function applySort(articles, sort) {
   return arr;
 }
 
-const categoryLabels = {
-  ai: 'Artificial Intelligence',
-  startups: 'Startups',
-  software: 'Software',
-  gadgets: 'Gadgets',
-  cybersecurity: 'Cybersecurity',
-  all: 'Latest Tech News',
-  mynews: 'My News Feed',
-  saved: 'Saved Articles',
+// Maps category id → translation key suffix.
+const CAT_LABEL_KEY_MAP = {
+  ai:            'ai',
+  startups:      'startups',
+  software:      'software',
+  gadgets:       'gadgets',
+  cybersecurity: 'cybersecurity',
+  all:           'all',
+  mynews:        'mynews',
+  saved:         'saved',
 };
 
 export default function CategoryPage({
@@ -123,6 +165,7 @@ export default function CategoryPage({
   lastUpdated,
 }) {
   const router = useRouter();
+  const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
   const [activeFilter, setActiveFilter] = useState('All');
   const [sortBy, setSortBy] = useState('Latest');
@@ -208,7 +251,8 @@ export default function CategoryPage({
     router.push(`/article/${slug}?data=${data}`);
   };
 
-  const categoryName = categoryLabels[category] || 'Tech News';
+  const labelKey = CAT_LABEL_KEY_MAP[category];
+  const categoryName = labelKey ? t(`catPage.label.${labelKey}`) : t('catPage.label.tech');
   const filters = subFilters[category] || subFilters.all;
 
   // Hero = first 2 articles (fixed, unaffected by filter/sort)
@@ -262,9 +306,9 @@ export default function CategoryPage({
       <button
         className={`${styles.saveBtn} ${isSaved ? styles.saveBtnSaved : ''}`}
         onClick={e => handleSaveClick(e, article)}
-        title={isSaved ? 'Remove from saved' : 'Save for later'}
+        title={isSaved ? t('catPage.removeSaved') : t('catPage.saveLater')}
         disabled={isSaving}
-        aria-label={isSaved ? 'Unsave article' : 'Save article'}
+        aria-label={isSaved ? t('catPage.unsaveAria') : t('catPage.saveAria')}
       >
         {isSaving ? (
           <span className={styles.saveBtnSpinner} />
@@ -298,22 +342,22 @@ export default function CategoryPage({
                 <path d="M5 3a2 2 0 00-2 2v16l9-4 9 4V5a2 2 0 00-2-2H5z"/>
               </svg>
             </div>
-            <h3 className={styles.loginModalTitle}>Save articles for later</h3>
+            <h3 className={styles.loginModalTitle}>{t('catPage.loginPrompt.title')}</h3>
             <p className={styles.loginModalText}>
-              Create a free account or log in to save articles and build your personal reading list.
+              {t('catPage.loginPrompt.text')}
             </p>
             <div className={styles.loginModalBtns}>
               <button
                 className={styles.loginModalPrimary}
                 onClick={() => { setShowLoginPrompt(false); router.push('/login'); }}
               >
-                Log In
+                {t('catPage.loginPrompt.login')}
               </button>
               <button
                 className={styles.loginModalSecondary}
                 onClick={() => { setShowLoginPrompt(false); router.push('/signup'); }}
               >
-                Sign Up Free
+                {t('catPage.loginPrompt.signup')}
               </button>
             </div>
           </div>
@@ -323,25 +367,28 @@ export default function CategoryPage({
       {/* ── Page Header ── */}
       <div className={`${styles.pageHeader} anim-slide`}>
         <div className={styles.breadcrumb}>
-          <span className={styles.breadcrumbHome} onClick={() => router.push('/')}>HOME</span>
+          <span className={styles.breadcrumbHome} onClick={() => router.push('/')}>{t('catPage.breadcrumbHome')}</span>
           <span className={styles.breadcrumbSep}>›</span>
           <span className={styles.breadcrumbCurrent}>
-            {category === 'mynews' ? 'MY NEWS' : category === 'saved' ? 'SAVED' : category.toUpperCase()}
+            {category === 'mynews'
+              ? t('catPage.breadcrumb.mynews')
+              : category === 'saved'
+              ? t('catPage.breadcrumb.saved')
+              : (labelKey ? t(`catPage.label.${labelKey}`) : category).toUpperCase()}
           </span>
         </div>
 
         <div className={styles.headerRow}>
           <h1 className={styles.categoryTitle}>
-            <span className={styles.titleGradient}>{categoryName.slice(0, 5)}</span>
-            {categoryName.slice(5)}
+            <span className={styles.titleGradient}>{categoryName}</span>
           </h1>
           <div className={styles.articleMeta}>
             <p className={styles.articleCount}>
-              Showing <strong>{news.length}</strong> of{' '}
-              <strong>{totalResults.toLocaleString()}</strong> articles
+              {t('catPage.showing')} <strong>{news.length}</strong> {t('catPage.of')}{' '}
+              <strong>{totalResults.toLocaleString()}</strong> {t('catPage.articles')}
             </p>
             {lastUpdated && (
-              <p className={styles.lastUpdated}>Updated {lastUpdated}</p>
+              <p className={styles.lastUpdated}>{t('catPage.updated')} {lastUpdated}</p>
             )}
           </div>
         </div>
@@ -356,20 +403,20 @@ export default function CategoryPage({
                   className={`${styles.filterPill} ${activeFilter === f ? styles.filterPillActive : ''}`}
                   onClick={() => setActiveFilter(f)}
                 >
-                  {f.toUpperCase()}
+                  {filterLabel(f, t).toUpperCase()}
                 </button>
               ))}
             </div>
             <div className={styles.sortWrapper}>
-              <span className={styles.sortLabel}>SORT</span>
+              <span className={styles.sortLabel}>{t('catPage.sort')}</span>
               <select
                 className={styles.sortSelect}
                 value={sortBy}
                 onChange={e => setSortBy(e.target.value)}
               >
-                <option value="Latest">Latest</option>
-                <option value="Oldest">Oldest</option>
-                <option value="A–Z">A–Z</option>
+                <option value="Latest">{t('catPage.sort.latest')}</option>
+                <option value="Oldest">{t('catPage.sort.oldest')}</option>
+                <option value="A–Z">{t('catPage.sort.az')}</option>
               </select>
             </div>
           </div>
@@ -390,7 +437,7 @@ export default function CategoryPage({
             <SaveBtn article={featured} />
           </div>
           <div className={styles.featuredContent}>
-            <span className={styles.featuredBadge}>◆ FEATURED</span>
+            <span className={styles.featuredBadge}>{t('catPage.featured')}</span>
             <h2 className={styles.featuredTitle}>{featured.title}</h2>
             <p className={styles.featuredDesc}>
               {featured.description?.slice(0, 180) || ''}
@@ -398,14 +445,14 @@ export default function CategoryPage({
             <div className={styles.featuredFooter}>
               <div className={styles.featuredMeta}>
                 <span className={styles.metaSource}>
-                  {featured.source?.name || featured.source || 'Unknown'}
+                  {featured.source?.name || featured.source || t('common.unknown')}
                 </span>
                 <span className={styles.metaDot}>•</span>
                 <span className={styles.metaTime}>{formatDate(featured.publishedAt)}</span>
                 <span className={styles.metaDot}>•</span>
-                <span className={styles.metaRead}>5 min read</span>
+                <span className={styles.metaRead}>5 {t('catPage.minRead')}</span>
               </div>
-              <button className={styles.readMoreBtn}>READ MORE →</button>
+              <button className={styles.readMoreBtn}>{t('catPage.readMore')}</button>
             </div>
           </div>
         </div>
@@ -424,7 +471,7 @@ export default function CategoryPage({
             </div>
             <div className={styles.heroRightContent}>
               <span className={styles.heroRightCategory}>
-                {category !== 'all' ? category.toUpperCase() : 'TECH'}
+                {category !== 'all' && labelKey ? t(`catPage.label.${labelKey}`).toUpperCase() : t('common.tech').toUpperCase()}
               </span>
               <h3 className={styles.heroRightTitle}>{heroRight.title}</h3>
               <p className={styles.heroRightDesc}>
@@ -432,7 +479,7 @@ export default function CategoryPage({
               </p>
               <div className={styles.heroRightMeta}>
                 <span className={styles.metaSource}>
-                  {heroRight.source?.name || heroRight.source || 'Unknown'}
+                  {heroRight.source?.name || heroRight.source || t('common.unknown')}
                 </span>
                 <span className={styles.metaDot}>•</span>
                 <span className={styles.metaTime}>{formatDate(heroRight.publishedAt)}</span>
@@ -446,9 +493,9 @@ export default function CategoryPage({
       {allGridArticles.length === 0 && activeFilter !== 'All' && (
         <div className={styles.noResults}>
           <span className={styles.noResultsIcon}>◈</span>
-          <p>No articles found for <strong>{activeFilter}</strong>.</p>
+          <p>{t('catPage.noResults1')} <strong>{filterLabel(activeFilter, t)}</strong>.</p>
           <button className={styles.noResultsReset} onClick={() => setActiveFilter('All')}>
-            Show all articles
+            {t('catPage.noResultsReset')}
           </button>
         </div>
       )}
@@ -457,8 +504,8 @@ export default function CategoryPage({
       {visibleGridArticles.length > 0 && (
         <div className={styles.gridSection}>
           <div className={`${styles.gridSectionHeading} anim-slide`}>
-            <span className={styles.sectionHeading}>// MORE STORIES</span>
-            <span className={styles.gridArticleCount}>{visibleGridArticles.length} of {allGridArticles.length} articles</span>
+            <span className={styles.sectionHeading}>{t('catPage.moreStories')}</span>
+            <span className={styles.gridArticleCount}>{visibleGridArticles.length} {t('catPage.articlesOf')} {allGridArticles.length} {t('catPage.articles')}</span>
           </div>
           <div className={styles.threeGrid}>
             {visibleGridArticles.map((article, i) => (
@@ -470,7 +517,7 @@ export default function CategoryPage({
                     className={styles.gridImg}
                   />
                   <span className={styles.gridCategoryBadge}>
-                    {category !== 'all' ? category.toUpperCase() : 'TECH'}
+                    {category !== 'all' && labelKey ? t(`catPage.label.${labelKey}`).toUpperCase() : t('common.tech').toUpperCase()}
                   </span>
                   <SaveBtn article={article} />
                 </div>
@@ -481,7 +528,7 @@ export default function CategoryPage({
                   </p>
                   <div className={styles.gridMeta}>
                     <span className={styles.metaSource}>
-                      {article.source?.name || article.source || 'Unknown'}
+                      {article.source?.name || article.source || t('common.unknown')}
                     </span>
                     <span className={styles.metaDot}>•</span>
                     <span className={styles.metaTime}>{formatDate(article.publishedAt)}</span>
@@ -500,8 +547,8 @@ export default function CategoryPage({
           {/* Latest Stories list */}
           <div className={styles.latestStories}>
             <div className={`${styles.sectionHeadingRow} anim-slide`}>
-              <span className={styles.sectionHeading}>// LATEST STORIES</span>
-              <span className={styles.storyCount}>{latestList.length} articles</span>
+              <span className={styles.sectionHeading}>{t('catPage.latestStories')}</span>
+              <span className={styles.storyCount}>{latestList.length} {t('catPage.latestArticleCount')}</span>
             </div>
             <div className={styles.latestList}>
               {latestList.map((article, i) => (
@@ -510,13 +557,13 @@ export default function CategoryPage({
                   <div className={styles.latestBody}>
                     <SaveBtn article={article} />
                     <span className={styles.latestCategory}>
-                      {category !== 'all' ? category.toUpperCase() : 'TECH'}
+                      {category !== 'all' && labelKey ? t(`catPage.label.${labelKey}`).toUpperCase() : t('common.tech').toUpperCase()}
                     </span>
                     <h4 className={styles.latestTitle}>{article.title}</h4>
                     <p className={styles.latestDesc}>{article.description?.slice(0, 100) || ''}</p>
                     <div className={styles.latestMeta}>
                       <span className={styles.metaSource}>
-                        {article.source?.name || article.source || 'Unknown'}
+                        {article.source?.name || article.source || t('common.unknown')}
                       </span>
                       <span className={styles.metaDot}>•</span>
                       <span className={styles.metaTime}>{formatDate(article.publishedAt)}</span>
@@ -530,7 +577,7 @@ export default function CategoryPage({
           {/* Editor's Picks sidebar */}
           <div className={styles.editorPicks}>
             <div className={`${styles.sectionHeadingRow} anim-slide`}>
-              <span className={styles.sectionHeading}>EDITOR&apos;S PICKS</span>
+              <span className={styles.sectionHeading}>{t('catPage.editorPicks')}</span>
             </div>
             <div className={styles.editorList}>
               {editorPicks.map((article, i) => (
@@ -545,12 +592,12 @@ export default function CategoryPage({
                   </div>
                   <div className={styles.editorBody}>
                     <span className={styles.editorCategory}>
-                      {category !== 'all' ? category.toUpperCase() : 'TECH'}
+                      {category !== 'all' && labelKey ? t(`catPage.label.${labelKey}`).toUpperCase() : t('common.tech').toUpperCase()}
                     </span>
                     <h4 className={styles.editorTitle}>{article.title}</h4>
                     <div className={styles.editorMeta}>
                       <span className={styles.metaSource}>
-                        {article.source?.name || article.source || 'Unknown'}
+                        {article.source?.name || article.source || t('common.unknown')}
                       </span>
                       <span className={styles.metaDot}>•</span>
                       <span className={styles.metaTime}>{formatDate(article.publishedAt)}</span>
@@ -566,8 +613,8 @@ export default function CategoryPage({
       {/* ── Load More ── */}
       <div className={styles.loadMoreSection}>
         <div className={styles.loadMoreInfo}>
-          Showing <strong>{visibleCount + 2}</strong> of{' '}
-          <strong>{totalResults.toLocaleString()}</strong> articles
+          {t('catPage.showing')} <strong>{visibleCount + 2}</strong> {t('catPage.of')}{' '}
+          <strong>{totalResults.toLocaleString()}</strong> {t('catPage.articles')}
         </div>
         {localHasMore && (
           <button
@@ -576,14 +623,14 @@ export default function CategoryPage({
             disabled={loadingMore}
           >
             {loadingMore ? (
-              <><span className={styles.loadSpinner} /> Loading…</>
+              <><span className={styles.loadSpinner} /> {t('catPage.loadingMore')}</>
             ) : (
-              <>↓ Load More Stories</>
+              <>{t('catPage.loadMore')}</>
             )}
           </button>
         )}
         {!localHasMore && news.length > 0 && (
-          <p className={styles.endMsg}>— End of {categoryName} —</p>
+          <p className={styles.endMsg}>{t('catPage.endOf')} {categoryName} {t('catPage.endSuffix')}</p>
         )}
       </div>
     </div>

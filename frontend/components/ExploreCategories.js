@@ -1,50 +1,54 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { useLanguage } from '../context/LanguageContext';
 import styles from '../styles/ExploreCategories.module.css';
 
 export default function ExploreCategories() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  // Internal `query` keys are stable for routing; `name` and `description`
+  // are translated each render so they update when language changes.
   const categories = [
     {
-      name: 'ALL',
+      name: t('explore.cat.all.name'),
       query: 'all',
       image: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&q=80',
-      description: 'Latest news from all categories'
+      description: t('explore.cat.all.desc'),
     },
     {
-      name: 'AI',
+      name: t('explore.cat.ai.name'),
       query: 'ai',
       image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80',
-      description: 'Artificial Intelligence & Machine Learning'
+      description: t('explore.cat.ai.desc'),
     },
     {
-      name: 'STARTUP',
+      name: t('explore.cat.startups.name'),
       query: 'startups',
       image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800&q=80',
-      description: 'Startup news and entrepreneurship'
+      description: t('explore.cat.startups.desc'),
     },
     {
-      name: 'SOFTWARE',
+      name: t('explore.cat.software.name'),
       query: 'software',
       image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80',
-      description: 'Software development & programming'
+      description: t('explore.cat.software.desc'),
     },
     {
-      name: 'GADGETS',
+      name: t('explore.cat.gadgets.name'),
       query: 'gadgets',
       image: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800&q=80',
-      description: 'Latest gadgets and consumer tech'
+      description: t('explore.cat.gadgets.desc'),
     },
     {
-      name: 'CYBERSECURITY',
+      name: t('explore.cat.cybersecurity.name'),
       query: 'cybersecurity',
       image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80',
-      description: 'Security, privacy & cyber threats'
-    }
+      description: t('explore.cat.cybersecurity.desc'),
+    },
   ];
 
   const handleCategoryClick = (query) => {
@@ -80,8 +84,8 @@ export default function ExploreCategories() {
     <section className={styles.exploreCategoriesSection}>
       <div className={styles.container}>
         <div className={`${styles.header} anim-slide`}>
-          <h2 className={styles.title}>Explore Categories</h2>
-          <p className={styles.subtitle}>Discover news by your interests</p>
+          <h2 className={styles.title}>{t('explore.title')}</h2>
+          <p className={styles.subtitle}>{t('explore.subtitle')}</p>
         </div>
 
         <div className={styles.carouselWrapper}>
@@ -90,7 +94,7 @@ export default function ExploreCategories() {
             className={`${styles.navArrow} ${styles.navArrowPrev} ${isTransitioning ? styles.disabled : ''}`}
             onClick={handlePrev}
             disabled={isTransitioning}
-            aria-label="Previous categories"
+            aria-label={t('explore.prev')}
           >
             <FaChevronLeft />
           </button>
@@ -133,7 +137,7 @@ export default function ExploreCategories() {
             className={`${styles.navArrow} ${styles.navArrowNext} ${isTransitioning ? styles.disabled : ''}`}
             onClick={handleNext}
             disabled={isTransitioning}
-            aria-label="Next categories"
+            aria-label={t('explore.next')}
           >
             <FaChevronRight />
           </button>
@@ -147,7 +151,7 @@ export default function ExploreCategories() {
               className={`${styles.dot} ${index === currentIndex ? styles.dotActive : ''}`}
               onClick={() => handleDotClick(index)}
               disabled={isTransitioning}
-              aria-label={`Go to slide ${index + 1}`}
+              aria-label={`${t('explore.goTo')} ${index + 1}`}
             />
           ))}
         </div>

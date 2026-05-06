@@ -1,14 +1,23 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaShareAlt } from 'react-icons/fa';
+import { useLanguage } from '../context/LanguageContext';
+import { formatTimeAgo } from '../utils/timeAgo';
 import styles from '../styles/TopTrending.module.css';
 
 export default function TopTrending({ news }) {
+  const { t } = useLanguage();
   const [imageErrors, setImageErrors] = useState({});
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
 
-  // Rotating words for "Trending"
-  const rotatingWords = ['Trending', 'Hot', 'Popular', 'Viral'];
+  // Rotating words for "Trending" — translated each render so language changes
+  // immediately propagate to the rotation.
+  const rotatingWords = [
+    t('topTrending.word.trending'),
+    t('topTrending.word.hot'),
+    t('topTrending.word.popular'),
+    t('topTrending.word.viral'),
+  ];
 
   // Use the same news data passed from parent
   const trendingArticles = news ? news.slice(0, 12) : [];
@@ -26,16 +35,7 @@ export default function TopTrending({ news }) {
     setImageErrors(prev => ({ ...prev, [articleUrl]: true }));
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
-    
-    if (diffInHours < 1) return 'Just now';
-    if (diffInHours < 24) return `${diffInHours}h ago`;
-    if (diffInHours < 48) return 'Yesterday';
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
+  const formatDate = (dateString) => formatTimeAgo(dateString, t);
 
   const handleShare = (e, article) => {
     e.preventDefault();
@@ -80,7 +80,7 @@ export default function TopTrending({ news }) {
       <div className={styles.container}>
         <div className={`${styles.header} anim-slide`}>
           <h2 className={styles.title}>
-            Top{' '}
+            {t('topTrending.top')}{' '}
             <span className={styles.rotatingTextWrapper}>
               <span 
                 key={currentWordIndex}
@@ -91,7 +91,7 @@ export default function TopTrending({ news }) {
             </span>
           </h2>
           <Link href="/trending" className={styles.moreLink}>
-            MORE ›
+            {t('common.more')}
           </Link>
         </div>
 
@@ -117,7 +117,7 @@ export default function TopTrending({ news }) {
                     </div>
                   )}
                   <div className={styles.imageOverlay} />
-                  <span className={styles.readTime}>4 min</span>
+                  <span className={styles.readTime}>4 {t('time.min')}</span>
                 </div>
 
                 <div className={styles.cardContent}>
@@ -129,7 +129,7 @@ export default function TopTrending({ news }) {
                     <button 
                       className={styles.shareButton}
                       onClick={(e) => handleShare(e, article)}
-                      aria-label="Share article"
+                      aria-label={t('topTrending.shareLabel')}
                     >
                       <FaShareAlt />
                     </button>
