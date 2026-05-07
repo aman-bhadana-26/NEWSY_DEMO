@@ -3,6 +3,12 @@ import { authAPI } from '../utils/api';
 
 const AuthContext = createContext();
 
+// Marker stored in sessionStorage for the lifetime of the browser tab/window.
+// sessionStorage is cleared automatically when the tab is closed, so its
+// presence reliably distinguishes "page reload / in-app navigation" from
+// "fresh app launch (new tab / window / browser restart)".
+const SESSION_FLAG = 'newsytech.session.started';
+
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -16,15 +22,32 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Always start the app in a logged-out state. Any token/user persisted
-    // from a previous browser session is cleared on launch so the website
-    // never auto-logs in with the last used account.
+    // Decide between two cases:
+    //   1. Fresh launch (new tab / window / browser session) → wipe any
+    //      previously persisted token/user so the website never auto-logs
+    //      in with the last used account.
+    //   2. Same-session reload or full-page navigation → rehydrate the
+    //      logged-in user from localStorage so the user is NOT logged out
+    //      just because a page does a full reload.
     try {
-      authAPI.logout();
+      const isSameSession =
+        typeof window !== 'undefined' &&
+        window.sessionStorage.getItem(SESSION_FLAG) === '1';
+
+      if (isSameSession) {
+        const existing = authAPI.getCurrentUser();
+        setUser(existing || null);
+      } else {
+        authAPI.logout();
+        setUser(null);
+        if (typeof window !== 'undefined') {
+          window.sessionStorage.setItem(SESSION_FLAG, '1');
+        }
+      }
     } catch (error) {
-      console.error('Auth reset error:', error);
-    } finally {
+      console.error('Auth init error:', error);
       setUser(null);
+    } finally {
       setLoading(false);
     }
   }, []);

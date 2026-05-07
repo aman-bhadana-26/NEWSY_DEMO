@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { FaShareAlt } from 'react-icons/fa';
 import { useLanguage } from '../context/LanguageContext';
 import { formatTimeAgo } from '../utils/timeAgo';
 import styles from '../styles/TopTrending.module.css';
 
 export default function TopTrending({ news }) {
+  const router = useRouter();
   const { t } = useLanguage();
   const [imageErrors, setImageErrors] = useState({});
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -58,7 +60,7 @@ export default function TopTrending({ news }) {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
-    
+
     const articleData = encodeURIComponent(JSON.stringify({
       title: article.title,
       description: article.description,
@@ -69,8 +71,12 @@ export default function TopTrending({ news }) {
       source: typeof article.source === 'string' ? article.source : article.source?.name || 'Unknown',
       author: article.author
     }));
-    
-    window.location.href = `/article/${slug}?data=${articleData}`;
+
+    // Use Next.js client-side navigation (router.push) instead of
+    // window.location.href so the React tree (and AuthProvider) is not
+    // remounted on every click — otherwise the user gets unexpectedly
+    // logged out on a full page reload.
+    router.push(`/article/${slug}?data=${articleData}`);
   };
 
   if (!trendingArticles || trendingArticles.length === 0) return null;
