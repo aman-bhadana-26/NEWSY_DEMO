@@ -84,10 +84,23 @@
   transition: opacity 0.2s ease;
   color: #eef2f4;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .logo:hover {
   opacity: 0.85;
+}
+
+.logoIcon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  /* Source PNG is solid black; invert to render in the navbar's
+     light-on-dark color scheme so it matches the wordmark. */
+  filter: invert(1);
+  flex-shrink: 0;
 }
 
 .logoRed {

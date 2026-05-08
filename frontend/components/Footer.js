@@ -13,6 +13,13 @@ const Footer = () => {
         <div className={styles.footerContent}>
           <div className={styles.footerSection}>
             <h3 className={styles.footerLogo}>
+              <img
+                src="/favicon.png"
+                alt="NewsyTech"
+                className={styles.footerLogoIcon}
+                width={28}
+                height={28}
+              />
               <span className={styles.logoRed}>NEWSY</span>
               <span className={styles.logoBlue}>TECH</span>
             </h3>
