@@ -4,9 +4,12 @@ const {
   registerUser,
   loginUser,
   getUserProfile,
-  updateUserProfile
+  updateUserProfile,
+  uploadProfilePicture,
+  deleteProfilePicture
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
+const upload = require('../middleware/upload');
 
 // Public routes
 router.post('/register', registerUser);
@@ -16,5 +19,9 @@ router.post('/login', loginUser);
 router.route('/profile')
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
+
+router.route('/profile/picture')
+  .post(protect, upload.single('profilePicture'), uploadProfilePicture)
+  .delete(protect, deleteProfilePicture);
 
 module.exports = router;

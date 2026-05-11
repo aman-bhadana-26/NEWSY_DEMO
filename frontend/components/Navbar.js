@@ -13,6 +13,9 @@ const Navbar = () => {
   const router = useRouter();
   const { user, logout, isAuthenticated } = useAuth();
   const { t } = useLanguage();
+  
+  const BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
+  const profileImageUrl = user?.profilePicture ? `${BASE_URL}${user.profilePicture}` : null;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -392,14 +395,22 @@ const Navbar = () => {
               onMouseLeave={handleMouseLeave}
             >
               <button className={styles.userIcon}>
-                <FaUser />
+                {profileImageUrl ? (
+                  <img src={profileImageUrl} alt={user?.name} className={styles.userIconImage} />
+                ) : (
+                  <FaUser />
+                )}
               </button>
               
               {userDropdownOpen && (
                 <div className={styles.userDropdown}>
                   <div className={styles.dropdownHeader}>
                     <div className={styles.userAvatar}>
-                      <FaUserCircle />
+                      {profileImageUrl ? (
+                        <img src={profileImageUrl} alt={user?.name} className={styles.userAvatarImage} />
+                      ) : (
+                        <FaUserCircle />
+                      )}
                     </div>
                     <div className={styles.userInfo}>
                       <p className={styles.userName}>{user?.name || 'User'}</p>

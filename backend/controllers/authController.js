@@ -1,5 +1,7 @@
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
+const path = require('path');
+const fs = require('fs');
 
 /**
  * @desc    Register new user
@@ -38,6 +40,7 @@ const registerUser = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        profilePicture: user.profilePicture,
         token: generateToken(user._id)
       });
     } else {
@@ -71,6 +74,7 @@ const loginUser = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        profilePicture: user.profilePicture,
         token: generateToken(user._id)
       });
     } else {
@@ -96,6 +100,7 @@ const getUserProfile = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        profilePicture: user.profilePicture,
         createdAt: user.createdAt
       });
     } else {
@@ -130,6 +135,7 @@ const updateUserProfile = async (req, res) => {
         _id: updatedUser._id,
         name: updatedUser.name,
         email: updatedUser.email,
+        profilePicture: updatedUser.profilePicture,
         token: generateToken(updatedUser._id)
       });
     } else {
@@ -141,9 +147,94 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Upload profile picture
+ * @route   POST /api/auth/profile/picture
+ * @access  Private
+ */
+const uploadProfilePicture = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'Please upload an image file' });
+    }
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      if (req.file) {
+        fs.unlinkSync(req.file.path);
+      }
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.profilePicture) {
+      const oldImagePath = path.join(__dirname, '..', user.profilePicture);
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+    }
+
+    const profilePicturePath = `/uploads/profiles/${req.file.filename}`;
+    user.profilePicture = profilePicturePath;
+
+    await user.save();
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      profilePicture: user.profilePicture,
+      message: 'Profile picture uploaded successfully'
+    });
+  } catch (error) {
+    if (req.file) {
+      fs.unlinkSync(req.file.path);
+    }
+    console.error(error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+/**
+ * @desc    Delete profile picture
+ * @route   DELETE /api/auth/profile/picture
+ * @access  Private
+ */
+const deleteProfilePicture = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.profilePicture) {
+      const imagePath = path.join(__dirname, '..', user.profilePicture);
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
+      user.profilePicture = null;
+      await user.save();
+    }
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      profilePicture: null,
+      message: 'Profile picture deleted successfully'
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getUserProfile,
-  updateUserProfile
+  updateUserProfile,
+  uploadProfilePicture,
+  deleteProfilePicture
 };

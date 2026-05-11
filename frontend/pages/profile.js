@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Particles from '../components/Particles';
+import { authAPI } from '../utils/api';
 import styles from '../styles/Profile.module.css';
 
 const PROFILE_LOCALE_MAP = { en: 'en-US', hi: 'hi-IN', es: 'es-ES', fr: 'fr-FR', de: 'de-DE' };
@@ -12,12 +13,16 @@ const PROFILE_LOCALE_MAP = { en: 'en-US', hi: 'hi-IN', es: 'es-ES', fr: 'fr-FR',
 export default function Profile() {
   const router = useRouter();
   const { t, language } = useLanguage();
-  const { user, isAuthenticated, loading: authLoading, updateUser } = useAuth();
+  const { user, isAuthenticated, loading: authLoading, updateUser, refreshUser } = useAuth();
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', newPassword: '' });
   const [message, setMessage] = useState({ type: '', text: '' });
   const [loading, setLoading] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoHovered, setPhotoHovered] = useState(false);
+  const [imageKey, setImageKey] = useState(Date.now());
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) router.push('/login');
@@ -63,6 +68,70 @@ export default function Profile() {
     setMessage({ type: '', text: '' });
   };
 
+  const handlePhotoClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setMessage({ type: 'error', text: t('profile.photoTooLarge') || 'Photo size must be less than 5MB' });
+      return;
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      setMessage({ type: 'error', text: t('profile.invalidPhotoType') || 'Only image files are allowed (JPEG, PNG, GIF, WEBP)' });
+      return;
+    }
+
+    setUploadingPhoto(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      await authAPI.uploadProfilePicture(file);
+      await refreshUser();
+      setImageKey(Date.now());
+      setMessage({ type: 'success', text: t('profile.photoUploadSuccess') || 'Profile picture updated successfully!' });
+    } catch (error) {
+      setMessage({ 
+        type: 'error', 
+        text: error.response?.data?.message || t('profile.photoUploadError') || 'Failed to upload profile picture' 
+      });
+    } finally {
+      setUploadingPhoto(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleDeletePhoto = async () => {
+    if (!window.confirm(t('profile.confirmDeletePhoto') || 'Are you sure you want to delete your profile picture?')) {
+      return;
+    }
+
+    setUploadingPhoto(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      await authAPI.deleteProfilePicture();
+      await refreshUser();
+      setImageKey(Date.now());
+      setMessage({ type: 'success', text: t('profile.photoDeleteSuccess') || 'Profile picture deleted successfully!' });
+    } catch (error) {
+      setMessage({ 
+        type: 'error', 
+        text: error.response?.data?.message || t('profile.photoDeleteError') || 'Failed to delete profile picture' 
+      });
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
   const dateLocale = PROFILE_LOCALE_MAP[language] || 'en-US';
   const joinDate = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString(dateLocale, { year: 'numeric', month: 'long', day: 'numeric' })
@@ -83,6 +152,8 @@ export default function Profile() {
   if (!user) return null;
 
   const initial = user.name?.charAt(0).toUpperCase() || '?';
+  const BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
+  const profileImageUrl = user.profilePicture ? `${BASE_URL}${user.profilePicture}?t=${imageKey}` : null;
 
   return (
     <Layout title="Profile – NEWSYTECH">
@@ -122,9 +193,64 @@ export default function Profile() {
             {/* Avatar card */}
             <div className={styles.avatarCard}>
               <div className={styles.avatarCardBg} />
-              <div className={styles.avatarWrap}>
-                <div className={styles.avatar}>{initial}</div>
+              <div 
+                className={styles.avatarWrap}
+                onMouseEnter={() => setPhotoHovered(true)}
+                onMouseLeave={() => setPhotoHovered(false)}
+              >
+                <div className={styles.avatar}>
+                  {profileImageUrl ? (
+                    <img 
+                      key={imageKey}
+                      src={profileImageUrl} 
+                      alt={user.name} 
+                      className={styles.avatarImage}
+                    />
+                  ) : (
+                    initial
+                  )}
+                </div>
                 <div className={styles.avatarRing} />
+                
+                {!uploadingPhoto && photoHovered && (
+                  <div className={styles.avatarOverlay}>
+                    <button 
+                      className={styles.avatarEditBtn} 
+                      onClick={handlePhotoClick}
+                      title={t('profile.uploadPhoto') || 'Upload Photo'}
+                    >
+                      <svg viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
+                        <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2h-1.528A6 6 0 004 9.528V4z" />
+                        <path fillRule="evenodd" d="M8 10a4 4 0 00-3.446 6.032l-1.261 1.26a1 1 0 101.414 1.415l1.261-1.261A4 4 0 108 10zm-2 4a2 2 0 114 0 2 2 0 01-4 0z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                    {profileImageUrl && (
+                      <button 
+                        className={styles.avatarDeleteBtn} 
+                        onClick={handleDeletePhoto}
+                        title={t('profile.deletePhoto') || 'Delete Photo'}
+                      >
+                        <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                          <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {uploadingPhoto && (
+                  <div className={styles.avatarOverlay}>
+                    <div className={styles.uploadingSpinner} />
+                  </div>
+                )}
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                  onChange={handlePhotoChange}
+                  style={{ display: 'none' }}
+                />
               </div>
               <h1 className={styles.userName}>{user.name}</h1>
               <p className={styles.userHandle}>@{user.name?.toLowerCase().replace(/\s+/g, '') || 'user'}</p>

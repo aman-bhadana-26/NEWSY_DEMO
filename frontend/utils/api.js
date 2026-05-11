@@ -63,6 +63,43 @@ export const authAPI = {
     return response.data;
   },
 
+  uploadProfilePicture: async (file) => {
+    const formData = new FormData();
+    formData.append('profilePicture', file);
+
+    const token = localStorage.getItem('token');
+    const response = await axios.post(
+      `${API_URL}/auth/profile/picture`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.data) {
+      const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+      const updatedUser = { ...currentUser, profilePicture: response.data.profilePicture };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    }
+
+    return response.data;
+  },
+
+  deleteProfilePicture: async () => {
+    const response = await api.delete('/auth/profile/picture');
+    
+    if (response.data) {
+      const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+      const updatedUser = { ...currentUser, profilePicture: null };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    }
+
+    return response.data;
+  },
+
   getCurrentUser: () => {
     const userStr = localStorage.getItem('user');
     return userStr ? JSON.parse(userStr) : null;

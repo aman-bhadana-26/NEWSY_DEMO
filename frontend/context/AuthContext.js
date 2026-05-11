@@ -96,6 +96,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const refreshUser = async () => {
+    try {
+      const freshProfile = await authAPI.getProfile();
+      localStorage.setItem('user', JSON.stringify(freshProfile));
+      setUser(freshProfile);
+      return { success: true, user: freshProfile };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Failed to refresh user',
+      };
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -103,6 +117,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateUser,
+    refreshUser,
     isAuthenticated: !!user,
   };
 
