@@ -230,13 +230,6 @@ const Navbar = () => {
         )}
 
         <Link href="/home" className={styles.logo}>
-          <img
-            src="/favicon.png"
-            alt="NewsyTech"
-            className={styles.logoIcon}
-            width={32}
-            height={32}
-          />
           <span className={styles.logoRed}>NEWSY</span>
           <span className={styles.logoBlue}>TECH</span>
         </Link>
