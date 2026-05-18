@@ -41,6 +41,7 @@ const registerUser = async (req, res) => {
         name: user.name,
         email: user.email,
         profilePicture: user.profilePicture,
+        isAdmin: user.isAdmin,
         token: generateToken(user._id)
       });
     } else {
@@ -75,6 +76,7 @@ const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         profilePicture: user.profilePicture,
+        isAdmin: user.isAdmin,
         token: generateToken(user._id)
       });
     } else {
@@ -101,6 +103,7 @@ const getUserProfile = async (req, res) => {
         name: user.name,
         email: user.email,
         profilePicture: user.profilePicture,
+        isAdmin: user.isAdmin,
         createdAt: user.createdAt
       });
     } else {
@@ -136,6 +139,7 @@ const updateUserProfile = async (req, res) => {
         name: updatedUser.name,
         email: updatedUser.email,
         profilePicture: updatedUser.profilePicture,
+        isAdmin: updatedUser.isAdmin,
         token: generateToken(updatedUser._id)
       });
     } else {

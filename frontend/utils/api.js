@@ -205,4 +205,48 @@ export const myNewsAPI = {
   },
 };
 
+// Admin API
+export const adminAPI = {
+  getDashboardStats: async () => {
+    const response = await api.get('/admin/stats');
+    return response.data;
+  },
+
+  getAllUsers: async (page = 1, limit = 20, search = '', status = 'all') => {
+    const response = await api.get('/admin/users', {
+      params: { page, limit, search, status }
+    });
+    return response.data;
+  },
+
+  getUserById: async (userId) => {
+    const response = await api.get(`/admin/users/${userId}`);
+    return response.data;
+  },
+
+  updateUserStatus: async (userId, status) => {
+    const response = await api.put(`/admin/users/${userId}/status`, { status });
+    return response.data;
+  },
+
+  toggleAdminStatus: async (userId) => {
+    const response = await api.put(`/admin/users/${userId}/admin`);
+    return response.data;
+  },
+
+  deleteUser: async (userId) => {
+    const response = await api.delete(`/admin/users/${userId}`);
+    return response.data;
+  },
+
+  bulkUpdateUsers: async (userIds, action, value = null) => {
+    const response = await api.post('/admin/users/bulk-action', {
+      userIds,
+      action,
+      value
+    });
+    return response.data;
+  }
+};
+
 export default api;

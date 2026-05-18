@@ -29,6 +29,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
+  status: {
+    type: String,
+    enum: ['active', 'suspended', 'banned'],
+    default: 'active'
+  },
   preferences: {
     topics: {
       type: [String],

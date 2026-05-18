@@ -28,6 +28,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/news', require('./routes/newsRoutes'));
 app.use('/api/my-news', require('./routes/myNewsRoutes'));
 app.use('/api/saved', require('./routes/savedArticlesRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
 
 // Health check route
 app.get('/api/health', (req, res) => {

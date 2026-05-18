@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope, FaSearch, FaFilter, FaNewspaper, FaHome, FaChevronDown, FaInfoCircle, FaEnvelopeOpen, FaTachometerAlt } from 'react-icons/fa';
+import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope, FaSearch, FaFilter, FaNewspaper, FaHome, FaChevronDown, FaInfoCircle, FaEnvelopeOpen, FaTachometerAlt, FaUserShield } from 'react-icons/fa';
 import { throttle } from '../hooks/useScrollOptimization';
 import FlowingMenu from './FlowingMenu';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -420,6 +420,13 @@ const Navbar = () => {
                     <FaUserCircle className={styles.dropdownIcon} />
                     {t('nav.myAccount')}
                   </button>
+                  
+                  {user?.isAdmin && (
+                    <button onClick={() => router.push('/admin')} className={styles.dropdownItem}>
+                      <FaUserShield className={styles.dropdownIcon} />
+                      Admin Dashboard
+                    </button>
+                  )}
                   
                   <button onClick={handleLogout} className={styles.dropdownItemLogout}>
                     <FaSignOutAlt className={styles.dropdownIcon} />
