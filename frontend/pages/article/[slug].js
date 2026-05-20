@@ -8,6 +8,7 @@ import { getFullDate } from '../../utils/formatDate';
 import { newsAPI } from '../../utils/api';
 import { useLanguage } from '../../context/LanguageContext';
 import { FaArrowLeft } from 'react-icons/fa';
+import ArticleComments from '../../components/ArticleComments';
 import styles from '../../styles/Article.module.css';
 
 // Detect category key from title/source. Returns a translation key suffix
@@ -290,6 +291,14 @@ export default function Article() {
               </p>
             </div>
           </div>
+
+          {/* Comments */}
+          {article.url && (
+            <ArticleComments
+              articleUrl={article.url}
+              articleTitle={article.title}
+            />
+          )}
 
           {/* Footer bar */}
           <div className={styles.articleFooter}>

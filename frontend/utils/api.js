@@ -205,6 +205,35 @@ export const myNewsAPI = {
   },
 };
 
+// Comments API
+export const commentsAPI = {
+  getByArticle: async (articleUrl) => {
+    const response = await api.get('/comments', {
+      params: { articleUrl }
+    });
+    return response.data;
+  },
+
+  create: async (articleUrl, articleTitle, text) => {
+    const response = await api.post('/comments', {
+      articleUrl,
+      articleTitle,
+      text
+    });
+    return response.data;
+  },
+
+  update: async (commentId, text) => {
+    const response = await api.put(`/comments/${commentId}`, { text });
+    return response.data;
+  },
+
+  delete: async (commentId) => {
+    const response = await api.delete(`/comments/${commentId}`);
+    return response.data;
+  }
+};
+
 // Admin API
 export const adminAPI = {
   getDashboardStats: async () => {
