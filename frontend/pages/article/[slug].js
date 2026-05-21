@@ -9,6 +9,7 @@ import { newsAPI } from '../../utils/api';
 import { useLanguage } from '../../context/LanguageContext';
 import { FaArrowLeft } from 'react-icons/fa';
 import ArticleComments from '../../components/ArticleComments';
+import { useReadingTracker } from '../../hooks/useReadingTracker';
 import styles from '../../styles/Article.module.css';
 
 // Detect category key from title/source. Returns a translation key suffix
@@ -47,6 +48,9 @@ export default function Article() {
   const [loadingFullContent, setLoadingFullContent] = useState(false);
   const [contentError, setContentError] = useState(null);
   const [relatedStories, setRelatedStories] = useState([]);
+
+  const categoryKey = article ? detectCategoryKey(article) : 'tech';
+  useReadingTracker(article, categoryKey);
 
   useEffect(() => {
     if (data) {
@@ -149,7 +153,6 @@ export default function Article() {
   }
 
   const hasImage = article.urlToImage && article.urlToImage.trim() !== '';
-  const categoryKey = detectCategoryKey(article);
   const category = t(`article.cat.${categoryKey}`);
   const authorInitials = getInitials(article.author);
   const sourceName = typeof article.source === 'string' ? article.source : article.source?.name || 'NEWSY TECH';

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope, FaSearch, FaFilter, FaNewspaper, FaHome, FaChevronDown, FaInfoCircle, FaEnvelopeOpen, FaTachometerAlt, FaUserShield } from 'react-icons/fa';
+import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope, FaSearch, FaFilter, FaNewspaper, FaHome, FaChevronDown, FaInfoCircle, FaEnvelopeOpen, FaTachometerAlt, FaUserShield, FaChartLine } from 'react-icons/fa';
 import { throttle } from '../hooks/useScrollOptimization';
 import FlowingMenu from './FlowingMenu';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -420,6 +420,11 @@ const Navbar = () => {
                     <FaUserCircle className={styles.dropdownIcon} />
                     {t('nav.myAccount')}
                   </button>
+
+                  <button onClick={() => { setUserDropdownOpen(false); router.push('/analytics'); }} className={styles.dropdownItem}>
+                    <FaChartLine className={styles.dropdownIcon} />
+                    {t('nav.analytics')}
+                  </button>
                   
                   {user?.isAdmin && (
                     <button onClick={() => router.push('/admin')} className={styles.dropdownItem}>
@@ -570,6 +575,13 @@ const Navbar = () => {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {t('nav.profile')}
+              </Link>
+              <Link
+                href="/analytics"
+                className={styles.mobileNavLink}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <FaChartLine style={{ marginRight: 8 }} /> {t('nav.analytics')}
               </Link>
               <button onClick={handleLogout} className={styles.mobileLogout}>
                 {t('nav.logout')}

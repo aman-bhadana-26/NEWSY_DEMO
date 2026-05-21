@@ -234,6 +234,24 @@ export const commentsAPI = {
   }
 };
 
+// Analytics API
+export const analyticsAPI = {
+  trackReading: async (payload) => {
+    const response = await api.post('/analytics/track', payload);
+    return response.data;
+  },
+
+  getMyAnalytics: async () => {
+    const response = await api.get('/analytics/me');
+    return response.data;
+  },
+
+  getSiteAnalytics: async () => {
+    const response = await api.get('/analytics/site');
+    return response.data;
+  }
+};
+
 // Admin API
 export const adminAPI = {
   getDashboardStats: async () => {

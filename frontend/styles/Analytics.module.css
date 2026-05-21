@@ -1,0 +1,316 @@
+.page {
+  min-height: calc(100vh - 70px);
+  background: linear-gradient(160deg, rgba(5, 16, 32, 0.95) 0%, rgba(10, 22, 40, 0.92) 55%, rgba(13, 37, 53, 0.9) 100%);
+  padding: 40px;
+  color: #fff;
+}
+
+.header {
+  margin-bottom: 32px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-headline, 'Poppins', sans-serif);
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.titleIcon {
+  color: #1BA098;
+}
+
+.subtitle {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.statCard {
+  background: linear-gradient(145deg, #0d1f38, #0a1628);
+  border: 1px solid rgba(27, 160, 152, 0.2);
+  border-radius: 12px;
+  padding: 22px;
+  transition: transform 0.25s, border-color 0.25s;
+}
+
+.statCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(27, 160, 152, 0.45);
+}
+
+.statCardHighlight {
+  border-color: rgba(203, 161, 53, 0.4);
+  background: linear-gradient(145deg, #0d1f38, rgba(203, 161, 53, 0.08));
+}
+
+.statLabel {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin: 0 0 8px;
+}
+
+.statValue {
+  font-family: var(--font-headline, 'Poppins', sans-serif);
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.statSub {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.8rem;
+  color: #1BA098;
+  margin: 6px 0 0;
+}
+
+.section {
+  background: linear-gradient(145deg, #0d1f38, #0a1628);
+  border: 1px solid rgba(27, 160, 152, 0.15);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  font-family: var(--font-headline, 'Poppins', sans-serif);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 20px;
+  color: #fff;
+}
+
+.chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 160px;
+  padding-top: 10px;
+}
+
+.chartBarWrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.chartBar {
+  width: 100%;
+  max-width: 48px;
+  min-height: 4px;
+  background: linear-gradient(180deg, #24c9b8, #1BA098);
+  border-radius: 6px 6px 2px 2px;
+  transition: height 0.4s ease;
+}
+
+.chartLabel {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.chartCount {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.75rem;
+  color: #1BA098;
+  font-weight: 700;
+}
+
+.topicList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.topicRow {
+  display: grid;
+  grid-template-columns: 120px 1fr 48px;
+  align-items: center;
+  gap: 12px;
+}
+
+.topicName {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: capitalize;
+}
+
+.topicBarBg {
+  height: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.topicBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #1BA098, #24c9b8);
+  border-radius: 5px;
+  transition: width 0.5s ease;
+}
+
+.topicPct {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.82rem;
+  color: #1BA098;
+  text-align: right;
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.recentList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recentItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(27, 160, 152, 0.05);
+  border: 1px solid rgba(27, 160, 152, 0.1);
+  border-radius: 8px;
+}
+
+.recentTitle {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 4px;
+  line-height: 1.4;
+}
+
+.recentMeta {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.recentTime {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.78rem;
+  color: #1BA098;
+  white-space: nowrap;
+}
+
+.emptyHint {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  padding: 24px;
+}
+
+.loginPrompt {
+  text-align: center;
+  padding: 60px 24px;
+}
+
+.loginPrompt p {
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 20px;
+}
+
+.loginBtn {
+  display: inline-block;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #1BA098, #24c9b8);
+  color: #051020;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.loadingWrap {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.viewTabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.viewTab {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: 1px solid rgba(27, 160, 152, 0.35);
+  background: transparent;
+  color: #1BA098;
+}
+
+.viewTabActive {
+  background: linear-gradient(135deg, #1BA098, #24c9b8);
+  color: #051020;
+  border-color: transparent;
+}
+
+.viewTabAdmin {
+  border-color: rgba(156, 39, 176, 0.4);
+  color: #ce93d8;
+}
+
+.viewTabAdminActive {
+  background: linear-gradient(135deg, #9C27B0, #e91e63);
+  color: #fff;
+  border-color: transparent;
+}
+
+.adminBadge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  font-size: 0.65rem;
+  vertical-align: middle;
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding: 24px 16px;
+  }
+
+  .twoCol {
+    grid-template-columns: 1fr;
+  }
+
+  .topicRow {
+    grid-template-columns: 90px 1fr 40px;
+  }
+}

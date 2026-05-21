@@ -30,6 +30,7 @@ app.use('/api/my-news', require('./routes/myNewsRoutes'));
 app.use('/api/saved', require('./routes/savedArticlesRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/comments', require('./routes/commentRoutes'));
+app.use('/api/analytics', require('./routes/analyticsRoutes'));
 
 // Health check route
 app.get('/api/health', (req, res) => {

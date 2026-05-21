@@ -99,6 +99,12 @@ export default function AdminDashboard() {
           >
             <FaUsers /> User Management
           </button>
+          <button
+            className={styles.tab}
+            onClick={() => router.push('/analytics')}
+          >
+            <FaChartLine /> Site Analytics
+          </button>
         </div>
 
         {/* Overview Tab */}
