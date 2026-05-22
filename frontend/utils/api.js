@@ -205,6 +205,25 @@ export const myNewsAPI = {
   },
 };
 
+// Reactions API
+export const reactionsAPI = {
+  getByArticle: async (articleUrl) => {
+    const response = await api.get('/reactions', {
+      params: { articleUrl }
+    });
+    return response.data;
+  },
+
+  toggle: async (articleUrl, articleTitle, type) => {
+    const response = await api.post('/reactions', {
+      articleUrl,
+      articleTitle,
+      type
+    });
+    return response.data;
+  }
+};
+
 // Comments API
 export const commentsAPI = {
   getByArticle: async (articleUrl) => {

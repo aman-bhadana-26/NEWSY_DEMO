@@ -9,6 +9,7 @@ import { newsAPI } from '../../utils/api';
 import { useLanguage } from '../../context/LanguageContext';
 import { FaArrowLeft } from 'react-icons/fa';
 import ArticleComments from '../../components/ArticleComments';
+import ArticleReactions from '../../components/ArticleReactions';
 import { useReadingTracker } from '../../hooks/useReadingTracker';
 import styles from '../../styles/Article.module.css';
 
@@ -282,6 +283,14 @@ export default function Article() {
               </div>
             )}
           </div>
+
+          {/* Reactions */}
+          {article.url && (
+            <ArticleReactions
+              articleUrl={article.url}
+              articleTitle={article.title}
+            />
+          )}
 
           {/* Author bio card */}
           <div className={styles.authorBioCard}>

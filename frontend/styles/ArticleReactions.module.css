@@ -1,0 +1,119 @@
+.reactionsSection {
+  margin-top: 32px;
+  padding: 24px 0;
+  border-top: 1px solid rgba(27, 160, 152, 0.15);
+  border-bottom: 1px solid rgba(27, 160, 152, 0.15);
+}
+
+.reactionsHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.reactionsTitle {
+  font-family: var(--font-headline, 'Poppins', sans-serif);
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.reactionsTotal {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.5px;
+}
+
+.reactionsError {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.85rem;
+  color: #ff6b6b;
+  margin: 0 0 12px;
+}
+
+.reactionsBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.reactionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(5, 16, 32, 0.5);
+  border: 1px solid rgba(27, 160, 152, 0.2);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.15s;
+}
+
+.reactionBtn:hover:not(:disabled) {
+  border-color: rgba(27, 160, 152, 0.5);
+  color: #ffffff;
+  background: rgba(27, 160, 152, 0.08);
+  transform: translateY(-1px);
+}
+
+.reactionBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.reactionBtnActive {
+  border-color: #1BA098;
+  background: rgba(27, 160, 152, 0.15);
+  color: #1BA098;
+}
+
+.reactionBtnActive .reactionIcon {
+  color: #1BA098;
+}
+
+.reactionIcon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.reactionLabel {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .reactionLabel {
+    display: inline;
+  }
+}
+
+.reactionCount {
+  min-width: 1.25rem;
+  text-align: center;
+  font-weight: 600;
+  color: inherit;
+}
+
+.loginHint {
+  margin: 14px 0 0;
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.loginLink {
+  color: #1BA098;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.loginLink:hover {
+  text-decoration: underline;
+}

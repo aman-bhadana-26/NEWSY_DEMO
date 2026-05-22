@@ -484,6 +484,17 @@ export const translations = {
     'comments.errorDelete': 'Failed to delete comment.',
     'comments.errorUpdate': 'Failed to update comment.',
 
+    'reactions.title': 'Reactions',
+    'reactions.total': '{count} reactions',
+    'reactions.like': 'Like',
+    'reactions.love': 'Love',
+    'reactions.insightful': 'Insightful',
+    'reactions.wow': 'Wow',
+    'reactions.loginToReact': 'Sign in to react to this article.',
+    'reactions.login': 'Sign In',
+    'reactions.errorLoad': 'Could not load reactions.',
+    'reactions.errorToggle': 'Failed to update reaction.',
+
     'nav.analytics': 'My Analytics',
     'analytics.title': 'Analytics & Insights',
     'analytics.subtitle': 'Your personal reading statistics and habits',

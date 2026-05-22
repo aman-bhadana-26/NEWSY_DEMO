@@ -37,4 +37,25 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = { protect };
+/**
+ * Optional auth — attaches req.user when a valid token is present
+ */
+const optionalProtect = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader?.startsWith('Bearer')) {
+    return next();
+  }
+
+  try {
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select('-password');
+  } catch (_) {
+    // Ignore invalid tokens for public routes
+  }
+
+  next();
+};
+
+module.exports = { protect, optionalProtect };
