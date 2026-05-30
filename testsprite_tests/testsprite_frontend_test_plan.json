@@ -1,0 +1,1156 @@
+[
+  {
+    "id": "TC001",
+    "title": "Verify the API health check responds successfully",
+    "description": "A guest visitor can confirm the API is running by opening the health endpoint and seeing a successful liveness response.",
+    "category": "Health Check",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/health"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the API health status is reported as OK"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a health confirmation message is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Block access to personalized news without signing in",
+    "description": "A guest user cannot access the personalized news experience without being authenticated.",
+    "category": "My News",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /my-news"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an authentication requirement is shown"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Register and access the authenticated profile",
+    "description": "A new user can register, receive an authenticated session, and open their current profile successfully.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/auth/register"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with a unique display name"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a unique email address"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with a valid password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "action",
+        "description": "Open the profile view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user profile is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the authenticated session is active"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Log in and update profile details",
+    "description": "An authenticated user can log in and save updated profile details with the changes reflected in the profile view.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a valid account email"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with the matching password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the profile edit view"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with an updated display name"
+      },
+      {
+        "type": "action",
+        "description": "Save the profile changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated profile information is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a refreshed authentication session is active"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Set preferences and save an article from personalized feed",
+    "description": "An authenticated reader can set topic preferences, open a personalized feed, save an article, and see it appear in saved articles.",
+    "category": "News Feed",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a valid reader account email"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with the matching password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the news preferences view"
+      },
+      {
+        "type": "action",
+        "description": "Select a topic preference"
+      },
+      {
+        "type": "action",
+        "description": "Save the preference changes"
+      },
+      {
+        "type": "action",
+        "description": "Open the personalized news feed"
+      },
+      {
+        "type": "action",
+        "description": "Save an article from the feed"
+      },
+      {
+        "type": "action",
+        "description": "Open the saved articles view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the saved article is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the personalized feed is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Browse tech news successfully",
+    "description": "A guest visitor can load the main news feed and see a list of tech articles with paging information.",
+    "category": "News Feed",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/news"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a news article list is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify pagination details are visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Load personalized news after login",
+    "description": "An authenticated user can log in and see a personalized news feed.",
+    "category": "My News",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the personalized news page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify personalized articles are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Access the admin dashboard and review site analytics",
+    "description": "An admin user can log in, open the admin dashboard, review user and analytics sections, and confirm administrative access is granted.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a valid admin account email"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with the matching password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the admin dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Open the user list view"
+      },
+      {
+        "type": "action",
+        "description": "Open the site analytics view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the admin dashboard sections are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify site analytics data is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Save an article to personal collection",
+    "description": "An authenticated user can save an article and then find it in their saved articles list.",
+    "category": "My News",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the personalized news page"
+      },
+      {
+        "type": "action",
+        "description": "Save an article from the feed"
+      },
+      {
+        "type": "action",
+        "description": "Open the saved articles view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the saved article is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Block non-admin access to the admin dashboard",
+    "description": "This verifies that a regular user cannot access the admin dashboard or user management tools.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the admin dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an authorization error is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the admin user list is not displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "View top headlines successfully",
+    "description": "A guest visitor can open the top headlines view and see headline articles returned for browsing.",
+    "category": "News Feed",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/news/headlines"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a headlines article list is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "View and update topic preferences",
+    "description": "An authenticated user can view their current topic preferences and save updated preferences.",
+    "category": "My News",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the preferences page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify current topic preferences are displayed"
+      },
+      {
+        "type": "action",
+        "description": "Update the selected topics"
+      },
+      {
+        "type": "action",
+        "description": "Save the preferences"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated preferences are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC013",
+    "title": "View site analytics as an admin",
+    "description": "This verifies that an admin user can open site-level analytics and see dashboard statistics.",
+    "category": "Analytics",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the analytics dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Open the site analytics view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify site analytics data is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify dashboard statistics are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC014",
+    "title": "View trending tech stories successfully",
+    "description": "A guest visitor can open the trending view and see trending tech articles returned for browsing.",
+    "category": "News Feed",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/news/trending"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a trending articles list is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC015",
+    "title": "Remove a saved article",
+    "description": "An authenticated user can unsave an article and confirm it no longer appears in saved articles.",
+    "category": "My News",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the personalized news page"
+      },
+      {
+        "type": "action",
+        "description": "Save an article from the feed"
+      },
+      {
+        "type": "action",
+        "description": "Open the saved articles view"
+      },
+      {
+        "type": "action",
+        "description": "Remove the saved article"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the article is no longer displayed in saved articles"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC016",
+    "title": "Review and manage all users in the admin dashboard",
+    "description": "This verifies that an admin can open the user list and perform user management actions from the dashboard.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the admin dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Open the user list"
+      },
+      {
+        "type": "action",
+        "description": "Open a user profile from the list"
+      },
+      {
+        "type": "action",
+        "description": "Change the selected user's status"
+      },
+      {
+        "type": "action",
+        "description": "Toggle the selected user's admin role"
+      },
+      {
+        "type": "action",
+        "description": "Perform a bulk user action"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user list is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated user details are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC017",
+    "title": "Unsave an article by its URL",
+    "description": "An authenticated reader can remove a previously saved article by URL and confirm it no longer appears in saved articles.",
+    "category": "News Feed",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a valid reader account email"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with the matching password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the saved articles view"
+      },
+      {
+        "type": "action",
+        "description": "Save an article URL for removal testing if needed"
+      },
+      {
+        "type": "action",
+        "description": "Remove the saved article by URL"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the article is no longer displayed in saved articles"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the saved articles view remains accessible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC018",
+    "title": "Prevent non-admin access to site analytics",
+    "description": "This verifies that a non-admin user cannot open the admin-only site analytics view.",
+    "category": "Analytics",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the site analytics view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an authorization error is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify site analytics data is not displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC019",
+    "title": "Upload and remove a profile picture",
+    "description": "An authenticated user can add a profile picture and later remove it from their profile successfully.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a valid account email"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with the matching password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the profile picture settings"
+      },
+      {
+        "type": "action",
+        "description": "Upload a valid profile image"
+      },
+      {
+        "type": "action",
+        "description": "Remove the current profile picture"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the profile picture is no longer displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the profile picture setting shows no uploaded image"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC020",
+    "title": "Create, edit, and delete my own article comment",
+    "description": "An authenticated user can post a comment on an article, update it, and delete it successfully.",
+    "category": "Comments",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to an article comments view"
+      },
+      {
+        "type": "action",
+        "description": "Add a new comment"
+      },
+      {
+        "type": "action",
+        "description": "Edit the newly created comment"
+      },
+      {
+        "type": "action",
+        "description": "Delete the updated comment"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the comment is removed from the article discussion"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC021",
+    "title": "Toggle a reaction on an article",
+    "description": "This verifies that an authenticated reader can add and then toggle a reaction for an article.",
+    "category": "Article Reactions",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open an article from the news feed"
+      },
+      {
+        "type": "action",
+        "description": "Toggle a reaction for the article"
+      },
+      {
+        "type": "action",
+        "description": "Toggle the same reaction again"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the reaction state is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the reaction counts are updated"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC022",
+    "title": "Track a reading session and view personal analytics",
+    "description": "This verifies that an authenticated reader can record reading activity and then see their personal analytics update.",
+    "category": "Analytics",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the analytics tracking page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the article URL field with a valid article URL"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the reading duration field with a valid duration"
+      },
+      {
+        "type": "action",
+        "description": "Submit the reading session"
+      },
+      {
+        "type": "action",
+        "description": "Open the personal analytics view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the personal analytics data is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the reading session is reflected in the analytics view"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC023",
+    "title": "Update a user status or role and apply a bulk action",
+    "description": "An admin user can change a user’s status or role and perform a bulk action from the dashboard.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a valid admin account email"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with the matching password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the admin dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Open the user list view"
+      },
+      {
+        "type": "action",
+        "description": "Change a user's status or role"
+      },
+      {
+        "type": "action",
+        "description": "Apply a bulk action to selected users"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user list reflects the administrative changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a bulk action confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC024",
+    "title": "View reaction counts for an article",
+    "description": "This verifies that a visitor can open reaction data for an article and see the current counts and user reaction state.",
+    "category": "Article Reactions",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the article reactions view"
+      },
+      {
+        "type": "action",
+        "description": "Enter a valid article URL"
+      },
+      {
+        "type": "action",
+        "description": "Load the reaction data for the article"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify reaction counts are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the current reaction state is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC025",
+    "title": "Read comments on an article",
+    "description": "Any visitor can open an article discussion and view the existing comments.",
+    "category": "Comments",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to an article comments view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify existing comments are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC026",
+    "title": "Require login for reaction toggling",
+    "description": "This verifies that a guest visitor cannot toggle article reactions without being authenticated.",
+    "category": "Article Reactions",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the article reactions view"
+      },
+      {
+        "type": "action",
+        "description": "Enter a valid article URL"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to toggle a reaction"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an authentication error is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the reaction state is unchanged"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC027",
+    "title": "Prevent duplicate saves in personal collection",
+    "description": "An authenticated user cannot save the same article twice and the saved list remains deduplicated.",
+    "category": "My News",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the personalized news page"
+      },
+      {
+        "type": "action",
+        "description": "Save an article from the feed"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to save the same article again"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a duplicate save is not added"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the saved articles list contains only one copy of the article"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC028",
+    "title": "Show validation for duplicate registration and bad login",
+    "description": "A guest visitor sees clear validation feedback when trying to register with an existing email or sign in with the wrong password.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/auth/register"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with a display name"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with an email address that has already been used"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with a valid password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /api/auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a valid account email"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with an incorrect password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a registration validation error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a login error message is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC029",
+    "title": "Prevent editing another user's comment",
+    "description": "An authenticated user cannot modify a comment they do not own.",
+    "category": "Comments",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to an article comments view with another user's comment visible"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to edit the other user's comment"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the comment cannot be modified by the current user"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC030",
+    "title": "Prevent reaction changes for an invalid article reference",
+    "description": "This verifies that reaction controls do not change the displayed reaction state when the article reference is invalid.",
+    "category": "Article Reactions",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the reaction toggle view"
+      },
+      {
+        "type": "action",
+        "description": "Enter an invalid article reference"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to toggle a reaction"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an article reference validation error is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the reaction state is unchanged"
+      }
+    ],
+    "priority": "Low"
+  }
+]

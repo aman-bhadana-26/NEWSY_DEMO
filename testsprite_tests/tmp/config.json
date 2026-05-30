@@ -1,0 +1,17 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "executionArgs": {
+    "projectName": "newsy_demo",
+    "projectPath": "c:\\Users\\amanc\\Desktop\\Cursor Projects\\newsy_demo",
+    "testIds": [],
+    "additionalInstruction": "Frontend at http://localhost:3000. Backend API at http://localhost:5000/api. Include login/signup flows. Test home feed, article page, profile, my-news, trending.",
+    "serverMode": "development",
+    "envs": {
+      "API_KEY": "sk-user-mWNnQrCPPCD4Zv2DC07NERy9BjBOSEdPmu61KegSga4WHSPvrb2SBy4lwEJPQHFJqhOM591VuFcWaWA58WXb4vgZf1VBAIvFiknZJXRyVc32SvhShkw_Zekeq6cUuiqKJPM"
+    }
+  },
+  "serverPort": 63599
+}

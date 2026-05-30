@@ -49,3 +49,5 @@ Thumbs.db
 # User uploads
 backend/uploads/profiles/*
 !backend/uploads/profiles/.gitkeep
+
+testsprite_tests\tmp\config.json

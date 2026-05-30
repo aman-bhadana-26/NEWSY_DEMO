@@ -1,0 +1,262 @@
+/* ── FAQs Page Container ── */
+.pageContainer {
+  width: 100%;
+  margin: 0;
+  padding: 60px 48px;
+  min-height: calc(100vh - 120px);
+  background: linear-gradient(160deg, #051020 0%, #0a1628 55%, #0d2535 100%);
+  color: #ffffff;
+}
+
+/* ── Page Header ── */
+.pageHeader {
+  text-align: center;
+  margin-bottom: 50px;
+  animation: fadeInUp 0.6s ease;
+}
+
+.pageIcon {
+  font-size: 3.8rem;
+  color: #1BA098;
+  margin-bottom: 20px;
+  animation: float 3.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 16px rgba(27, 160, 152, 0.35));
+}
+
+.pageTitle {
+  font-family: var(--font-headline, 'Poppins', sans-serif);
+  font-size: 2.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #1BA098 0%, #CBA135 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 14px 0;
+  letter-spacing: -0.5px;
+}
+
+.pageSubtitle {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+/* ── FAQ Wrapper & List ── */
+.faqsWrapper {
+  max-width: 820px;
+  margin: 0 auto;
+  animation: fadeInUp 0.7s ease;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Individual FAQ Item (Glass Card) ── */
+.faqItem {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.faqItem:hover {
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(27, 160, 152, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 8px rgba(27, 160, 152, 0.1);
+}
+
+.faqItemOpen {
+  background: rgba(27, 160, 152, 0.03);
+  border-color: rgba(27, 160, 152, 0.45);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35), 0 0 12px rgba(27, 160, 152, 0.15);
+}
+
+/* ── FAQ Header Button ── */
+.faqHeader {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 26px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+  text-align: left;
+  transition: background 0.3s ease;
+}
+
+.questionWrapper {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-right: 12px;
+}
+
+.itemIcon {
+  font-size: 1.25rem;
+  color: #1BA098;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 4px rgba(27, 160, 152, 0.2));
+  transition: transform 0.3s ease;
+}
+
+.faqItemOpen .itemIcon {
+  color: #CBA135;
+  filter: drop-shadow(0 0 6px rgba(203, 161, 53, 0.35));
+  transform: rotate(10deg) scale(1.1);
+}
+
+.questionText {
+  font-family: var(--font-headline, 'Poppins', sans-serif);
+  font-size: 1.06rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  transition: color 0.3s ease;
+}
+
+.faqItemOpen .questionText {
+  color: #ffffff;
+}
+
+.arrowIcon {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.faqItemOpen .arrowIcon {
+  color: #1BA098;
+}
+
+/* ── Expanding Answer Panel ── */
+.answerWrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
+  opacity: 0;
+}
+
+.answerWrapperOpen {
+  max-height: 500px; /* High enough value to accommodate the text */
+  opacity: 1;
+}
+
+.answerContent {
+  padding: 0 26px 24px 68px; /* Alignment fits beautifully next to item icon */
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
+  animation: fadeIn 0.4s ease;
+}
+
+.answerText {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.94rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.58);
+  margin: 0;
+}
+
+/* ── Keyframe Animations ── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* ── Responsive breakpoints ── */
+@media (max-width: 768px) {
+  .pageContainer {
+    padding: 40px 20px;
+  }
+
+  .pageTitle {
+    font-size: 2.2rem;
+  }
+
+  .pageSubtitle {
+    font-size: 0.95rem;
+  }
+
+  .faqHeader {
+    padding: 18px 20px;
+  }
+
+  .questionWrapper {
+    gap: 14px;
+  }
+
+  .questionText {
+    font-size: 0.98rem;
+  }
+
+  .answerContent {
+    padding: 0 20px 20px 52px;
+  }
+
+  .answerText {
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageContainer {
+    padding: 30px 16px;
+  }
+
+  .pageTitle {
+    font-size: 1.8rem;
+  }
+
+  .pageIcon {
+    font-size: 3rem;
+  }
+
+  .questionWrapper {
+    gap: 10px;
+  }
+
+  .itemIcon {
+    font-size: 1.1rem;
+  }
+
+  .questionText {
+    font-size: 0.92rem;
+  }
+
+  .answerContent {
+    padding: 0 16px 18px 16px; /* stack nicely on extremely small viewports */
+  }
+}

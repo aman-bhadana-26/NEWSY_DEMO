@@ -301,6 +301,28 @@
   vertical-align: middle;
 }
 
+.moreBtn {
+  display: block;
+  margin: 16px auto 0;
+  padding: 8px 18px;
+  background: transparent;
+  border: 1px solid rgba(27, 160, 152, 0.4);
+  color: #1BA098;
+  border-radius: 8px;
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.moreBtn:hover {
+  background: rgba(27, 160, 152, 0.08);
+  border-color: #24c9b8;
+  color: #24c9b8;
+  box-shadow: 0 0 10px rgba(27, 160, 152, 0.12);
+}
+
 @media (max-width: 900px) {
   .page {
     padding: 24px 16px;

@@ -72,6 +72,7 @@ export default function AnalyticsPage() {
   const [siteStats, setSiteStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState('personal');
+  const [showAllRecent, setShowAllRecent] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -209,24 +210,38 @@ export default function AnalyticsPage() {
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>{t('analytics.recentReads')}</h2>
               {myStats.recentActivity?.length ? (
-                <div className={styles.recentList}>
-                  {myStats.recentActivity.map((item, i) => (
-                    <div key={i} className={styles.recentItem}>
-                      <div>
-                        <p className={styles.recentTitle}>
-                          {item.articleTitle?.length > 60
-                            ? item.articleTitle.slice(0, 60) + '…'
-                            : item.articleTitle}
-                        </p>
-                        <span className={styles.recentMeta}>
-                          {topicLabel(t, item.topic)} ·{' '}
-                          {new Date(item.readAt).toLocaleDateString()}
-                        </span>
+                <>
+                  <div className={styles.recentList}>
+                    {(showAllRecent
+                      ? myStats.recentActivity
+                      : myStats.recentActivity.slice(0, 4)
+                    ).map((item, i) => (
+                      <div key={i} className={styles.recentItem}>
+                        <div>
+                          <p className={styles.recentTitle}>
+                            {item.articleTitle?.length > 60
+                              ? item.articleTitle.slice(0, 60) + '…'
+                              : item.articleTitle}
+                          </p>
+                          <span className={styles.recentMeta}>
+                            {topicLabel(t, item.topic)} ·{' '}
+                            {new Date(item.readAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <span className={styles.recentTime}>{item.timeLabel}</span>
                       </div>
-                      <span className={styles.recentTime}>{item.timeLabel}</span>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                  {myStats.recentActivity.length > 4 && (
+                    <button
+                      type="button"
+                      className={styles.moreBtn}
+                      onClick={() => setShowAllRecent(!showAllRecent)}
+                    >
+                      {showAllRecent ? t('analytics.showLess') : t('analytics.showMore')}
+                    </button>
+                  )}
+                </>
               ) : (
                 <p className={styles.emptyHint}>{t('analytics.startReading')}</p>
               )}

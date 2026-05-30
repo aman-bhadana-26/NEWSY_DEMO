@@ -98,12 +98,6 @@ function HeroScene() {
             initial="hidden"
             animate="visible"
           >
-            {/* Eyebrow badge */}
-            <motion.div variants={fadeUp} className={styles.eyebrow}>
-              <span className={styles.liveDot} />
-              <span className={styles.eyebrowText}>{t('landing.eyebrow')}</span>
-            </motion.div>
-
             {/* H1 — word-by-word blur-in */}
             <h1 className={styles.heroH1}>
               {heroWords.map((word, i) => (

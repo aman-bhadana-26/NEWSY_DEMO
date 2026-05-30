@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope, FaSearch, FaFilter, FaNewspaper, FaHome, FaChevronDown, FaInfoCircle, FaEnvelopeOpen, FaTachometerAlt, FaUserShield, FaChartLine } from 'react-icons/fa';
+import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope, FaSearch, FaFilter, FaNewspaper, FaHome, FaChevronDown, FaInfoCircle, FaEnvelopeOpen, FaTachometerAlt, FaUserShield, FaChartLine, FaQuestionCircle } from 'react-icons/fa';
 import { throttle } from '../hooks/useScrollOptimization';
 import FlowingMenu from './FlowingMenu';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -302,6 +302,15 @@ const Navbar = () => {
           </Link>
 
           <Link
+            href="/faqs"
+            className={`${styles.navLink} ${
+              router.pathname === '/faqs' ? styles.active : ''
+            }`}
+          >
+            {t('nav.faqs')}
+          </Link>
+
+          <Link
             href="/contact"
             className={`${styles.navLink} ${
               router.pathname === '/contact' ? styles.active : ''
@@ -556,6 +565,14 @@ const Navbar = () => {
             onClick={() => setMobileMenuOpen(false)}
           >
             <FaInfoCircle /> {t('nav.about')}
+          </Link>
+
+          <Link
+            href="/faqs"
+            className={`${styles.mobileNavLink} ${router.pathname === '/faqs' ? styles.mobileNavLinkActive : ''}`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <FaQuestionCircle /> {t('nav.faqs')}
           </Link>
           
           <Link

@@ -523,6 +523,25 @@ export const translations = {
     'analytics.site.comments': 'comments',
     'analytics.site.readsWeek': 'Site Reads (7 Days)',
     'analytics.site.topTopics': 'Popular Topics (Site-wide)',
+    'analytics.showMore': 'Show More',
+    'analytics.showLess': 'Show Less',
+    
+    // Navigation Link
+    'nav.faqs': 'FAQs',
+    
+    // FAQs Page
+    'faq.title': 'Frequently Asked Questions',
+    'faq.subtitle': 'Got questions? We\'ve got answers about NewsyTech.',
+    'faq.q1': 'How often is the news updated?',
+    'faq.a1': 'Our aggregation system scans over 1,000 global technology sources every 15 minutes, ensuring you always have access to the latest breaking developments in real-time.',
+    'faq.q2': 'How does the personalization algorithm work?',
+    'faq.a2': 'Under the "My News" tab, you can select topics of interest. Our system filters out general noise and highlights articles matching your chosen tags, calculated through machine learning signals.',
+    'faq.q3': 'Can I save articles to read them later?',
+    'faq.a3': 'Yes! By creating a free account, you can bookmark any article using the "Save" icon, which is added to your personal "Saved Articles" shelf accessible from your profile or feed.',
+    'faq.q4': 'How is my analytical reading data utilized?',
+    'faq.a4': 'We track reading time and topic preferences to generate your personal interactive dashboard. This data is private, stored securely, and is never shared with third-party networks.',
+    'faq.q5': 'How can I report inaccurate information or feedback?',
+    'faq.a5': 'We value accuracy highly. You can reach out directly via our "Contact" page form to report editorial errors, bugs, or to suggest new feed sources.',
   },
 
   /* ───────────────────────────── HINDI ─────────────────────────────── */
@@ -949,6 +968,23 @@ export const translations = {
     'article.cat.gadgets': 'गैजेट्स',
     'article.cat.startups': 'स्टार्टअप',
     'article.cat.tech': 'टेक्नोलॉजी',
+    
+    // Navigation Link
+    'nav.faqs': 'FAQs',
+    
+    // FAQs Page
+    'faq.title': 'अक्सर पूछे जाने वाले प्रश्न (FAQs)',
+    'faq.subtitle': 'कोई प्रश्न है? हमारे पास NewsyTech के बारे में उत्तर हैं।',
+    'faq.q1': 'समाचार कितनी बार अपडेट किया जाता है?',
+    'faq.a1': 'हमारी एकत्रीकरण प्रणाली हर 15 मिनट में 1,000 से अधिक वैश्विक तकनीकी स्रोतों को स्कैन करती है, जिससे यह सुनिश्चित होता है कि आपको हमेशा वास्तविक समय में नवीनतम समाचार मिलें।',
+    'faq.q2': 'पर्सनलाइजेशन एल्गोरिदम कैसे काम करता है?',
+    'faq.a2': '"मेरी ख़बरें" टैब के तहत, आप अपनी पसंद के विषय चुन सकते हैं। हमारी प्रणाली सामान्य शोर को हटा देती है और आपकी चुनी हुई श्रेणियों से मेल खाने वाले लेखों को प्रदर्शित करती है।',
+    'faq.q3': 'क्या मैं बाद में पढ़ने के लिए लेख सहेज सकता हूँ?',
+    'faq.a3': 'हाँ! एक मुफ़्त खाता बनाकर, आप "सहेजें" आइकन का उपयोग करके किसी भी लेख को बुकमार्क कर सकते हैं, जिसे आपके प्रोफ़ाइल या फ़ीड से सुलभ आपके व्यक्तिगत "सहेजे गए लेख" शेल्फ में जोड़ा जाता है।',
+    'faq.q4': 'मेरे पठन विश्लेषणात्मक डेटा का उपयोग कैसे किया जाता है?',
+    'faq.a4': 'हम आपका व्यक्तिगत इंटरैक्टिव डैशबोर्ड बनाने के लिए पठन समय और विषय प्राथमिकताओं को ट्रैक करते हैं. यह डेटा निजी है, सुरक्षित रूप से संग्रहीत है, और कभी भी तीसरे पक्ष के नेटवर्क के साथ साझा नहीं किया जाता है।',
+    'faq.q5': 'मैं गलत जानकारी या प्रतिक्रिया की रिपोर्ट कैसे कर सकता हूँ?',
+    'faq.a5': 'हम सटीकता को अत्यधिक महत्व देते हैं। आप संपादकीय त्रुटियों, बगों की रिपोर्ट करने या नए फ़ीड स्रोतों का सुझाव देने के लिए हमारे "संपर्क" पृष्ठ फ़ॉर्म के माध्यम से सीधे संपर्क कर सकते हैं।',
   },
 
   /* ───────────────────────────── SPANISH ───────────────────────────── */
@@ -1375,6 +1411,23 @@ export const translations = {
     'article.cat.gadgets': 'Dispositivos',
     'article.cat.startups': 'Startup',
     'article.cat.tech': 'Tecnología',
+    
+    // Navigation Link
+    'nav.faqs': 'Preguntas Frecuentes',
+    
+    // FAQs Page
+    'faq.title': 'Preguntas Frecuentes',
+    'faq.subtitle': '¿Tiene preguntas? Tenemos respuestas sobre NewsyTech.',
+    'faq.q1': '¿Con qué frecuencia se actualizan las noticias?',
+    'faq.a1': 'Nuestro sistema de agregación escanea más de 1.000 fuentes de tecnología globales cada 15 minutos, garantizando que siempre tenga acceso a los últimos desarrollos en tiempo real.',
+    'faq.q2': '¿Cómo funciona el algoritmo de personalización?',
+    'faq.a2': 'En la pestaña "Mis noticias", puede seleccionar temas de interés. Nuestro sistema filtra el ruido general y resalta los artículos que coinciden con sus etiquetas elegidas.',
+    'faq.q3': '¿Puedo guardar artículos para leerlos más tarde?',
+    'faq.a3': '¡Sí! Al crear una cuenta gratuita, puede marcar cualquier artículo usando el ícono "Guardar", que se agrega a su lista personal de "Artículos guardados".',
+    'faq.q4': '¿Cómo se utilizan mis datos analíticos de lectura?',
+    'faq.a4': 'Realizamos un seguimiento del tiempo de lectura y las preferencias de temas para generar su panel interactivo personal. Estos datos son privados y nunca se comparten con terceros.',
+    'faq.q5': '¿Cómo puedo reportar información inexacta o enviar comentarios?',
+    'faq.a5': 'Valoramos mucho la precisión. Puede comunicarse directamente a través de nuestro formulario en la página de "Contacto" para reportar errores editoriales o sugerir fuentes.',
   },
 
   /* ───────────────────────────── FRENCH ────────────────────────────── */
@@ -1801,6 +1854,23 @@ export const translations = {
     'article.cat.gadgets': 'Gadgets',
     'article.cat.startups': 'Startup',
     'article.cat.tech': 'Technologie',
+    
+    // Navigation Link
+    'nav.faqs': 'FAQ',
+    
+    // FAQs Page
+    'faq.title': 'Foire Aux Questions',
+    'faq.subtitle': 'Des questions ? Nous avons des réponses sur NewsyTech.',
+    'faq.q1': 'À quelle fréquence les nouvelles sont-elles mises à jour ?',
+    'faq.a1': 'Notre système d\'agrégation analyse plus de 1 000 sources technologiques mondiales toutes les 15 minutes, vous garantissant un accès aux dernières actualités en temps réel.',
+    'faq.q2': 'Comment fonctionne l\'algorithme de personnalisation ?',
+    'faq.a2': 'Dans l\'onglet "Mes actualités", vous pouvez sélectionner vos sujets d\'intérêt. Notre système filtre le bruit et met en avant les articles correspondant à vos choix.',
+    'faq.q3': 'Puis-je sauvegarder des articles pour plus tard ?',
+    'faq.a3': 'Oui ! En créant un compte gratuit, vous pouvez ajouter n\'importe quel article à vos favoris. Ils seront enregistrés dans votre section "Articles sauvegardés".',
+    'faq.q4': 'Comment mes données de lecture analytiques sont-elles utilisées ?',
+    'faq.a4': 'We track reading time and topic preferences to generate your personal interactive dashboard. This data is private, stored securely, and is never shared with third-party networks.',
+    'faq.q5': 'Comment signaler une information inexacte ou envoyer un commentaire ?',
+    'faq.a5': 'Nous accordons une grande importance à l\'exactitude. Vous pouvez nous contacter via le formulaire de contact pour signaler une erreur ou suggérer des sources.',
   },
 
   /* ───────────────────────────── GERMAN ────────────────────────────── */
@@ -2227,6 +2297,23 @@ export const translations = {
     'article.cat.gadgets': 'Geräte',
     'article.cat.startups': 'Startup',
     'article.cat.tech': 'Technologie',
+    
+    // Navigation Link
+    'nav.faqs': 'FAQs',
+    
+    // FAQs Page
+    'faq.title': 'Häufig gestellte Fragen',
+    'faq.subtitle': 'Fragen? Wir haben Antworten zu NewsyTech.',
+    'faq.q1': 'Wie oft werden die Nachrichten aktualisiert?',
+    'faq.a1': 'Unser Aggregationssystem scannt alle 15 Minuten über 1.000 globale Technologiequellen, um sicherzustellen, dass Sie immer Echtzeitzugriff auf die neuesten Entwicklungen haben.',
+    'faq.q2': 'Wie funktioniert der Personalisierungsalgorithmus?',
+    'faq.a2': 'Unter dem Reiter „Meine News“ können Sie Themen auswählen. Unser System filtert Rauschen heraus und hebt Artikel hervor, die Ihren ausgewählten Tags entsprechen.',
+    'faq.q3': 'Kann ich Artikel für später speichern?',
+    'faq.a3': 'Ja! Wenn Sie ein kostenloses Konto erstellen, können Sie jeden Artikel über das „Speichern“-Symbol markieren, um ihn in Ihrer persönlichen Leseliste zu speichern.',
+    'faq.q4': 'Wie werden meine Lesedaten verwendet?',
+    'faq.a4': 'Wir verfolgen Lesezeit und Themenpräferenzen, um Ihr persönliches Dashboard zu erstellen. Diese Daten sind privat und werden niemals an Dritte weitergegeben.',
+    'faq.q5': 'Wie kann ich ungenaue Informationen melden oder Feedback senden?',
+    'faq.a5': 'Wir legen großen Wert auf Genauigkeit. Sie können uns direkt über das Formular auf unserer „Kontakt“-Seite kontaktieren, um Fehler zu melden oder Quellen vorzuschlagen.',
   },
 };
 
