@@ -49,7 +49,7 @@ export default function Faqs() {
       </Head>
 
       <div className={styles.pageContainer}>
-        <div className={styles.pageHeader}>
+        <div className={`${styles.pageHeader} anim-slide`}>
           <FaQuestionCircle className={styles.pageIcon} />
           <h1 className={styles.pageTitle}>{t('faq.title')}</h1>
           <p className={styles.pageSubtitle}>{t('faq.subtitle')}</p>
@@ -62,7 +62,7 @@ export default function Faqs() {
               return (
                 <div 
                   key={index} 
-                  className={`${styles.faqItem} ${isOpen ? styles.faqItemOpen : ''}`}
+                  className={`${styles.faqItem} ${isOpen ? styles.faqItemOpen : ''} anim-fade-up delay-${(index % 5) + 1}`}
                 >
                   <button 
                     type="button"

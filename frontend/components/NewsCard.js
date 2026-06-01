@@ -36,7 +36,7 @@ const NewsCard = ({ article, category }) => {
   const imageUrl = article.urlToImage || 'https://via.placeholder.com/800x400/0066cc/ffffff?text=Tech+News';
 
   return (
-    <div className={styles.card}>
+    <div className={`${styles.card} anim-fade-up`}>
       <Link href={articleUrl} className={styles.imageLink}>
         {hasImage ? (
           <div className={styles.imageContainer}>

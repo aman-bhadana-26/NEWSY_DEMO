@@ -22,21 +22,63 @@ const topicLabel = (t, topic) => {
   return label === key ? topic : label;
 };
 
+function BarChartItem({ day, maxValue, valueKey }) {
+  const [height, setHeight] = useState('0px');
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setHeight(`${Math.max(4, (day[valueKey] / maxValue) * 120)}px`);
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, [day, maxValue, valueKey]);
+
+  return (
+    <div className={styles.chartBarWrap}>
+      <span className={styles.chartCount}>{day[valueKey]}</span>
+      <div
+        className={styles.chartBar}
+        style={{ height: height }}
+      />
+      <span className={styles.chartLabel}>{day.label}</span>
+    </div>
+  );
+}
+
 function BarChart({ data, maxValue, valueKey = 'reads' }) {
   return (
     <div className={styles.chart}>
       {data.map((day) => (
-        <div key={day.date} className={styles.chartBarWrap}>
-          <span className={styles.chartCount}>{day[valueKey]}</span>
-          <div
-            className={styles.chartBar}
-            style={{
-              height: `${Math.max(4, (day[valueKey] / maxValue) * 120)}px`
-            }}
-          />
-          <span className={styles.chartLabel}>{day.label}</span>
-        </div>
+        <BarChartItem
+          key={day.date}
+          day={day}
+          maxValue={maxValue}
+          valueKey={valueKey}
+        />
       ))}
+    </div>
+  );
+}
+
+function TopicBarRow({ item, t }) {
+  const [width, setWidth] = useState('0%');
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setWidth(`${item.percentage}%`);
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, [item.percentage]);
+
+  return (
+    <div className={styles.topicRow}>
+      <span className={styles.topicName}>{topicLabel(t, item.topic)}</span>
+      <div className={styles.topicBarBg}>
+        <div
+          className={styles.topicBarFill}
+          style={{ width: width }}
+        />
+      </div>
+      <span className={styles.topicPct}>{item.percentage}%</span>
     </div>
   );
 }
@@ -48,16 +90,7 @@ function TopicBars({ topics, t }) {
   return (
     <div className={styles.topicList}>
       {topics.map((item) => (
-        <div key={item.topic} className={styles.topicRow}>
-          <span className={styles.topicName}>{topicLabel(t, item.topic)}</span>
-          <div className={styles.topicBarBg}>
-            <div
-              className={styles.topicBarFill}
-              style={{ width: `${item.percentage}%` }}
-            />
-          </div>
-          <span className={styles.topicPct}>{item.percentage}%</span>
-        </div>
+        <TopicBarRow key={item.topic} item={item} t={t} />
       ))}
     </div>
   );
@@ -118,7 +151,7 @@ export default function AnalyticsPage() {
   return (
     <Layout title="Analytics – NEWSYTECH">
       <div className={styles.page}>
-        <header className={styles.header}>
+        <header className={`${styles.header} anim-slide`}>
           <h1 className={styles.title}>
             <FaChartLine className={styles.titleIcon} />
             {t('analytics.title')}
@@ -127,7 +160,7 @@ export default function AnalyticsPage() {
         </header>
 
         {user?.isAdmin && (
-          <div className={styles.viewTabs}>
+          <div className={`${styles.viewTabs} anim-scale`}>
             <button
               type="button"
               className={`${styles.viewTab} ${activeView === 'personal' ? styles.viewTabActive : ''}`}
@@ -149,7 +182,7 @@ export default function AnalyticsPage() {
         {activeView === 'personal' && myStats && (
           <>
             <div className={styles.statsGrid}>
-              <div className={`${styles.statCard} ${styles.statCardHighlight}`}>
+              <div className={`${styles.statCard} ${styles.statCardHighlight} anim-fade-up delay-1`}>
                 <p className={styles.statLabel}>{t('analytics.streak')}</p>
                 <p className={styles.statValue}>
                   <FaFire style={{ color: '#CBA135', marginRight: 8 }} />
@@ -160,7 +193,7 @@ export default function AnalyticsPage() {
                 </p>
               </div>
 
-              <div className={styles.statCard}>
+              <div className={`${styles.statCard} anim-fade-up delay-2`}>
                 <p className={styles.statLabel}>{t('analytics.articlesRead')}</p>
                 <p className={styles.statValue}>
                   <FaBookOpen style={{ color: '#1BA098', marginRight: 8 }} />
@@ -169,7 +202,7 @@ export default function AnalyticsPage() {
                 <p className={styles.statSub}>{myStats.totalSessions} {t('analytics.sessions')}</p>
               </div>
 
-              <div className={styles.statCard}>
+              <div className={`${styles.statCard} anim-fade-up delay-3`}>
                 <p className={styles.statLabel}>{t('analytics.timeSpent')}</p>
                 <p className={styles.statValue}>
                   <FaClock style={{ color: '#1BA098', marginRight: 8 }} />
@@ -180,7 +213,7 @@ export default function AnalyticsPage() {
                 </p>
               </div>
 
-              <div className={styles.statCard}>
+              <div className={`${styles.statCard} anim-fade-up delay-4`}>
                 <p className={styles.statLabel}>{t('analytics.thisMonth')}</p>
                 <p className={styles.statValue}>{myStats.thisMonthTime?.label}</p>
                 <p className={styles.statSub}>{t('analytics.readingHabits')}</p>
@@ -188,7 +221,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={styles.twoCol}>
-              <section className={styles.section}>
+              <section className={`${styles.section} anim-fade-left delay-1`}>
                 <h2 className={styles.sectionTitle}>
                   <FaChartLine /> {t('analytics.activityWeek')}
                 </h2>
@@ -199,7 +232,7 @@ export default function AnalyticsPage() {
                 )}
               </section>
 
-              <section className={styles.section}>
+              <section className={`${styles.section} anim-fade-right delay-2`}>
                 <h2 className={styles.sectionTitle}>
                   <FaTags /> {t('analytics.topTopics')}
                 </h2>
@@ -207,7 +240,7 @@ export default function AnalyticsPage() {
               </section>
             </div>
 
-            <section className={styles.section}>
+            <section className={`${styles.section} anim-fade-up delay-3`}>
               <h2 className={styles.sectionTitle}>{t('analytics.recentReads')}</h2>
               {myStats.recentActivity?.length ? (
                 <>
@@ -252,14 +285,14 @@ export default function AnalyticsPage() {
         {activeView === 'site' && user?.isAdmin && siteStats && (
           <>
             <div className={styles.statsGrid}>
-              <div className={styles.statCard}>
+              <div className={`${styles.statCard} anim-fade-up delay-1`}>
                 <p className={styles.statLabel}>{t('analytics.site.totalReads')}</p>
                 <p className={styles.statValue}>{siteStats.totalReads}</p>
                 <p className={styles.statSub}>
                   {siteStats.readsThisMonth} {t('analytics.thisMonth')}
                 </p>
               </div>
-              <div className={styles.statCard}>
+              <div className={`${styles.statCard} anim-fade-up delay-2`}>
                 <p className={styles.statLabel}>{t('analytics.site.readers')}</p>
                 <p className={styles.statValue}>
                   <FaUsers style={{ marginRight: 8, color: '#1BA098' }} />
@@ -269,11 +302,11 @@ export default function AnalyticsPage() {
                   {siteStats.activeReaders} {t('analytics.site.activeWeek')}
                 </p>
               </div>
-              <div className={styles.statCard}>
+              <div className={`${styles.statCard} anim-fade-up delay-3`}>
                 <p className={styles.statLabel}>{t('analytics.site.totalTime')}</p>
                 <p className={styles.statValue}>{siteStats.totalTime?.label}</p>
               </div>
-              <div className={styles.statCard}>
+              <div className={`${styles.statCard} anim-fade-up delay-4`}>
                 <p className={styles.statLabel}>{t('analytics.site.users')}</p>
                 <p className={styles.statValue}>{siteStats.totalUsers}</p>
                 <p className={styles.statSub}>
@@ -284,11 +317,11 @@ export default function AnalyticsPage() {
             </div>
 
             <div className={styles.twoCol}>
-              <section className={styles.section}>
+              <section className={`${styles.section} anim-fade-left delay-1`}>
                 <h2 className={styles.sectionTitle}>{t('analytics.site.readsWeek')}</h2>
                 <BarChart data={siteStats.readsByDay} maxValue={siteStats.maxReads} />
               </section>
-              <section className={styles.section}>
+              <section className={`${styles.section} anim-fade-right delay-2`}>
                 <h2 className={styles.sectionTitle}>{t('analytics.site.topTopics')}</h2>
                 <TopicBars topics={siteStats.topTopics} t={t} />
               </section>

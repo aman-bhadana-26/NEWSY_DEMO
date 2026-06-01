@@ -188,7 +188,7 @@ export default function Profile() {
         <div className={styles.grid}>
 
           {/* ══ LEFT PANEL ══ */}
-          <aside className={styles.leftPanel}>
+          <aside className={`${styles.leftPanel} anim-fade-left`}>
 
             {/* Avatar card */}
             <div className={styles.avatarCard}>
@@ -269,7 +269,7 @@ export default function Profile() {
                 <span className={styles.cardLabel}>{t('profile.accountInfo')}</span>
               </div>
               <div className={styles.infoList}>
-                <div className={styles.infoRow}>
+                <div className={`${styles.infoRow} anim-fade-left delay-1`}>
                   <span className={styles.infoIcon}>
                     <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/></svg>
                   </span>
@@ -278,7 +278,7 @@ export default function Profile() {
                     <p className={styles.infoFieldValue}>{user.name}</p>
                   </div>
                 </div>
-                <div className={styles.infoRow}>
+                <div className={`${styles.infoRow} anim-fade-left delay-2`}>
                   <span className={styles.infoIcon}>
                     <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
                   </span>
@@ -287,7 +287,7 @@ export default function Profile() {
                     <p className={styles.infoFieldValue}>{user.email}</p>
                   </div>
                 </div>
-                <div className={styles.infoRow}>
+                <div className={`${styles.infoRow} anim-fade-left delay-3`}>
                   <span className={styles.infoIcon}>
                     <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"/></svg>
                   </span>
@@ -302,7 +302,7 @@ export default function Profile() {
           </aside>
 
           {/* ══ RIGHT PANEL ══ */}
-          <main className={styles.rightPanel}>
+          <main className={`${styles.rightPanel} anim-fade-right`}>
 
             <div className={styles.rightCard}>
               <div className={styles.rightCardHeader}>
@@ -423,7 +423,7 @@ export default function Profile() {
 
             {/* Quick nav tiles */}
             <div className={styles.quickLinks}>
-              <div className={styles.quickLink} onClick={() => router.push('/my-news')}>
+              <div className={`${styles.quickLink} anim-fade-up delay-1`} onClick={() => router.push('/my-news')}>
                 <span className={styles.quickLinkIcon}>◈</span>
                 <div>
                   <p className={styles.quickLinkTitle}>{t('profile.quick.myNews')}</p>
@@ -431,7 +431,7 @@ export default function Profile() {
                 </div>
                 <span className={styles.quickLinkArrow}>→</span>
               </div>
-              <div className={styles.quickLink} onClick={() => router.push('/my-news?tab=saved')}>
+              <div className={`${styles.quickLink} anim-fade-up delay-2`} onClick={() => router.push('/my-news?tab=saved')}>
                 <span className={styles.quickLinkIcon}>◇</span>
                 <div>
                   <p className={styles.quickLinkTitle}>{t('profile.quick.saved')}</p>

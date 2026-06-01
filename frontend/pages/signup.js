@@ -85,7 +85,7 @@ export default function Signup() {
         />
 
         {/* ── Centered Card ── */}
-        <div className={styles.authCard}>
+        <div className={`${styles.authCard} anim-scale`}>
           <div className={styles.authCardInner}>
 
             {/* Brand logo */}

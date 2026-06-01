@@ -43,14 +43,14 @@ export default function Contact() {
       </Head>
 
       <div className={styles.pageContainer}>
-        <div className={styles.pageHeader}>
+        <div className={`${styles.pageHeader} anim-slide`}>
           <FaEnvelopeOpen className={styles.pageIcon} />
           <h1 className={styles.pageTitle}>{t('contact.title')}</h1>
           <p className={styles.pageSubtitle}>{t('contact.subtitle')}</p>
         </div>
 
         <div className={styles.contactContainer}>
-          <div className={styles.contactInfo}>
+          <div className={`${styles.contactInfo} anim-fade-left delay-1`}>
             <h2 className={styles.contactInfoTitle}>{t('contact.getInTouch')}</h2>
             <p className={styles.contactInfoText}>
               {t('contact.intro')}
@@ -67,7 +67,7 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className={styles.contactForm}>
+          <div className={`${styles.contactForm} anim-fade-right delay-2`}>
             {submitted ? (
               <div className={styles.successMessage}>
                 <FaPaperPlane className={styles.successIcon} />
