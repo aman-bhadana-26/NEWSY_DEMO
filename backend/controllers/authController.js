@@ -41,6 +41,8 @@ const registerUser = async (req, res) => {
         name: user.name,
         email: user.email,
         profilePicture: user.profilePicture,
+        bio: user.bio,
+        socialLinks: user.socialLinks,
         isAdmin: user.isAdmin,
         token: generateToken(user._id)
       });
@@ -76,6 +78,8 @@ const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         profilePicture: user.profilePicture,
+        bio: user.bio,
+        socialLinks: user.socialLinks,
         isAdmin: user.isAdmin,
         token: generateToken(user._id)
       });
@@ -103,6 +107,8 @@ const getUserProfile = async (req, res) => {
         name: user.name,
         email: user.email,
         profilePicture: user.profilePicture,
+        bio: user.bio,
+        socialLinks: user.socialLinks,
         isAdmin: user.isAdmin,
         createdAt: user.createdAt
       });
@@ -127,6 +133,16 @@ const updateUserProfile = async (req, res) => {
     if (user) {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
+      user.bio = req.body.bio !== undefined ? req.body.bio : user.bio;
+
+      if (req.body.socialLinks) {
+        user.socialLinks = {
+          twitter: req.body.socialLinks.twitter !== undefined ? req.body.socialLinks.twitter : user.socialLinks.twitter,
+          github: req.body.socialLinks.github !== undefined ? req.body.socialLinks.github : user.socialLinks.github,
+          linkedin: req.body.socialLinks.linkedin !== undefined ? req.body.socialLinks.linkedin : user.socialLinks.linkedin,
+          website: req.body.socialLinks.website !== undefined ? req.body.socialLinks.website : user.socialLinks.website
+        };
+      }
 
       if (req.body.password) {
         user.password = req.body.password;
@@ -139,6 +155,8 @@ const updateUserProfile = async (req, res) => {
         name: updatedUser.name,
         email: updatedUser.email,
         profilePicture: updatedUser.profilePicture,
+        bio: updatedUser.bio,
+        socialLinks: updatedUser.socialLinks,
         isAdmin: updatedUser.isAdmin,
         token: generateToken(updatedUser._id)
       });

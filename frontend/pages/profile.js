@@ -6,6 +6,7 @@ import { useLanguage } from '../context/LanguageContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Particles from '../components/Particles';
 import { authAPI } from '../utils/api';
+import { FaTwitter, FaGithub, FaLinkedin, FaGlobe } from 'react-icons/fa';
 import styles from '../styles/Profile.module.css';
 
 const PROFILE_LOCALE_MAP = { en: 'en-US', hi: 'hi-IN', es: 'es-ES', fr: 'fr-FR', de: 'de-DE' };
@@ -16,7 +17,16 @@ export default function Profile() {
   const { user, isAuthenticated, loading: authLoading, updateUser, refreshUser } = useAuth();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '', newPassword: '' });
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    newPassword: '',
+    bio: '',
+    twitter: '',
+    github: '',
+    linkedin: '',
+    website: ''
+  });
   const [message, setMessage] = useState({ type: '', text: '' });
   const [loading, setLoading] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
@@ -29,7 +39,18 @@ export default function Profile() {
   }, [isAuthenticated, authLoading, router]);
 
   useEffect(() => {
-    if (user) setFormData({ name: user.name || '', email: user.email || '', newPassword: '' });
+    if (user) {
+      setFormData({
+        name: user.name || '',
+        email: user.email || '',
+        newPassword: '',
+        bio: user.bio || '',
+        twitter: user.socialLinks?.twitter || '',
+        github: user.socialLinks?.github || '',
+        linkedin: user.socialLinks?.linkedin || '',
+        website: user.socialLinks?.website || ''
+      });
+    }
   }, [user]);
 
   const handleChange = (e) => {
@@ -48,14 +69,33 @@ export default function Profile() {
       return;
     }
 
-    const updateData = { name: formData.name, email: formData.email };
+    const updateData = {
+      name: formData.name,
+      email: formData.email,
+      bio: formData.bio,
+      socialLinks: {
+        twitter: formData.twitter,
+        github: formData.github,
+        linkedin: formData.linkedin,
+        website: formData.website
+      }
+    };
     if (formData.newPassword) updateData.password = formData.newPassword;
 
     const result = await updateUser(updateData);
     if (result.success) {
       setMessage({ type: 'success', text: t('profile.updateSuccess') });
       setIsEditing(false);
-      setFormData({ name: result.user?.name || formData.name, email: result.user?.email || formData.email, newPassword: '' });
+      setFormData({
+        name: result.user?.name || formData.name,
+        email: result.user?.email || formData.email,
+        newPassword: '',
+        bio: result.user?.bio || formData.bio,
+        twitter: result.user?.socialLinks?.twitter || formData.twitter,
+        github: result.user?.socialLinks?.github || formData.github,
+        linkedin: result.user?.socialLinks?.linkedin || formData.linkedin,
+        website: result.user?.socialLinks?.website || formData.website
+      });
     } else {
       setMessage({ type: 'error', text: result.error });
     }
@@ -64,7 +104,16 @@ export default function Profile() {
 
   const cancelEdit = () => {
     setIsEditing(false);
-    setFormData({ name: user.name, email: user.email, newPassword: '' });
+    setFormData({
+      name: user.name || '',
+      email: user.email || '',
+      newPassword: '',
+      bio: user.bio || '',
+      twitter: user.socialLinks?.twitter || '',
+      github: user.socialLinks?.github || '',
+      linkedin: user.socialLinks?.linkedin || '',
+      website: user.socialLinks?.website || ''
+    });
     setMessage({ type: '', text: '' });
   };
 
@@ -261,6 +310,47 @@ export default function Profile() {
                 {user.createdAt && <span className={styles.badgeGold}>{t('profile.badge.verified')}</span>}
               </div>
 
+              {/* Bio Block */}
+              <div className={styles.bioBlock}>
+                {user.bio ? (
+                  <p className={styles.userBio}>{user.bio}</p>
+                ) : (
+                  <p className={styles.userBioEmpty}>{t('profile.noBio')}</p>
+                )}
+              </div>
+
+              {/* Social Links Row */}
+              <div className={styles.socialsRow}>
+                {user.socialLinks?.twitter ? (
+                  <a href={user.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className={styles.socialIconLink} title="Twitter / X">
+                    <FaTwitter />
+                  </a>
+                ) : (
+                  <span className={`${styles.socialIconLink} ${styles.disabled}`} title="Twitter / X"><FaTwitter /></span>
+                )}
+                {user.socialLinks?.github ? (
+                  <a href={user.socialLinks.github} target="_blank" rel="noopener noreferrer" className={styles.socialIconLink} title="GitHub">
+                    <FaGithub />
+                  </a>
+                ) : (
+                  <span className={`${styles.socialIconLink} ${styles.disabled}`} title="GitHub"><FaGithub /></span>
+                )}
+                {user.socialLinks?.linkedin ? (
+                  <a href={user.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className={styles.socialIconLink} title="LinkedIn">
+                    <FaLinkedin />
+                  </a>
+                ) : (
+                  <span className={`${styles.socialIconLink} ${styles.disabled}`} title="LinkedIn"><FaLinkedin /></span>
+                )}
+                {user.socialLinks?.website ? (
+                  <a href={user.socialLinks.website} target="_blank" rel="noopener noreferrer" className={styles.socialIconLink} title="Website">
+                    <FaGlobe />
+                  </a>
+                ) : (
+                  <span className={`${styles.socialIconLink} ${styles.disabled}`} title="Website"><FaGlobe /></span>
+                )}
+              </div>
+
             </div>
 
             {/* Account Info */}
@@ -398,6 +488,106 @@ export default function Profile() {
                       autoComplete="new-password"
                     />
                     <p className={styles.inputHint}>{t('profile.passwordHint')}</p>
+                  </div>
+
+                  {/* Bio Field */}
+                  <div className={styles.formGroup}>
+                    <div className={styles.labelRow}>
+                      <label className={styles.formLabel} htmlFor="bio">
+                        {t('profile.bio')} <span className={styles.optionalTag}>{t('profile.optional')}</span>
+                      </label>
+                      <span className={`${styles.charCount} ${formData.bio.length >= 200 ? styles.limitReached : ''}`}>
+                        {formData.bio.length}/200
+                      </span>
+                    </div>
+                    <textarea
+                      id="bio"
+                      name="bio"
+                      className={styles.formTextarea}
+                      value={formData.bio}
+                      onChange={handleChange}
+                      maxLength={200}
+                      placeholder={t('profile.bioPlaceholder')}
+                      rows={3}
+                    />
+                  </div>
+
+                  {/* Social Links Group */}
+                  <div className={styles.socialFormSection}>
+                    <h3 className={styles.formSectionTitle}>
+                      <span className={styles.rightCardTitleAccent}>// </span>
+                      {t('profile.socialLinks')}
+                    </h3>
+                    
+                    <div className={styles.socialInputsGrid}>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel} htmlFor="twitter">
+                          <FaTwitter style={{ marginRight: '6px', verticalAlign: 'middle', color: '#1a91da' }} />
+                          {t('profile.twitter')}
+                        </label>
+                        <input
+                          id="twitter"
+                          name="twitter"
+                          type="url"
+                          className={styles.formInput}
+                          value={formData.twitter}
+                          onChange={handleChange}
+                          placeholder={t('profile.twitterPlaceholder')}
+                          autoComplete="off"
+                        />
+                      </div>
+
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel} htmlFor="github">
+                          <FaGithub style={{ marginRight: '6px', verticalAlign: 'middle', color: '#ffffff' }} />
+                          {t('profile.github')}
+                        </label>
+                        <input
+                          id="github"
+                          name="github"
+                          type="url"
+                          className={styles.formInput}
+                          value={formData.github}
+                          onChange={handleChange}
+                          placeholder={t('profile.githubPlaceholder')}
+                          autoComplete="off"
+                        />
+                      </div>
+
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel} htmlFor="linkedin">
+                          <FaLinkedin style={{ marginRight: '6px', verticalAlign: 'middle', color: '#0077b5' }} />
+                          {t('profile.linkedin')}
+                        </label>
+                        <input
+                          id="linkedin"
+                          name="linkedin"
+                          type="url"
+                          className={styles.formInput}
+                          value={formData.linkedin}
+                          onChange={handleChange}
+                          placeholder={t('profile.linkedinPlaceholder')}
+                          autoComplete="off"
+                        />
+                      </div>
+
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel} htmlFor="website">
+                          <FaGlobe style={{ marginRight: '6px', verticalAlign: 'middle', color: '#24c9b8' }} />
+                          {t('profile.website')}
+                        </label>
+                        <input
+                          id="website"
+                          name="website"
+                          type="url"
+                          className={styles.formInput}
+                          value={formData.website}
+                          onChange={handleChange}
+                          placeholder={t('profile.websitePlaceholder')}
+                          autoComplete="off"
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   <div className={styles.formBtns}>

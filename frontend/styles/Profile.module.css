@@ -235,6 +235,67 @@
   color: #CBA135;
 }
 
+.bioBlock {
+  margin: 12px 0 16px;
+  padding: 0 4px;
+}
+
+.userBio {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.88rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.userBioEmpty {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.88rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0;
+}
+
+.socialsRow {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.socialIconLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.05rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.socialIconLink:hover:not(.disabled) {
+  transform: translateY(-3px) scale(1.1);
+  background: rgba(27, 160, 152, 0.12);
+  border-color: #24c9b8;
+  color: #24c9b8;
+  box-shadow: 0 4px 12px rgba(27, 160, 152, 0.2);
+}
+
+.socialIconLink.disabled {
+  opacity: 0.22;
+  cursor: not-allowed;
+  background: transparent;
+}
+
 .editBtn {
   display: inline-flex;
   align-items: center;
@@ -503,6 +564,78 @@
   color: rgba(255,255,255,0.25);
   margin: 0;
   letter-spacing: 0.3px;
+}
+
+.labelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.charCount {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.3);
+  transition: color 0.2s ease;
+}
+
+.charCount.limitReached {
+  color: #ff6b6b;
+  font-weight: 700;
+}
+
+.formTextarea {
+  width: 100%;
+  padding: 14px 18px;
+  background: rgba(5, 16, 32, 0.7);
+  border: 1px solid rgba(27, 160, 152, 0.2);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.88);
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 1.04rem;
+  outline: none;
+  transition: border-color 0.25s, box-shadow 0.25s;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.formTextarea::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.formTextarea:focus {
+  border-color: #1BA098;
+  box-shadow: 0 0 0 3px rgba(27, 160, 152, 0.12);
+}
+
+.socialFormSection {
+  margin-top: 10px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.formSectionTitle {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #1BA098;
+  text-transform: uppercase;
+  margin: 0 0 16px;
+}
+
+.socialInputsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .socialInputsGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }
 
 .formBtns {

@@ -29,6 +29,29 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  bio: {
+    type: String,
+    default: '',
+    maxlength: [200, 'Bio cannot be more than 200 characters']
+  },
+  socialLinks: {
+    twitter: {
+      type: String,
+      default: ''
+    },
+    github: {
+      type: String,
+      default: ''
+    },
+    linkedin: {
+      type: String,
+      default: ''
+    },
+    website: {
+      type: String,
+      default: ''
+    }
+  },
   isAdmin: {
     type: Boolean,
     default: false
