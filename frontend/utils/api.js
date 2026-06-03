@@ -112,8 +112,8 @@ export const authAPI = {
 
 // News API
 export const newsAPI = {
-  getNews: async (category = 'all', page = 1, pageSize = 20, search = null) => {
-    const params = { category, page, pageSize };
+  getNews: async (category = 'all', page = 1, pageSize = 20, search = null, filters = {}) => {
+    const params = { category, page, pageSize, ...filters };
     
     // Add search parameter if provided
     if (search) {

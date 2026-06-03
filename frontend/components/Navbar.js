@@ -7,6 +7,7 @@ import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope
 import { throttle } from '../hooks/useScrollOptimization';
 import FlowingMenu from './FlowingMenu';
 import LanguageSwitcher from './LanguageSwitcher';
+import AdvancedSearchModal from './AdvancedSearchModal';
 import styles from '../styles/Navbar.module.css';
 
 const Navbar = () => {
@@ -30,6 +31,7 @@ const Navbar = () => {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(false);
+  const [advancedSearchOpen, setAdvancedSearchOpen] = useState(false);
 
   const categories = [
     { nameKey: 'cat.all', path: '/home', query: 'all' },
@@ -383,6 +385,18 @@ const Navbar = () => {
                     {selectedFilter === cat.query && <span className={styles.checkmark}>✓</span>}
                   </button>
                 ))}
+                <div className={styles.dropdownDivider}></div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAdvancedSearchOpen(true);
+                    setShowFilters(false);
+                    setSearchExpanded(false);
+                  }}
+                  className={styles.advancedSearchOption}
+                >
+                  <FaFilter className={styles.advancedOptionIcon} /> {t('nav.advancedSearch')}
+                </button>
               </div>
             )}
           </form>
@@ -509,6 +523,17 @@ const Navbar = () => {
                   </button>
                 ))}
               </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setAdvancedSearchOpen(true);
+                  setShowFilters(false);
+                  setMobileMenuOpen(false);
+                }}
+                className={styles.mobileAdvancedSearchButton}
+              >
+                <FaFilter style={{ marginRight: 6 }} /> {t('nav.advancedSearch')}
+              </button>
             </div>
           )}
           
@@ -707,6 +732,7 @@ const Navbar = () => {
           </div>
         </>
       )}
+      <AdvancedSearchModal isOpen={advancedSearchOpen} onClose={() => setAdvancedSearchOpen(false)} />
     </nav>
   );
 };

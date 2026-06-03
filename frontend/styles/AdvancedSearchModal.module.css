@@ -1,0 +1,316 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(5, 10, 20, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 20px;
+}
+
+.modalContent {
+  background: linear-gradient(135deg, #0a1628 0%, #051020 100%);
+  border: 1px solid rgba(27, 160, 152, 0.25);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 580px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 32px rgba(27, 160, 152, 0.08);
+  animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(27, 160, 152, 0.15);
+  background: linear-gradient(90deg, rgba(27, 160, 152, 0.1), transparent);
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.titleIcon {
+  color: #1BA098;
+  font-size: 1.2rem;
+}
+
+.headerTitle h2 {
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.closeButton:hover {
+  color: #ff6b6b;
+  background-color: rgba(255, 107, 107, 0.1);
+  transform: rotate(90deg);
+}
+
+.searchForm {
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formRow {
+  display: flex;
+  gap: 16px;
+}
+
+.formGroupHalf {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formLabel {
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #DEB992;
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.inputIconLabel {
+  color: #1BA098;
+  font-size: 0.8rem;
+}
+
+.textInput,
+.selectInput,
+.dateInput {
+  background: rgba(10, 22, 40, 0.7);
+  border: 1.5px solid rgba(27, 160, 152, 0.25);
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.25s ease;
+  font-family: inherit;
+}
+
+.textInput::placeholder {
+  color: rgba(222, 185, 146, 0.35);
+}
+
+.textInput:focus,
+.selectInput:focus,
+.dateInput:focus {
+  border-color: #1BA098;
+  box-shadow: 0 0 10px rgba(27, 160, 152, 0.2), inset 0 0 5px rgba(27, 160, 152, 0.1);
+  background: rgba(27, 160, 152, 0.03);
+}
+
+.selectInput {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231BA098' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.selectInput option {
+  background-color: #051020;
+  color: #ffffff;
+}
+
+.dateChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.dateChip {
+  background: rgba(27, 160, 152, 0.08);
+  border: 1px solid rgba(27, 160, 152, 0.2);
+  border-radius: 20px;
+  padding: 6px 14px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.dateChip:hover {
+  background: rgba(27, 160, 152, 0.15);
+  color: #ffffff;
+  border-color: #1BA098;
+}
+
+.dateChipActive {
+  background: #1BA098 !important;
+  color: #000000 !important;
+  border-color: #1BA098 !important;
+  box-shadow: 0 0 12px rgba(27, 160, 152, 0.4);
+  font-weight: 700;
+}
+
+.dateInputRow {
+  display: flex;
+  gap: 16px;
+  margin-top: 6px;
+}
+
+.dateInputWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dateLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.dateInput {
+  cursor: pointer;
+}
+
+.formActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(27, 160, 152, 0.15);
+}
+
+.clearButton {
+  background: transparent;
+  border: 1px dashed rgba(255, 100, 100, 0.4);
+  border-radius: 8px;
+  padding: 12px 18px;
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.clearButton:hover {
+  background-color: rgba(255, 107, 107, 0.08);
+  border-color: #ff6b6b;
+}
+
+.submitButton {
+  background: linear-gradient(135deg, #1ba098 0%, #148c7f 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  color: #000000;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.submitButton:hover {
+  opacity: 0.95;
+  box-shadow: 0 0 15px rgba(27, 160, 152, 0.4);
+  transform: translateY(-1px);
+}
+
+.actionBtnIcon {
+  font-size: 0.85rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Mobile responsive */
+@media (max-width: 580px) {
+  .formRow,
+  .dateInputRow {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .formActions {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+  
+  .clearButton,
+  .submitButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

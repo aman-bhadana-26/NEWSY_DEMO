@@ -15,7 +15,7 @@ import styles from '../styles/Home.module.css';
 export default function Home() {
   const router = useRouter();
   const { t } = useLanguage();
-  const { category = 'all', search } = router.query;
+  const { category = 'all', search, from, to, source, author } = router.query;
 
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,12 +26,12 @@ export default function Home() {
   const [totalResults, setTotalResults] = useState(0);
 
   useEffect(() => {
-    // Reset when category or search changes
+    // Reset when category, search, or advanced filters change
     setNews([]);
     setPage(1);
     setHasMore(true);
     fetchNews(1);
-  }, [category, search]);
+  }, [category, search, from, to, source, author]);
 
   const fetchNews = async (pageNum = 1) => {
     try {
@@ -42,24 +42,19 @@ export default function Home() {
       }
       setError(null);
       
-      // Pass search query to API - backend will handle the search
-      const queryParams = {
-        category,
-        page: pageNum,
-        pageSize: 20
-      };
-      
-      // Add search parameter if exists
-      if (search && search.trim()) {
-        queryParams.search = search.trim();
-      }
-      
-      // Fetch news with search parameter
+      const filters = {};
+      if (from) filters.from = from;
+      if (to) filters.to = to;
+      if (source && source.trim()) filters.source = source.trim();
+      if (author && author.trim()) filters.author = author.trim();
+
+      // Fetch news with search parameter and advanced filters
       const data = await newsAPI.getNews(
-        queryParams.category,
-        queryParams.page,
-        queryParams.pageSize,
-        queryParams.search
+        category,
+        pageNum,
+        20,
+        search && search.trim() ? search.trim() : null,
+        filters
       );
       
       if (pageNum === 1) {
@@ -68,8 +63,12 @@ export default function Home() {
         setNews((prev) => [...prev, ...data.articles]);
       }
       
-      setTotalResults(data.totalResults || 0);
-      setHasMore(data.articles.length === 20 && news.length + data.articles.length < data.totalResults);
+      const total = data.totalResults || 0;
+      setTotalResults(total);
+      
+      // Update hasMore based on actual returned articles length vs total results
+      const totalArticlesCount = pageNum === 1 ? data.articles.length : news.length + data.articles.length;
+      setHasMore(data.articles.length === 20 && totalArticlesCount < total);
       setPage(pageNum);
     } catch (err) {
       console.error('Error fetching news:', err);
@@ -98,11 +97,19 @@ export default function Home() {
     return categoryNames[cat] || t('home.techNews');
   };
 
+  const isSearchOrFilterActive = !!(
+    (search && search.trim()) ||
+    from ||
+    to ||
+    (source && source.trim()) ||
+    (author && author.trim())
+  );
+
   return (
     <Layout title={`${getCategoryName(category)} - NEWSY TECH`}>
       <div className="container">
-        {/* Homepage Sections - Only show on 'all' category without search */}
-        {!search && category === 'all' ? (
+        {/* Homepage Sections - Only show on 'all' category without search or filters */}
+        {!isSearchOrFilterActive && category === 'all' ? (
           <>
             {/* Loading State */}
             {loading && page === 1 ? (

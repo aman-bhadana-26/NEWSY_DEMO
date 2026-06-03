@@ -9,7 +9,7 @@ const { parse } = require('node-html-parser');
  */
 const getNews = async (req, res) => {
   try {
-    const { category, page = 1, pageSize = 20, search } = req.query;
+    const { category, page = 1, pageSize = 20, search, from, to, source, author } = req.query;
 
     let searchQuery;
 
@@ -46,22 +46,56 @@ const getNews = async (req, res) => {
 
     console.log('NewsAPI Search Query:', searchQuery);
 
+    const hasAdvancedFilters = (source && source.trim()) || (author && author.trim());
+    const apiPageSize = hasAdvancedFilters ? 100 : pageSize;
+
     // Fetch news from NewsAPI
+    const apiParams = {
+      q: searchQuery,
+      language: 'en',
+      sortBy: (search || hasAdvancedFilters) ? 'relevancy' : 'publishedAt', // Sort by relevancy if searching/filtering
+      page: page,
+      pageSize: apiPageSize,
+      apiKey: process.env.NEWS_API_KEY
+    };
+
+    if (from) {
+      apiParams.from = from;
+    }
+    if (to) {
+      apiParams.to = to;
+    }
+
     const response = await axios.get('https://newsapi.org/v2/everything', {
-      params: {
-        q: searchQuery,
-        language: 'en',
-        sortBy: search ? 'relevancy' : 'publishedAt', // Sort by relevancy if searching
-        page: page,
-        pageSize: pageSize,
-        apiKey: process.env.NEWS_API_KEY
-      }
+      params: apiParams
     });
+
+    let articles = response.data.articles || [];
+    let totalResults = response.data.totalResults || 0;
+
+    if (hasAdvancedFilters) {
+      if (source && source.trim()) {
+        const sourceLower = source.trim().toLowerCase();
+        articles = articles.filter(art => 
+          art.source && art.source.name && art.source.name.toLowerCase().includes(sourceLower)
+        );
+      }
+      if (author && author.trim()) {
+        const authorLower = author.trim().toLowerCase();
+        articles = articles.filter(art => 
+          art.author && art.author.toLowerCase().includes(authorLower)
+        );
+      }
+      
+      // Update totalResults to match the size of this filtered block
+      totalResults = articles.length;
+      articles = articles.slice(0, parseInt(pageSize));
+    }
 
     res.json({
       success: true,
-      totalResults: response.data.totalResults,
-      articles: response.data.articles,
+      totalResults: totalResults,
+      articles: articles,
       page: parseInt(page),
       pageSize: parseInt(pageSize),
       searchQuery: search || null
@@ -71,43 +105,73 @@ const getNews = async (req, res) => {
     
     // Return mock data if API fails (for development)
     if (process.env.NODE_ENV === 'development') {
+      const { from, to, source, author, page = 1, pageSize = 20 } = req.query;
+      let mockArticles = [
+        {
+          source: { id: null, name: 'TechCrunch' },
+          author: 'Alex Wilhelm',
+          title: 'Latest AI Breakthrough in Machine Learning',
+          description: 'Researchers have made significant progress in AI technology...',
+          url: 'https://techcrunch.com/sample',
+          urlToImage: 'https://via.placeholder.com/800x400/0066cc/ffffff?text=AI+News',
+          publishedAt: new Date().toISOString(),
+          content: 'Sample content for development...'
+        },
+        {
+          source: { id: null, name: 'The Verge' },
+          author: 'Casey Newton',
+          title: 'New Startup Raises $50M for Revolutionary Tech',
+          description: 'A promising startup has secured major funding...',
+          url: 'https://theverge.com/sample',
+          urlToImage: 'https://via.placeholder.com/800x400/dc143c/ffffff?text=Startup+News',
+          publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          content: 'Sample content for development...'
+        },
+        {
+          source: { id: null, name: 'Wired' },
+          author: 'Lily Hay Newman',
+          title: 'Major Cybersecurity Threat Discovered',
+          description: 'Security researchers have identified a new vulnerability...',
+          url: 'https://wired.com/sample',
+          urlToImage: 'https://via.placeholder.com/800x400/0066cc/ffffff?text=Security+News',
+          publishedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+          content: 'Sample content for development...'
+        },
+        {
+          source: { id: null, name: 'Engadget' },
+          author: 'Devindra Hardawar',
+          title: 'Hands-on with the New VR Headset',
+          description: 'We spent some time with the latest hardware...',
+          url: 'https://engadget.com/sample-vr',
+          urlToImage: 'https://via.placeholder.com/800x400/0066cc/ffffff?text=VR+News',
+          publishedAt: new Date().toISOString(),
+          content: 'Sample content for development...'
+        }
+      ];
+
+      if (from) {
+        const fromDate = new Date(from);
+        mockArticles = mockArticles.filter(a => new Date(a.publishedAt) >= fromDate);
+      }
+      if (to) {
+        const toDate = new Date(to);
+        mockArticles = mockArticles.filter(a => new Date(a.publishedAt) <= toDate);
+      }
+      if (source && source.trim()) {
+        const sourceLower = source.trim().toLowerCase();
+        mockArticles = mockArticles.filter(a => a.source && a.source.name && a.source.name.toLowerCase().includes(sourceLower));
+      }
+      if (author && author.trim()) {
+        const authorLower = author.trim().toLowerCase();
+        mockArticles = mockArticles.filter(a => a.author && a.author.toLowerCase().includes(authorLower));
+      }
+
       res.json({
         success: true,
-        totalResults: 3,
-        articles: [
-          {
-            source: { id: null, name: 'TechCrunch' },
-            author: 'Sample Author',
-            title: 'Latest AI Breakthrough in Machine Learning',
-            description: 'Researchers have made significant progress in AI technology...',
-            url: 'https://techcrunch.com/sample',
-            urlToImage: 'https://via.placeholder.com/800x400/0066cc/ffffff?text=AI+News',
-            publishedAt: new Date().toISOString(),
-            content: 'Sample content for development...'
-          },
-          {
-            source: { id: null, name: 'The Verge' },
-            author: 'Tech Reporter',
-            title: 'New Startup Raises $50M for Revolutionary Tech',
-            description: 'A promising startup has secured major funding...',
-            url: 'https://theverge.com/sample',
-            urlToImage: 'https://via.placeholder.com/800x400/dc143c/ffffff?text=Startup+News',
-            publishedAt: new Date().toISOString(),
-            content: 'Sample content for development...'
-          },
-          {
-            source: { id: null, name: 'Wired' },
-            author: 'Security Expert',
-            title: 'Major Cybersecurity Threat Discovered',
-            description: 'Security researchers have identified a new vulnerability...',
-            url: 'https://wired.com/sample',
-            urlToImage: 'https://via.placeholder.com/800x400/0066cc/ffffff?text=Security+News',
-            publishedAt: new Date().toISOString(),
-            content: 'Sample content for development...'
-          }
-        ],
-        page: 1,
-        pageSize: 20
+        totalResults: mockArticles.length,
+        articles: mockArticles.slice((page - 1) * pageSize, page * pageSize),
+        page: parseInt(page),
+        pageSize: parseInt(pageSize)
       });
     } else {
       res.status(500).json({

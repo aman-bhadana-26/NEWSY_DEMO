@@ -611,6 +611,64 @@
   font-size: 1rem;
 }
 
+.advancedSearchOption {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(27, 160, 152, 0.08);
+  border: none;
+  border-top: 1px solid rgba(27, 160, 152, 0.2);
+  text-align: center;
+  color: #DEB992;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.8125rem;
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.advancedSearchOption:hover {
+  background: rgba(222, 185, 146, 0.12);
+  color: #ffffff;
+}
+
+.advancedOptionIcon {
+  font-size: 0.85rem;
+  color: #1BA098;
+}
+
+.mobileAdvancedSearchButton {
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(27, 160, 152, 0.15), rgba(27, 160, 152, 0.05));
+  border: 1px dashed rgba(27, 160, 152, 0.4);
+  border-radius: 8px;
+  color: #DEB992;
+  font-size: 0.8rem;
+  font-family: var(--font-nav, 'Clash Display', sans-serif);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.mobileAdvancedSearchButton:hover,
+.mobileAdvancedSearchButton:active {
+  background: rgba(27, 160, 152, 0.25);
+  border-color: #1BA098;
+  color: #ffffff;
+}
+
 /* User Menu Dropdown */
 .userMenuContainer {
   position: relative;

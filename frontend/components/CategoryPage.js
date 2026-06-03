@@ -379,9 +379,28 @@ export default function CategoryPage({
         </div>
 
         <div className={styles.headerRow}>
-          <h1 className={styles.categoryTitle}>
-            <span className={styles.titleGradient}>{categoryName}</span>
-          </h1>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <h1 className={styles.categoryTitle}>
+              <span className={styles.titleGradient}>
+                {router.query.search || router.query.from || router.query.to || router.query.source || router.query.author
+                  ? t('home.searchResults')
+                  : categoryName}
+              </span>
+            </h1>
+            {(router.query.search || router.query.from || router.query.to || router.query.source || router.query.author) && (
+              <div className={styles.activeFiltersRow}>
+                {router.query.search && <span className={styles.activeFilterBadge}>Keyword: "{router.query.search}"</span>}
+                {router.query.category && router.query.category !== 'all' && <span className={styles.activeFilterBadge}>Category: {router.query.category.toUpperCase()}</span>}
+                {router.query.source && <span className={styles.activeFilterBadge}>Source: {router.query.source}</span>}
+                {router.query.author && <span className={styles.activeFilterBadge}>Author: {router.query.author}</span>}
+                {(router.query.from || router.query.to) && (
+                  <span className={styles.activeFilterBadge}>
+                    Date: {router.query.from ? router.query.from : '*'} to {router.query.to ? router.query.to : '*'}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
           <div className={styles.articleMeta}>
             <p className={styles.articleCount}>
               {t('catPage.showing')} <strong>{news.length}</strong> {t('catPage.of')}{' '}
