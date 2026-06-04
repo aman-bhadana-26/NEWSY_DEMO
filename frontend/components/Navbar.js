@@ -12,7 +12,7 @@ import styles from '../styles/Navbar.module.css';
 
 const Navbar = () => {
   const router = useRouter();
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, openAuthModal } = useAuth();
   const { t } = useLanguage();
   
   const BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
@@ -465,12 +465,12 @@ const Navbar = () => {
             </div>
           ) : (
             <>
-              <Link href="/login" className={styles.btnLogin}>
+              <button onClick={() => openAuthModal('login')} className={styles.btnLogin}>
                 {t('nav.login')}
-              </Link>
-              <Link href="/signup" className={styles.btnSignup}>
+              </button>
+              <button onClick={() => openAuthModal('signup')} className={styles.btnSignup}>
                 {t('nav.signup')}
-              </Link>
+              </button>
             </>
           )}
         </div>
@@ -631,20 +631,26 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link
-                href="/login"
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openAuthModal('login');
+                }}
                 className={styles.mobileNavLink}
-                onClick={() => setMobileMenuOpen(false)}
+                style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit' }}
               >
                 {t('nav.login')}
-              </Link>
-              <Link
-                href="/signup"
+              </button>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openAuthModal('signup');
+                }}
                 className={styles.mobileNavLink}
-                onClick={() => setMobileMenuOpen(false)}
+                style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit' }}
               >
                 {t('nav.signup')}
-              </Link>
+              </button>
             </>
           )}
         </div>

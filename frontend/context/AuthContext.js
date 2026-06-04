@@ -21,6 +21,26 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Global Auth Modal States
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTabState] = useState('login'); // 'login' | 'signup' | 'forgot'
+  const [authModalCallback, setAuthModalCallback] = useState(null);
+
+  const openAuthModal = (tab = 'login', callback = null) => {
+    setAuthModalTabState(tab);
+    setAuthModalCallback(() => callback);
+    setIsAuthModalOpen(true);
+  };
+
+  const closeAuthModal = () => {
+    setIsAuthModalOpen(false);
+    setAuthModalCallback(null);
+  };
+
+  const setAuthModalTab = (tab) => {
+    setAuthModalTabState(tab);
+  };
+
   useEffect(() => {
     // Decide between two cases:
     //   1. Fresh launch (new tab / window / browser session) → wipe any
@@ -56,6 +76,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const userData = await authAPI.login(credentials);
       setUser(userData);
+      if (authModalCallback) {
+        authModalCallback(userData);
+      }
       return { success: true, user: userData };
     } catch (error) {
       return {
@@ -69,6 +92,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const newUser = await authAPI.register(userData);
       setUser(newUser);
+      if (authModalCallback) {
+        authModalCallback(newUser);
+      }
       return { success: true, user: newUser };
     } catch (error) {
       return {
@@ -119,6 +145,12 @@ export const AuthProvider = ({ children }) => {
     updateUser,
     refreshUser,
     isAuthenticated: !!user,
+    isAuthModalOpen,
+    authModalTab,
+    authModalCallback,
+    openAuthModal,
+    closeAuthModal,
+    setAuthModalTab,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

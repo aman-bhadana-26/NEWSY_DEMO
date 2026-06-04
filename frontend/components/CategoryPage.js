@@ -9,36 +9,36 @@ import styles from '../styles/CategoryPage.module.css';
 // Map filter id (English, stable) → translation key suffix.
 // Using stable English ids keeps keyword matching in `applyFilter` working.
 const FILTER_KEY_MAP = {
-  'All':             'all',
+  'All': 'all',
   'Language Models': 'languageModels',
-  'Research':        'research',
-  'Robotics':        'robotics',
+  'Research': 'research',
+  'Robotics': 'robotics',
   'Computer Vision': 'computerVision',
-  'Funding':         'funding',
-  'Founders':        'founders',
-  'IPO':             'ipo',
-  'Acquisitions':    'acquisitions',
-  'Deep Tech':       'deepTech',
-  'Dev Tools':       'devTools',
-  'Open Source':     'openSource',
-  'Cloud':           'cloud',
-  'Web':             'web',
-  'Mobile':          'mobile',
-  'Phones':          'phones',
-  'Laptops':         'laptops',
-  'Wearables':       'wearables',
-  'Audio':           'audio',
-  'Gaming':          'gaming',
-  'Threats':         'threats',
-  'Privacy':         'privacy',
-  'Breaches':        'breaches',
-  'Tools':           'tools',
-  'Policy':          'policy',
-  'AI':              'ai',
-  'Startups':        'startups',
-  'Software':        'software',
-  'Gadgets':         'gadgets',
-  'Cybersecurity':   'cybersecurity',
+  'Funding': 'funding',
+  'Founders': 'founders',
+  'IPO': 'ipo',
+  'Acquisitions': 'acquisitions',
+  'Deep Tech': 'deepTech',
+  'Dev Tools': 'devTools',
+  'Open Source': 'openSource',
+  'Cloud': 'cloud',
+  'Web': 'web',
+  'Mobile': 'mobile',
+  'Phones': 'phones',
+  'Laptops': 'laptops',
+  'Wearables': 'wearables',
+  'Audio': 'audio',
+  'Gaming': 'gaming',
+  'Threats': 'threats',
+  'Privacy': 'privacy',
+  'Breaches': 'breaches',
+  'Tools': 'tools',
+  'Policy': 'policy',
+  'AI': 'ai',
+  'Startups': 'startups',
+  'Software': 'software',
+  'Gadgets': 'gadgets',
+  'Cybersecurity': 'cybersecurity',
 };
 
 const filterLabel = (id, t) => {
@@ -48,72 +48,72 @@ const filterLabel = (id, t) => {
 
 // Sub-filters per category
 const subFilters = {
-  ai:           ['All', 'Language Models', 'Research', 'Robotics', 'Computer Vision'],
-  startups:     ['All', 'Funding', 'Founders', 'IPO', 'Acquisitions', 'Deep Tech'],
-  software:     ['All', 'Dev Tools', 'Open Source', 'Cloud', 'Web', 'Mobile'],
-  gadgets:      ['All', 'Phones', 'Laptops', 'Wearables', 'Audio', 'Gaming'],
-  cybersecurity:['All', 'Threats', 'Privacy', 'Breaches', 'Tools', 'Policy'],
-  all:          ['All', 'AI', 'Startups', 'Software', 'Gadgets', 'Cybersecurity'],
-  mynews:       ['All', 'AI', 'Startups', 'Software', 'Gadgets', 'Cybersecurity'],
-  saved:        ['All', 'AI', 'Startups', 'Software', 'Gadgets', 'Cybersecurity'],
+  ai: ['All', 'Language Models', 'Research', 'Robotics', 'Computer Vision'],
+  startups: ['All', 'Funding', 'Founders', 'IPO', 'Acquisitions', 'Deep Tech'],
+  software: ['All', 'Dev Tools', 'Open Source', 'Cloud', 'Web', 'Mobile'],
+  gadgets: ['All', 'Phones', 'Laptops', 'Wearables', 'Audio', 'Gaming'],
+  cybersecurity: ['All', 'Threats', 'Privacy', 'Breaches', 'Tools', 'Policy'],
+  all: ['All', 'AI', 'Startups', 'Software', 'Gadgets', 'Cybersecurity'],
+  mynews: ['All', 'AI', 'Startups', 'Software', 'Gadgets', 'Cybersecurity'],
+  saved: ['All', 'AI', 'Startups', 'Software', 'Gadgets', 'Cybersecurity'],
 };
 
 // Keyword map – used to filter articles by sub-filter pill
 const filterKeywords = {
   ai: {
-    'Language Models': ['llm','language model','gpt','claude','gemini','chatgpt','llama','openai','mistral'],
-    'Research':        ['research','paper','study','arxiv','benchmark','scientist','lab'],
-    'Robotics':        ['robot','robotics','humanoid','automation','mechanical arm'],
-    'Computer Vision': ['computer vision','image recognition','vision model','object detection','visual ai'],
+    'Language Models': ['llm', 'language model', 'gpt', 'claude', 'gemini', 'chatgpt', 'llama', 'openai', 'mistral'],
+    'Research': ['research', 'paper', 'study', 'arxiv', 'benchmark', 'scientist', 'lab'],
+    'Robotics': ['robot', 'robotics', 'humanoid', 'automation', 'mechanical arm'],
+    'Computer Vision': ['computer vision', 'image recognition', 'vision model', 'object detection', 'visual ai'],
   },
   startups: {
-    'Funding':      ['funding','raise','raised','series a','series b','series c','investment','venture','seed round'],
-    'Founders':     ['founder','ceo','co-founder','entrepreneur','startup founder'],
-    'IPO':          ['ipo','public offering','stock market','nasdaq','nyse','listing'],
-    'Acquisitions': ['acqui','acquisition','merger','buyout','purchase','acquired'],
-    'Deep Tech':    ['deep tech','quantum','biotech','space tech','nanotech','synthetic bio'],
+    'Funding': ['funding', 'raise', 'raised', 'series a', 'series b', 'series c', 'investment', 'venture', 'seed round'],
+    'Founders': ['founder', 'ceo', 'co-founder', 'entrepreneur', 'startup founder'],
+    'IPO': ['ipo', 'public offering', 'stock market', 'nasdaq', 'nyse', 'listing'],
+    'Acquisitions': ['acqui', 'acquisition', 'merger', 'buyout', 'purchase', 'acquired'],
+    'Deep Tech': ['deep tech', 'quantum', 'biotech', 'space tech', 'nanotech', 'synthetic bio'],
   },
   software: {
-    'Dev Tools':   ['developer tool','ide','editor','github','git','cli','sdk','api','devops'],
-    'Open Source': ['open source','open-source','linux','community project','fork','contributor'],
-    'Cloud':       ['cloud','aws','azure','gcp','kubernetes','serverless','saas','infrastructure'],
-    'Web':         ['web','browser','javascript','react','frontend','html','css','nextjs','vue'],
-    'Mobile':      ['mobile','ios','android','app store','flutter','react native','swift','kotlin'],
+    'Dev Tools': ['developer tool', 'ide', 'editor', 'github', 'git', 'cli', 'sdk', 'api', 'devops'],
+    'Open Source': ['open source', 'open-source', 'linux', 'community project', 'fork', 'contributor'],
+    'Cloud': ['cloud', 'aws', 'azure', 'gcp', 'kubernetes', 'serverless', 'saas', 'infrastructure'],
+    'Web': ['web', 'browser', 'javascript', 'react', 'frontend', 'html', 'css', 'nextjs', 'vue'],
+    'Mobile': ['mobile', 'ios', 'android', 'app store', 'flutter', 'react native', 'swift', 'kotlin'],
   },
   gadgets: {
-    'Phones':    ['phone','smartphone','iphone','android','samsung galaxy','pixel phone','oneplus','nothing phone'],
-    'Laptops':   ['laptop','macbook','notebook','chromebook','thinkpad','dell xps','surface pro'],
-    'Wearables': ['wearable','smartwatch','apple watch','fitbit','fitness tracker','galaxy watch','band'],
-    'Audio':     ['audio','headphone','earphone','earbud','speaker','airpods','soundbar','hi-fi'],
-    'Gaming':    ['gaming','game','console','playstation','xbox','nintendo','steam deck','gpu','pc gaming'],
+    'Phones': ['phone', 'smartphone', 'iphone', 'android', 'samsung galaxy', 'pixel phone', 'oneplus', 'nothing phone'],
+    'Laptops': ['laptop', 'macbook', 'notebook', 'chromebook', 'thinkpad', 'dell xps', 'surface pro'],
+    'Wearables': ['wearable', 'smartwatch', 'apple watch', 'fitbit', 'fitness tracker', 'galaxy watch', 'band'],
+    'Audio': ['audio', 'headphone', 'earphone', 'earbud', 'speaker', 'airpods', 'soundbar', 'hi-fi'],
+    'Gaming': ['gaming', 'game', 'console', 'playstation', 'xbox', 'nintendo', 'steam deck', 'gpu', 'pc gaming'],
   },
   cybersecurity: {
-    'Threats':  ['threat','malware','ransomware','attack','vulnerability','exploit','zero-day'],
-    'Privacy':  ['privacy','gdpr','data collection','tracking','surveillance','personal data'],
-    'Breaches': ['breach','hack','leaked','data breach','stolen data','compromised'],
-    'Tools':    ['security tool','antivirus','vpn','firewall','encryption','siem','soc'],
-    'Policy':   ['policy','regulation','law','government','compliance','cybersecurity act'],
+    'Threats': ['threat', 'malware', 'ransomware', 'attack', 'vulnerability', 'exploit', 'zero-day'],
+    'Privacy': ['privacy', 'gdpr', 'data collection', 'tracking', 'surveillance', 'personal data'],
+    'Breaches': ['breach', 'hack', 'leaked', 'data breach', 'stolen data', 'compromised'],
+    'Tools': ['security tool', 'antivirus', 'vpn', 'firewall', 'encryption', 'siem', 'soc'],
+    'Policy': ['policy', 'regulation', 'law', 'government', 'compliance', 'cybersecurity act'],
   },
   all: {
-    'AI':           ['ai','artificial intelligence','machine learning','deep learning','neural network','openai'],
-    'Startups':     ['startup','founder','funding','venture capital','seed','series'],
-    'Software':     ['software','app','developer','code','programming','open source'],
-    'Gadgets':      ['gadget','phone','laptop','device','hardware','wearable','console'],
-    'Cybersecurity':['security','cyber','hack','breach','malware','vulnerability','ransomware'],
+    'AI': ['ai', 'artificial intelligence', 'machine learning', 'deep learning', 'neural network', 'openai'],
+    'Startups': ['startup', 'founder', 'funding', 'venture capital', 'seed', 'series'],
+    'Software': ['software', 'app', 'developer', 'code', 'programming', 'open source'],
+    'Gadgets': ['gadget', 'phone', 'laptop', 'device', 'hardware', 'wearable', 'console'],
+    'Cybersecurity': ['security', 'cyber', 'hack', 'breach', 'malware', 'vulnerability', 'ransomware'],
   },
   mynews: {
-    'AI':           ['ai','artificial intelligence','machine learning','deep learning','neural network','openai'],
-    'Startups':     ['startup','founder','funding','venture capital','seed','series'],
-    'Software':     ['software','app','developer','code','programming','open source'],
-    'Gadgets':      ['gadget','phone','laptop','device','hardware','wearable','console'],
-    'Cybersecurity':['security','cyber','hack','breach','malware','vulnerability','ransomware'],
+    'AI': ['ai', 'artificial intelligence', 'machine learning', 'deep learning', 'neural network', 'openai'],
+    'Startups': ['startup', 'founder', 'funding', 'venture capital', 'seed', 'series'],
+    'Software': ['software', 'app', 'developer', 'code', 'programming', 'open source'],
+    'Gadgets': ['gadget', 'phone', 'laptop', 'device', 'hardware', 'wearable', 'console'],
+    'Cybersecurity': ['security', 'cyber', 'hack', 'breach', 'malware', 'vulnerability', 'ransomware'],
   },
   saved: {
-    'AI':           ['ai','artificial intelligence','machine learning','deep learning','neural network','openai'],
-    'Startups':     ['startup','founder','funding','venture capital','seed','series'],
-    'Software':     ['software','app','developer','code','programming','open source'],
-    'Gadgets':      ['gadget','phone','laptop','device','hardware','wearable','console'],
-    'Cybersecurity':['security','cyber','hack','breach','malware','vulnerability','ransomware'],
+    'AI': ['ai', 'artificial intelligence', 'machine learning', 'deep learning', 'neural network', 'openai'],
+    'Startups': ['startup', 'founder', 'funding', 'venture capital', 'seed', 'series'],
+    'Software': ['software', 'app', 'developer', 'code', 'programming', 'open source'],
+    'Gadgets': ['gadget', 'phone', 'laptop', 'device', 'hardware', 'wearable', 'console'],
+    'Cybersecurity': ['security', 'cyber', 'hack', 'breach', 'malware', 'vulnerability', 'ransomware'],
   },
 };
 
@@ -145,14 +145,14 @@ function applySort(articles, sort) {
 
 // Maps category id → translation key suffix.
 const CAT_LABEL_KEY_MAP = {
-  ai:            'ai',
-  startups:      'startups',
-  software:      'software',
-  gadgets:       'gadgets',
+  ai: 'ai',
+  startups: 'startups',
+  software: 'software',
+  gadgets: 'gadgets',
   cybersecurity: 'cybersecurity',
-  all:           'all',
-  mynews:        'mynews',
-  saved:         'saved',
+  all: 'all',
+  mynews: 'mynews',
+  saved: 'saved',
 };
 
 export default function CategoryPage({
@@ -187,7 +187,7 @@ export default function CategoryPage({
         const urls = (data.savedArticles || []).map(a => a.url);
         setSavedUrls(new Set(urls));
       })
-      .catch(() => {});
+      .catch(() => { });
   }, [isAuthenticated]);
 
   const handleSaveClick = useCallback(async (e, article) => {
@@ -201,13 +201,13 @@ export default function CategoryPage({
         setSavedUrls(prev => { const s = new Set(prev); s.delete(article.url); return s; });
       } else {
         await myNewsAPI.saveArticle({
-          title:       article.title,
-          url:         article.url,
-          urlToImage:  article.urlToImage,
-          source:      article.source?.name || article.source || '',
-          author:      article.author || '',
+          title: article.title,
+          url: article.url,
+          urlToImage: article.urlToImage,
+          source: article.source?.name || article.source || '',
+          author: article.author || '',
           description: article.description || '',
-          content:     article.content || '',
+          content: article.content || '',
           publishedAt: article.publishedAt,
         });
         setSavedUrls(prev => new Set([...prev, article.url]));
@@ -256,13 +256,13 @@ export default function CategoryPage({
   const filters = subFilters[category] || subFilters.all;
 
   // Hero = first 2 articles (fixed, unaffected by filter/sort)
-  const featured     = news[0];
-  const heroRight    = news[1];
+  const featured = news[0];
+  const heroRight = news[1];
   // Apply filter + sort to the remaining articles
-  const allGridArticles     = applySort(applyFilter(news.slice(2), activeFilter, category), sortBy);
+  const allGridArticles = applySort(applyFilter(news.slice(2), activeFilter, category), sortBy);
   const visibleGridArticles = allGridArticles.slice(0, visibleCount);
   // Bottom sidebar — from original order, not affected by filter/sort
-  const latestList  = news.slice(5, 13);
+  const latestList = news.slice(5, 13);
   const editorPicks = news.slice(13, 16);
 
   // Local "show more" handler — expands grid first, then fetches from API
@@ -300,8 +300,8 @@ export default function CategoryPage({
 
   // ── Save button helper ──
   const SaveBtn = ({ article }) => {
-    const isSaved   = savedUrls.has(article.url);
-    const isSaving  = savingUrl === article.url;
+    const isSaved = savedUrls.has(article.url);
+    const isSaving = savingUrl === article.url;
     return (
       <button
         className={`${styles.saveBtn} ${isSaved ? styles.saveBtnSaved : ''}`}
@@ -315,12 +315,12 @@ export default function CategoryPage({
         ) : isSaved ? (
           /* solid bookmark */
           <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15">
-            <path d="M5 3a2 2 0 00-2 2v16l9-4 9 4V5a2 2 0 00-2-2H5z"/>
+            <path d="M5 3a2 2 0 00-2 2v16l9-4 9 4V5a2 2 0 00-2-2H5z" />
           </svg>
         ) : (
           /* outline bookmark */
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
-            <path d="M5 3a2 2 0 00-2 2v16l9-4 9 4V5a2 2 0 00-2-2H5z"/>
+            <path d="M5 3a2 2 0 00-2 2v16l9-4 9 4V5a2 2 0 00-2-2H5z" />
           </svg>
         )}
       </button>
@@ -339,7 +339,7 @@ export default function CategoryPage({
             <button className={styles.loginModalClose} onClick={() => setShowLoginPrompt(false)}>✕</button>
             <div className={styles.loginModalIcon}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="36" height="36">
-                <path d="M5 3a2 2 0 00-2 2v16l9-4 9 4V5a2 2 0 00-2-2H5z"/>
+                <path d="M5 3a2 2 0 00-2 2v16l9-4 9 4V5a2 2 0 00-2-2H5z" />
               </svg>
             </div>
             <h3 className={styles.loginModalTitle}>{t('catPage.loginPrompt.title')}</h3>
@@ -373,8 +373,8 @@ export default function CategoryPage({
             {category === 'mynews'
               ? t('catPage.breadcrumb.mynews')
               : category === 'saved'
-              ? t('catPage.breadcrumb.saved')
-              : (labelKey ? t(`catPage.label.${labelKey}`) : category).toUpperCase()}
+                ? t('catPage.breadcrumb.saved')
+                : (labelKey ? t(`catPage.label.${labelKey}`) : category).toUpperCase()}
           </span>
         </div>
 

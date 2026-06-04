@@ -1,4 +1,4 @@
-﻿/* NEWSY TECH - Global Styles */
+/* NEWSY TECH - Global Styles */
 
 /* Import Google Fonts - Editorial Serif + Clean Sans-Serif */
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=PT+Serif:wght@400;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -893,4 +893,16 @@ em, i {
     transition: none !important;
   }
 }
+
+/* -- Premium Auth Modal background blur & focus effect -- */
+body.auth-modal-open {
+  overflow: hidden !important;
+}
+
+body.auth-modal-open #__next > div > :first-child {
+  filter: blur(10px) brightness(0.4) saturate(80%);
+  pointer-events: none !important;
+  transition: filter 0.5s cubic-bezier(0.16, 1, 0.3, 1), brightness 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 

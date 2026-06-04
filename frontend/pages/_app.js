@@ -2,6 +2,7 @@ import { AuthProvider } from '../context/AuthContext';
 import { LanguageProvider } from '../context/LanguageContext';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
+import AuthModal from '../components/AuthModal';
 import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
@@ -23,6 +24,7 @@ function MyApp({ Component, pageProps }) {
               <Component {...pageProps} />
             </motion.div>
           </AnimatePresence>
+          <AuthModal />
         </div>
       </AuthProvider>
     </LanguageProvider>
