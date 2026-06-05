@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope, FaSearch, FaFilter, FaNewspaper, FaHome, FaChevronDown, FaInfoCircle, FaEnvelopeOpen, FaTachometerAlt, FaUserShield, FaChartLine, FaQuestionCircle } from 'react-icons/fa';
+import { FaBars, FaTimes, FaUser, FaFire, FaSignOutAlt, FaUserCircle, FaEnvelope, FaSearch, FaFilter, FaNewspaper, FaHome, FaChevronDown, FaInfoCircle, FaEnvelopeOpen, FaTachometerAlt, FaUserShield, FaChartLine, FaQuestionCircle, FaBrain, FaRocket, FaCode, FaLaptop, FaShieldAlt, FaThList } from 'react-icons/fa';
 import { throttle } from '../hooks/useScrollOptimization';
 import FlowingMenu from './FlowingMenu';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -34,12 +34,12 @@ const Navbar = () => {
   const [advancedSearchOpen, setAdvancedSearchOpen] = useState(false);
 
   const categories = [
-    { nameKey: 'cat.all', path: '/home', query: 'all' },
-    { nameKey: 'cat.ai', path: '/home', query: 'ai' },
-    { nameKey: 'cat.startups', path: '/home', query: 'startups' },
-    { nameKey: 'cat.software', path: '/home', query: 'software' },
-    { nameKey: 'cat.gadgets', path: '/home', query: 'gadgets' },
-    { nameKey: 'cat.cybersecurity', path: '/home', query: 'cybersecurity' },
+    { nameKey: 'cat.all', path: '/home', query: 'all', icon: FaThList },
+    { nameKey: 'cat.ai', path: '/home', query: 'ai', icon: FaBrain },
+    { nameKey: 'cat.startups', path: '/home', query: 'startups', icon: FaRocket },
+    { nameKey: 'cat.software', path: '/home', query: 'software', icon: FaCode },
+    { nameKey: 'cat.gadgets', path: '/home', query: 'gadgets', icon: FaLaptop },
+    { nameKey: 'cat.cybersecurity', path: '/home', query: 'cybersecurity', icon: FaShieldAlt },
   ];
 
   // Optimized scroll detection with throttle and RAF
@@ -274,22 +274,26 @@ const Navbar = () => {
             onMouseLeave={handleCategoriesMouseLeave}
           >
             <button className={`${styles.navLink} ${styles.categoriesButton} ${router.query.category ? styles.active : ''}`}>
-              {t('nav.categories')} <FaChevronDown className={styles.dropdownArrow} />
+              {t('nav.categories')} <FaChevronDown className={`${styles.dropdownArrow} ${categoriesDropdownOpen ? styles.dropdownArrowOpen : ''}`} />
             </button>
             
             {categoriesDropdownOpen && (
               <div className={styles.categoriesDropdown}>
-                {categories.map((category) => (
-                  <Link
-                    key={category.query}
-                    href={`/home?category=${category.query}`}
-                    className={`${styles.categoryDropdownItem} ${
-                      router.query.category === category.query ? styles.categoryDropdownItemActive : ''
-                    }`}
-                  >
-                    {t(category.nameKey)}
-                  </Link>
-                ))}
+                {categories.map((category) => {
+                  const Icon = category.icon;
+                  return (
+                    <Link
+                      key={category.query}
+                      href={`/home?category=${category.query}`}
+                      className={`${styles.categoryDropdownItem} ${
+                        router.query.category === category.query ? styles.categoryDropdownItemActive : ''
+                      }`}
+                    >
+                      {Icon && <Icon className={styles.categoryDropdownIcon} />}
+                      <span>{t(category.nameKey)}</span>
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </div>
