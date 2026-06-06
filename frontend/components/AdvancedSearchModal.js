@@ -121,13 +121,16 @@ export default function AdvancedSearchModal({ isOpen, onClose }) {
             <label className={styles.formLabel}>
               <FaSearch className={styles.inputIconLabel} /> SEARCH KEYWORD
             </label>
-            <input
-              type="text"
-              className={styles.textInput}
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder={t('nav.searchPlaceholder')}
-            />
+            <div className={styles.inputWrapper}>
+              <input
+                type="text"
+                className={styles.textInput}
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                placeholder={t('nav.searchPlaceholder')}
+              />
+              <span className={styles.inputFocusLine}></span>
+            </div>
           </div>
 
           <div className={styles.formRow}>
@@ -136,17 +139,20 @@ export default function AdvancedSearchModal({ isOpen, onClose }) {
               <label className={styles.formLabel}>
                 <FaFolderOpen className={styles.inputIconLabel} /> CATEGORY
               </label>
-              <select
-                className={styles.selectInput}
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              >
-                {categories.map((cat) => (
-                  <option key={cat.key} value={cat.key}>
-                    {cat.label}
-                  </option>
-                ))}
-              </select>
+              <div className={styles.inputWrapper}>
+                <select
+                  className={styles.selectInput}
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  {categories.map((cat) => (
+                    <option key={cat.key} value={cat.key}>
+                      {cat.label}
+                    </option>
+                  ))}
+                </select>
+                <span className={styles.inputFocusLine}></span>
+              </div>
             </div>
 
             {/* Source input */}
@@ -154,13 +160,16 @@ export default function AdvancedSearchModal({ isOpen, onClose }) {
               <label className={styles.formLabel}>
                 <FaGlobe className={styles.inputIconLabel} /> {t('nav.source').toUpperCase()}
               </label>
-              <input
-                type="text"
-                className={styles.textInput}
-                value={source}
-                onChange={(e) => setSource(e.target.value)}
-                placeholder="e.g. TechCrunch, Wired"
-              />
+              <div className={styles.inputWrapper}>
+                <input
+                  type="text"
+                  className={styles.textInput}
+                  value={source}
+                  onChange={(e) => setSource(e.target.value)}
+                  placeholder="e.g. TechCrunch, Wired"
+                />
+                <span className={styles.inputFocusLine}></span>
+              </div>
             </div>
           </div>
 
@@ -169,13 +178,16 @@ export default function AdvancedSearchModal({ isOpen, onClose }) {
             <label className={styles.formLabel}>
               <FaUser className={styles.inputIconLabel} /> {t('nav.author').toUpperCase()}
             </label>
-            <input
-              type="text"
-              className={styles.textInput}
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              placeholder="e.g. Casey Newton"
-            />
+            <div className={styles.inputWrapper}>
+              <input
+                type="text"
+                className={styles.textInput}
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                placeholder="e.g. Casey Newton"
+              />
+              <span className={styles.inputFocusLine}></span>
+            </div>
           </div>
 
           {/* Date range selection */}
@@ -220,27 +232,33 @@ export default function AdvancedSearchModal({ isOpen, onClose }) {
             <div className={styles.dateInputRow}>
               <div className={styles.dateInputWrapper}>
                 <span className={styles.dateLabel}>{t('nav.fromDate')}</span>
-                <input
-                  type="date"
-                  className={styles.dateInput}
-                  value={fromDate}
-                  onChange={(e) => {
-                    setFromDate(e.target.value);
-                    setActiveDateChip('custom');
-                  }}
-                />
+                <div className={styles.inputWrapper}>
+                  <input
+                    type="date"
+                    className={styles.dateInput}
+                    value={fromDate}
+                    onChange={(e) => {
+                      setFromDate(e.target.value);
+                      setActiveDateChip('custom');
+                    }}
+                  />
+                  <span className={styles.inputFocusLine}></span>
+                </div>
               </div>
               <div className={styles.dateInputWrapper}>
                 <span className={styles.dateLabel}>{t('nav.toDate')}</span>
-                <input
-                  type="date"
-                  className={styles.dateInput}
-                  value={toDate}
-                  onChange={(e) => {
-                    setToDate(e.target.value);
-                    setActiveDateChip('custom');
-                  }}
-                />
+                <div className={styles.inputWrapper}>
+                  <input
+                    type="date"
+                    className={styles.dateInput}
+                    value={toDate}
+                    onChange={(e) => {
+                      setToDate(e.target.value);
+                      setActiveDateChip('custom');
+                    }}
+                  />
+                  <span className={styles.inputFocusLine}></span>
+                </div>
               </div>
             </div>
           </div>

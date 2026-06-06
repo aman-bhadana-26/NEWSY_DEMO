@@ -4,25 +4,25 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(5, 10, 20, 0.75);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background-color: rgba(2, 11, 17, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  animation: fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
   padding: 20px;
 }
 
 .modalContent {
-  background: linear-gradient(135deg, #0a1628 0%, #051020 100%);
+  background: linear-gradient(145deg, #051622 0%, #020b11 100%);
   border: 1px solid rgba(27, 160, 152, 0.25);
   border-radius: 16px;
   width: 100%;
   max-width: 580px;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 32px rgba(27, 160, 152, 0.08);
-  animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.85), 0 0 50px rgba(27, 160, 152, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  animation: scaleUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   overflow: hidden;
   max-height: 90vh;
   display: flex;
@@ -35,7 +35,7 @@
   justify-content: space-between;
   padding: 20px 24px;
   border-bottom: 1px solid rgba(27, 160, 152, 0.15);
-  background: linear-gradient(90deg, rgba(27, 160, 152, 0.1), transparent);
+  background: linear-gradient(90deg, rgba(27, 160, 152, 0.12), transparent);
 }
 
 .headerTitle {
@@ -47,6 +47,7 @@
 .titleIcon {
   color: #1BA098;
   font-size: 1.2rem;
+  animation: rotateIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }
 
 .headerTitle h2 {
@@ -60,15 +61,15 @@
 }
 
 .closeButton {
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 1.2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -77,7 +78,8 @@
 .closeButton:hover {
   color: #ff6b6b;
   background-color: rgba(255, 107, 107, 0.1);
-  transform: rotate(90deg);
+  border-color: rgba(255, 107, 107, 0.25);
+  transform: rotate(90deg) scale(1.05);
 }
 
 .searchForm {
@@ -87,6 +89,18 @@
   flex-direction: column;
   gap: 20px;
 }
+
+/* Staggered entrance animation for form components */
+.searchForm > * {
+  opacity: 0;
+  animation: slideUpFadeIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.searchForm > *:nth-child(1) { animation-delay: 0.08s; }
+.searchForm > *:nth-child(2) { animation-delay: 0.14s; }
+.searchForm > *:nth-child(3) { animation-delay: 0.20s; }
+.searchForm > *:nth-child(4) { animation-delay: 0.26s; }
+.searchForm > *:nth-child(5) { animation-delay: 0.32s; }
 
 .formGroup {
   display: flex;
@@ -115,37 +129,92 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  transition: color 0.3s ease;
 }
 
 .inputIconLabel {
   color: #1BA098;
   font-size: 0.8rem;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.formGroup:focus-within .formLabel,
+.formGroupHalf:focus-within .formLabel {
+  color: #ffffff;
+}
+
+.formGroup:focus-within .inputIconLabel,
+.formGroupHalf:focus-within .inputIconLabel {
+  color: #DEB992;
+  transform: scale(1.2) translateY(-1px);
+  filter: drop-shadow(0 0 4px rgba(222, 185, 146, 0.3));
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .textInput,
 .selectInput,
 .dateInput {
-  background: rgba(10, 22, 40, 0.7);
-  border: 1.5px solid rgba(27, 160, 152, 0.25);
+  width: 100%;
+  background: rgba(10, 36, 51, 0.4);
+  border: 1px solid rgba(27, 160, 152, 0.2);
   border-radius: 8px;
   padding: 12px 14px;
   color: #ffffff;
   font-size: 0.9rem;
   outline: none;
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   font-family: inherit;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .textInput::placeholder {
-  color: rgba(222, 185, 146, 0.35);
+  color: rgba(222, 185, 146, 0.3);
+  transition: color 0.3s ease;
+}
+
+.textInput:focus::placeholder {
+  color: rgba(222, 185, 146, 0.15);
+}
+
+.textInput:hover,
+.selectInput:hover,
+.dateInput:hover {
+  border-color: rgba(27, 160, 152, 0.45);
+  background: rgba(10, 36, 51, 0.6);
 }
 
 .textInput:focus,
 .selectInput:focus,
 .dateInput:focus {
-  border-color: #1BA098;
-  box-shadow: 0 0 10px rgba(27, 160, 152, 0.2), inset 0 0 5px rgba(27, 160, 152, 0.1);
-  background: rgba(27, 160, 152, 0.03);
+  border-color: rgba(27, 160, 152, 0.6);
+  box-shadow: 0 0 16px rgba(27, 160, 152, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  background: rgba(10, 36, 51, 0.7);
+}
+
+.inputFocusLine {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #1BA098 0%, #DEB992 100%);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  pointer-events: none;
+  border-radius: 0 0 8px 8px;
+}
+
+.textInput:focus ~ .inputFocusLine,
+.selectInput:focus ~ .inputFocusLine,
+.dateInput:focus ~ .inputFocusLine {
+  transform: scaleX(1);
 }
 
 .selectInput {
@@ -159,7 +228,7 @@
 }
 
 .selectInput option {
-  background-color: #051020;
+  background-color: #020b11;
   color: #ffffff;
 }
 
@@ -171,32 +240,39 @@
 }
 
 .dateChip {
-  background: rgba(27, 160, 152, 0.08);
-  border: 1px solid rgba(27, 160, 152, 0.2);
+  background: rgba(27, 160, 152, 0.05);
+  border: 1px solid rgba(27, 160, 152, 0.15);
   border-radius: 20px;
-  padding: 6px 14px;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.78rem;
+  padding: 8px 16px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: var(--font-nav, 'Clash Display', sans-serif);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.7px;
   text-transform: uppercase;
 }
 
 .dateChip:hover {
-  background: rgba(27, 160, 152, 0.15);
+  background: rgba(27, 160, 152, 0.12);
   color: #ffffff;
-  border-color: #1BA098;
+  border-color: rgba(27, 160, 152, 0.4);
+  transform: translateY(-1px);
 }
 
 .dateChipActive {
-  background: #1BA098 !important;
-  color: #000000 !important;
+  background: linear-gradient(135deg, #1BA098 0%, #148c7f 100%) !important;
+  color: #051622 !important;
   border-color: #1BA098 !important;
-  box-shadow: 0 0 12px rgba(27, 160, 152, 0.4);
+  box-shadow: 0 0 16px rgba(27, 160, 152, 0.35), 0 4px 10px rgba(0, 0, 0, 0.2) !important;
   font-weight: 700;
+  transform: translateY(-1px) scale(1.02);
+}
+
+.dateChipActive:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 0 20px rgba(27, 160, 152, 0.5), 0 4px 10px rgba(0, 0, 0, 0.2) !important;
 }
 
 .dateInputRow {
@@ -213,12 +289,17 @@
 }
 
 .dateLabel {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(222, 185, 146, 0.5);
   font-family: var(--font-nav, 'Clash Display', sans-serif);
   letter-spacing: 0.5px;
   text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.dateInputWrapper:focus-within .dateLabel {
+  color: #DEB992;
 }
 
 .dateInput {
@@ -236,25 +317,32 @@
 
 .clearButton {
   background: transparent;
-  border: 1px dashed rgba(255, 100, 100, 0.4);
+  border: 1px solid rgba(255, 107, 107, 0.25);
   border-radius: 8px;
-  padding: 12px 18px;
-  color: #ff6b6b;
-  font-size: 0.85rem;
+  padding: 12px 20px;
+  color: rgba(255, 107, 107, 0.85);
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
   display: flex;
   align-items: center;
   gap: 8px;
   font-family: var(--font-nav, 'Clash Display', sans-serif);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.7px;
   text-transform: uppercase;
 }
 
 .clearButton:hover {
   background-color: rgba(255, 107, 107, 0.08);
   border-color: #ff6b6b;
+  color: #ff6b6b;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.15);
+}
+
+.clearButton:active {
+  transform: translateY(0);
 }
 
 .submitButton {
@@ -262,23 +350,50 @@
   border: none;
   border-radius: 8px;
   padding: 12px 24px;
-  color: #000000;
-  font-size: 0.85rem;
+  color: #051622;
+  font-size: 0.82rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   display: flex;
   align-items: center;
   gap: 8px;
   font-family: var(--font-nav, 'Clash Display', sans-serif);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.7px;
   text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+
+.submitButton::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 30%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(25deg);
+  transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  pointer-events: none;
+}
+
+.submitButton:hover::after {
+  left: 120%;
 }
 
 .submitButton:hover {
-  opacity: 0.95;
-  box-shadow: 0 0 15px rgba(27, 160, 152, 0.4);
   transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(27, 160, 152, 0.45), 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.submitButton:active {
+  transform: translateY(0);
 }
 
 .actionBtnIcon {
@@ -291,8 +406,30 @@
 }
 
 @keyframes scaleUp {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes rotateIn {
+  from { transform: scale(0.5) rotate(-45deg); opacity: 0; }
+  to { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+@keyframes slideUpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Mobile responsive */
