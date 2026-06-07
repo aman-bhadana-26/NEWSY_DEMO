@@ -228,12 +228,12 @@ export default function Trending() {
     }
   };
 
-  const topFive   = news.slice(0, 5);
+  const topFive = news.slice(0, 5);
   const bottomFive = news.slice(5, 10);
   const restArticles = news.slice(10);
 
   return (
-    <Layout title="Trending Now — NEWSY TECH">
+    <Layout title="Trending Now — NEWSY TECH" show3DBackground={true}>
       <div className={styles.page}>
 
         {/* ── PAGE HEADER ── */}

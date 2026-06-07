@@ -1,10 +1,21 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import TopUtilityBar from './TopUtilityBar';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import ScrollToTop from './ScrollToTop';
+
+const ParticleLayer = dynamic(() => import('./ParticleLayer'), {
+  ssr: false,
+  loading: () => null,
+});
+
+const AuroraBg = dynamic(() => import('./Aurora'), {
+  ssr: false,
+  loading: () => null,
+});
 
 /* Selector that targets every animated element */
 const ANIM_SEL = [
@@ -16,7 +27,7 @@ const ANIM_SEL = [
   '.anim-flip',
 ].join(', ');
 
-const Layout = ({ children, title = 'NEWSY TECH - Latest Technology News' }) => {
+const Layout = ({ children, title = 'NEWSY TECH - Latest Technology News', show3DBackground = false }) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -93,7 +104,7 @@ const Layout = ({ children, title = 'NEWSY TECH - Latest Technology News' }) => 
       if (io) io.disconnect();
       if (mo) mo.disconnect();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.asPath]);
 
   return (
@@ -112,18 +123,39 @@ const Layout = ({ children, title = 'NEWSY TECH - Latest Technology News' }) => 
         width: '100%',
         margin: 0,
         padding: 0,
+        position: 'relative',
       }}>
-        <TopUtilityBar />
-        <Navbar />
-        <main style={{
-          flex: 1,
-          width: '100%',
-          margin: 0,
-          padding: 0,
-        }}>
-          {children}
-        </main>
-        <Footer />
+        {show3DBackground && (
+          <>
+            {/* Aurora background */}
+            <div style={{ position: 'fixed', inset: 0, zIndex: 0, opacity: 0.22, pointerEvents: 'none' }}>
+              <AuroraBg
+                colorStops={['#1BA098', '#051622', '#DEB992']}
+                blend={0.65}
+                amplitude={0.95}
+                speed={0.45}
+              />
+            </div>
+            {/* R3F Particles (depth layer on top of Aurora) */}
+            <div style={{ position: 'fixed', inset: 0, zIndex: 0, opacity: 0.38, pointerEvents: 'none' }}>
+              <ParticleLayer />
+            </div>
+          </>
+        )}
+
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', flex: 1, width: '100%' }}>
+          <TopUtilityBar />
+          <Navbar />
+          <main style={{
+            flex: 1,
+            width: '100%',
+            margin: 0,
+            padding: 0,
+          }}>
+            {children}
+          </main>
+          <Footer />
+        </div>
         <ScrollToTop />
       </div>
     </>

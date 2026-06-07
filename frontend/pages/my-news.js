@@ -142,7 +142,7 @@ const MyNews = () => {
   // ── Loading while checking auth ──
   if (authLoading) {
     return (
-      <Layout title="My News - NEWSY TECH">
+      <Layout title="My News - NEWSY TECH" show3DBackground={true}>
         <div className={styles.stateContainer}>
           <LoadingSpinner />
         </div>
@@ -154,7 +154,7 @@ const MyNews = () => {
 
   // ── Render ──
   return (
-    <Layout title="My News - NEWSY TECH">
+    <Layout title="My News - NEWSY TECH" show3DBackground={true}>
       <div className={styles.myNewsPage}>
 
         {/* ── Header: tabs + refresh ── */}
@@ -265,7 +265,7 @@ const MyNews = () => {
                 totalResults={savedArticles.length}
                 hasMore={false}
                 loadingMore={false}
-                onLoadMore={() => {}}
+                onLoadMore={() => { }}
                 lastUpdated={null}
               />
             )}

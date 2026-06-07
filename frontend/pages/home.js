@@ -106,7 +106,7 @@ export default function Home() {
   );
 
   return (
-    <Layout title={`${getCategoryName(category)} - NEWSY TECH`}>
+    <Layout title={`${getCategoryName(category)} - NEWSY TECH`} show3DBackground={true}>
       <div className="container">
         {/* Homepage Sections - Only show on 'all' category without search or filters */}
         {!isSearchOrFilterActive && category === 'all' ? (
