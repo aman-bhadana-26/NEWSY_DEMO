@@ -41,7 +41,7 @@ export default function Home() {
         setLoadingMore(true);
       }
       setError(null);
-      
+
       const filters = {};
       if (from) filters.from = from;
       if (to) filters.to = to;
@@ -56,16 +56,16 @@ export default function Home() {
         search && search.trim() ? search.trim() : null,
         filters
       );
-      
+
       if (pageNum === 1) {
         setNews(data.articles);
       } else {
         setNews((prev) => [...prev, ...data.articles]);
       }
-      
+
       const total = data.totalResults || 0;
       setTotalResults(total);
-      
+
       // Update hasMore based on actual returned articles length vs total results
       const totalArticlesCount = pageNum === 1 ? data.articles.length : news.length + data.articles.length;
       setHasMore(data.articles.length === 20 && totalArticlesCount < total);

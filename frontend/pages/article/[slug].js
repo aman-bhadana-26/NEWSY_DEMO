@@ -49,22 +49,31 @@ export default function Article() {
   const [loadingFullContent, setLoadingFullContent] = useState(false);
   const [contentError, setContentError] = useState(null);
   const [relatedStories, setRelatedStories] = useState([]);
+  const [imageError, setImageError] = useState(false);
 
   const categoryKey = article ? detectCategoryKey(article) : 'tech';
   useReadingTracker(article, categoryKey);
 
   useEffect(() => {
-    if (data) {
+    let queryData = data;
+    if (!queryData && typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      queryData = params.get('data');
+    }
+
+    if (queryData) {
       try {
-        const decodedData = JSON.parse(decodeURIComponent(data));
+        const decodedData = JSON.parse(decodeURIComponent(queryData));
         setArticle(decodedData);
         setLoading(false);
       } catch (error) {
         console.error('Error parsing article data:', error);
         setLoading(false);
       }
+    } else if (router.isReady && !router.query.data) {
+      setLoading(false);
     }
-  }, [data]);
+  }, [data, router.isReady]);
 
   // Fetch sidebar stories
   useEffect(() => {
@@ -207,7 +216,7 @@ export default function Article() {
           </div>
 
           {/* Featured image / placeholder */}
-          {hasImage ? (
+          {hasImage && !imageError ? (
             <div className={styles.featuredImage}>
               <Image
                 src={article.urlToImage}
@@ -216,6 +225,8 @@ export default function Article() {
                 height={320}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 priority
+                unoptimized
+                onError={() => setImageError(true)}
               />
             </div>
           ) : (
@@ -345,12 +356,6 @@ export default function Article() {
             </div>
           </div>
 
-          {/* Promo card */}
-          <div className={styles.promoCard}>
-            <div className={styles.promoLabel}>{t('article.sponsored')}</div>
-            <div className={styles.promoTitle}>{t('article.promoTitle')}</div>
-            <span className={styles.promoBtn}>{t('article.learnMore')}</span>
-          </div>
 
           {/* More Stories */}
           {relatedStories.length > 0 && (

@@ -99,6 +99,7 @@ const HeroCard = ({ article, rank, t }) => {
             className={styles.heroImage}
             style={{ objectFit: 'cover' }}
             sizes="(max-width: 768px) 100vw, 58vw"
+            unoptimized
           />
         ) : (
           <div className={styles.heroImagePlaceholder}>

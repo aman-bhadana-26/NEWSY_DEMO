@@ -68,6 +68,7 @@ const MyNewsCard = ({ article, onSave, onUnsave, isSaved = false, compact = fals
                   width={120}
                   height={80}
                   className={styles.compactImg}
+                  unoptimized
                 />
               </div>
             )}
@@ -104,6 +105,7 @@ const MyNewsCard = ({ article, onSave, onUnsave, isSaved = false, compact = fals
               width={600}
               height={340}
               className={styles.image}
+              unoptimized
               onError={(e) => {
                 e.target.src = 'https://via.placeholder.com/800x400/0066cc/ffffff?text=Tech+News';
               }}
