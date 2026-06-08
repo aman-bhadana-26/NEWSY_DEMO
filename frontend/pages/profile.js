@@ -5,9 +5,10 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Particles from '../components/Particles';
-import { authAPI } from '../utils/api';
-import { FaTwitter, FaGithub, FaLinkedin, FaGlobe } from 'react-icons/fa';
+import { authAPI, analyticsAPI } from '../utils/api';
+import { FaTwitter, FaGithub, FaLinkedin, FaGlobe, FaFire, FaBookOpen, FaClock } from 'react-icons/fa';
 import styles from '../styles/Profile.module.css';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const PROFILE_LOCALE_MAP = { en: 'en-US', hi: 'hi-IN', es: 'es-ES', fr: 'fr-FR', de: 'de-DE' };
 
@@ -17,6 +18,8 @@ export default function Profile() {
   const { user, isAuthenticated, loading: authLoading, updateUser, refreshUser } = useAuth();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'socials'
+  const [stats, setStats] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -52,6 +55,15 @@ export default function Profile() {
       });
     }
   }, [user]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      analyticsAPI.getMyAnalytics()
+        .then(data => setStats(data))
+        .catch(err => console.error('Error fetching analytics:', err));
+    }
+  }, [isAuthenticated]);
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -104,6 +116,7 @@ export default function Profile() {
 
   const cancelEdit = () => {
     setIsEditing(false);
+    setActiveTab('profile');
     setFormData({
       name: user.name || '',
       email: user.email || '',
@@ -116,6 +129,7 @@ export default function Profile() {
     });
     setMessage({ type: '', text: '' });
   };
+
 
   const handlePhotoClick = () => {
     fileInputRef.current?.click();
@@ -351,7 +365,34 @@ export default function Profile() {
                 )}
               </div>
 
+              {/* Dynamic Reading Statistics Widget */}
+              {stats && (
+                <div className={styles.statsSection}>
+                  <div className={styles.statsSectionTitle}>{t('profile.stats.title')}</div>
+                  <div className={styles.statsGridMini}>
+                    <div className={styles.statBoxMini} title={`${stats.readingStreak} ${t('profile.stats.streak')}`}>
+                      <span className={styles.statIconMini}><FaFire style={{ color: '#ff6b6b' }} /></span>
+                      <span className={styles.statValMini}>{stats.readingStreak}</span>
+                      <span className={styles.statLabelMini}>{t('profile.stats.streak')}</span>
+                    </div>
+                    <div className={styles.statBoxMini} title={`${stats.articlesRead} ${t('profile.stats.read')}`}>
+                      <span className={styles.statIconMini}><FaBookOpen style={{ color: '#1BA098' }} /></span>
+                      <span className={styles.statValMini}>{stats.articlesRead}</span>
+                      <span className={styles.statLabelMini}>{t('profile.stats.read')}</span>
+                    </div>
+                    <div className={styles.statBoxMini} title={stats.totalTime?.label || t('profile.stats.time')}>
+                      <span className={styles.statIconMini}><FaClock style={{ color: '#DEB992' }} /></span>
+                      <span className={styles.statValMini}>
+                        {stats.totalTime?.label?.replace(/\s*hours?/, 'h')?.replace(/\s*mins?/, 'm') || '0m'}
+                      </span>
+                      <span className={styles.statLabelMini}>{t('profile.stats.time').split(' ')[0]}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
             </div>
+
 
             {/* Account Info */}
             <div className={styles.infoCard}>
@@ -407,208 +448,270 @@ export default function Profile() {
                 )}
               </div>
 
-              {!isEditing ? (
-                /* ── View mode ── */
-                <div className={styles.viewMode}>
-                  <p className={styles.viewIntro}>
-                    {t('profile.intro')}
-                  </p>
+              <AnimatePresence mode="wait">
+                {!isEditing ? (
+                  /* ── View mode ── */
+                  <motion.div
+                    key="viewMode"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.25 }}
+                    className={styles.viewMode}
+                  >
+                    <p className={styles.viewIntro}>
+                      {t('profile.intro')}
+                    </p>
 
-                  <div className={styles.fieldGrid}>
-                    <div className={styles.fieldBlock}>
-                      <span className={styles.fieldBlockLabel}>{t('profile.fullName')}</span>
-                      <p className={styles.fieldBlockValue}>{user.name}</p>
-                    </div>
-                    <div className={styles.fieldBlock}>
-                      <span className={styles.fieldBlockLabel}>{t('profile.email')}</span>
-                      <p className={styles.fieldBlockValue}>{user.email}</p>
-                    </div>
-                    <div className={styles.fieldBlock}>
-                      <span className={styles.fieldBlockLabel}>{t('profile.password')}</span>
-                      <p className={styles.fieldBlockValue}>••••••••</p>
-                    </div>
-                    <div className={styles.fieldBlock}>
-                      <span className={styles.fieldBlockLabel}>{t('profile.accountStatus')}</span>
-                      <p className={`${styles.fieldBlockValue} ${styles.statusActive}`}>{t('profile.active')}</p>
-                    </div>
-                  </div>
-
-                  <button className={styles.primaryBtn} onClick={() => setIsEditing(true)}>
-                    <svg viewBox="0 0 20 20" fill="currentColor" width="15" height="15">
-                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
-                    </svg>
-                    {t('profile.editProfile')}
-                  </button>
-                </div>
-              ) : (
-                /* ── Edit mode ── */
-                <form className={styles.editForm} onSubmit={handleSubmit}>
-                  <div className={styles.formGroup}>
-                    <label className={styles.formLabel} htmlFor="name">{t('profile.fullName')}</label>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      className={styles.formInput}
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      placeholder={t('profile.namePlaceholder')}
-                      autoComplete="off"
-                    />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label className={styles.formLabel} htmlFor="email">{t('profile.emailAddress')}</label>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      className={styles.formInput}
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      placeholder={t('profile.emailPlaceholder')}
-                      autoComplete="off"
-                    />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label className={styles.formLabel} htmlFor="newPassword">
-                      {t('profile.newPassword')} <span className={styles.optionalTag}>{t('profile.optional')}</span>
-                    </label>
-                    <input
-                      id="newPassword"
-                      name="newPassword"
-                      type="password"
-                      className={styles.formInput}
-                      value={formData.newPassword}
-                      onChange={handleChange}
-                      placeholder={t('profile.passwordPlaceholder')}
-                      autoComplete="new-password"
-                    />
-                    <p className={styles.inputHint}>{t('profile.passwordHint')}</p>
-                  </div>
-
-                  {/* Bio Field */}
-                  <div className={styles.formGroup}>
-                    <div className={styles.labelRow}>
-                      <label className={styles.formLabel} htmlFor="bio">
-                        {t('profile.bio')} <span className={styles.optionalTag}>{t('profile.optional')}</span>
-                      </label>
-                      <span className={`${styles.charCount} ${formData.bio.length >= 200 ? styles.limitReached : ''}`}>
-                        {formData.bio.length}/200
-                      </span>
-                    </div>
-                    <textarea
-                      id="bio"
-                      name="bio"
-                      className={styles.formTextarea}
-                      value={formData.bio}
-                      onChange={handleChange}
-                      maxLength={200}
-                      placeholder={t('profile.bioPlaceholder')}
-                      rows={3}
-                    />
-                  </div>
-
-                  {/* Social Links Group */}
-                  <div className={styles.socialFormSection}>
-                    <h3 className={styles.formSectionTitle}>
-                      <span className={styles.rightCardTitleAccent}>// </span>
-                      {t('profile.socialLinks')}
-                    </h3>
-                    
-                    <div className={styles.socialInputsGrid}>
-                      <div className={styles.formGroup}>
-                        <label className={styles.formLabel} htmlFor="twitter">
-                          <FaTwitter style={{ marginRight: '6px', verticalAlign: 'middle', color: '#1a91da' }} />
-                          {t('profile.twitter')}
-                        </label>
-                        <input
-                          id="twitter"
-                          name="twitter"
-                          type="url"
-                          className={styles.formInput}
-                          value={formData.twitter}
-                          onChange={handleChange}
-                          placeholder={t('profile.twitterPlaceholder')}
-                          autoComplete="off"
-                        />
+                    <div className={styles.fieldGrid}>
+                      <div className={styles.fieldBlock}>
+                        <span className={styles.fieldBlockLabel}>{t('profile.fullName')}</span>
+                        <p className={styles.fieldBlockValue}>{user.name}</p>
                       </div>
-
-                      <div className={styles.formGroup}>
-                        <label className={styles.formLabel} htmlFor="github">
-                          <FaGithub style={{ marginRight: '6px', verticalAlign: 'middle', color: '#ffffff' }} />
-                          {t('profile.github')}
-                        </label>
-                        <input
-                          id="github"
-                          name="github"
-                          type="url"
-                          className={styles.formInput}
-                          value={formData.github}
-                          onChange={handleChange}
-                          placeholder={t('profile.githubPlaceholder')}
-                          autoComplete="off"
-                        />
+                      <div className={styles.fieldBlock}>
+                        <span className={styles.fieldBlockLabel}>{t('profile.email')}</span>
+                        <p className={styles.fieldBlockValue}>{user.email}</p>
                       </div>
-
-                      <div className={styles.formGroup}>
-                        <label className={styles.formLabel} htmlFor="linkedin">
-                          <FaLinkedin style={{ marginRight: '6px', verticalAlign: 'middle', color: '#0077b5' }} />
-                          {t('profile.linkedin')}
-                        </label>
-                        <input
-                          id="linkedin"
-                          name="linkedin"
-                          type="url"
-                          className={styles.formInput}
-                          value={formData.linkedin}
-                          onChange={handleChange}
-                          placeholder={t('profile.linkedinPlaceholder')}
-                          autoComplete="off"
-                        />
+                      <div className={styles.fieldBlock}>
+                        <span className={styles.fieldBlockLabel}>{t('profile.password')}</span>
+                        <p className={styles.fieldBlockValue}>••••••••</p>
                       </div>
-
-                      <div className={styles.formGroup}>
-                        <label className={styles.formLabel} htmlFor="website">
-                          <FaGlobe style={{ marginRight: '6px', verticalAlign: 'middle', color: '#24c9b8' }} />
-                          {t('profile.website')}
-                        </label>
-                        <input
-                          id="website"
-                          name="website"
-                          type="url"
-                          className={styles.formInput}
-                          value={formData.website}
-                          onChange={handleChange}
-                          placeholder={t('profile.websitePlaceholder')}
-                          autoComplete="off"
-                        />
+                      <div className={styles.fieldBlock}>
+                        <span className={styles.fieldBlockLabel}>{t('profile.accountStatus')}</span>
+                        <p className={`${styles.fieldBlockValue} ${styles.statusActive}`}>{t('profile.active')}</p>
                       </div>
                     </div>
-                  </div>
 
-                  <div className={styles.formBtns}>
-                    <button type="submit" className={styles.primaryBtn} disabled={loading}>
-                      {loading ? (
-                        <><span className={styles.btnSpinner} /> {t('profile.saving')}</>
-                      ) : (
-                        <>
-                          <svg viewBox="0 0 20 20" fill="currentColor" width="15" height="15">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                          </svg>
-                          {t('profile.saveChanges')}
-                        </>
-                      )}
+                    <button className={styles.primaryBtn} onClick={() => setIsEditing(true)}>
+                      <svg viewBox="0 0 20 20" fill="currentColor" width="15" height="15">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                      </svg>
+                      {t('profile.editProfile')}
                     </button>
-                    <button type="button" className={styles.ghostBtn} onClick={cancelEdit}>
-                      {t('profile.cancel')}
-                    </button>
-                  </div>
-                </form>
-              )}
+                  </motion.div>
+                ) : (
+                  /* ── Edit mode ── */
+                  <motion.div
+                    key="editMode"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <form className={styles.editForm} onSubmit={handleSubmit}>
+                      {/* Tabs Header inside Edit Mode Form */}
+                      <div className={styles.tabsContainer}>
+                        <button
+                          type="button"
+                          className={`${styles.tabButton} ${activeTab === 'profile' ? styles.tabButtonActive : ''}`}
+                          onClick={() => setActiveTab('profile')}
+                        >
+                          {t('profile.tab.settings')}
+                          {activeTab === 'profile' && (
+                            <motion.div layoutId="activeTabIndicator" className={styles.tabIndicator} />
+                          )}
+                        </button>
+                        <button
+                          type="button"
+                          className={`${styles.tabButton} ${activeTab === 'socials' ? styles.tabButtonActive : ''}`}
+                          onClick={() => setActiveTab('socials')}
+                        >
+                          {t('profile.tab.socials')}
+                          {activeTab === 'socials' && (
+                            <motion.div layoutId="activeTabIndicator" className={styles.tabIndicator} />
+                          )}
+                        </button>
+                      </div>
+
+                      <AnimatePresence mode="wait">
+                        {activeTab === 'profile' ? (
+                          <motion.div
+                            key="profile-tab-content"
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 10 }}
+                            transition={{ duration: 0.2 }}
+                            style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}
+                          >
+                            <div className={styles.formGroup}>
+                              <label className={styles.formLabel} htmlFor="name">{t('profile.fullName')}</label>
+                              <input
+                                id="name"
+                                name="name"
+                                type="text"
+                                className={styles.formInput}
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                                placeholder={t('profile.namePlaceholder')}
+                                autoComplete="off"
+                              />
+                            </div>
+
+                            <div className={styles.formGroup}>
+                              <label className={styles.formLabel} htmlFor="email">{t('profile.emailAddress')}</label>
+                              <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                className={styles.formInput}
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                                placeholder={t('profile.emailPlaceholder')}
+                                autoComplete="off"
+                              />
+                            </div>
+
+                            <div className={styles.formGroup}>
+                              <label className={styles.formLabel} htmlFor="newPassword">
+                                {t('profile.newPassword')} <span className={styles.optionalTag}>{t('profile.optional')}</span>
+                              </label>
+                              <input
+                                id="newPassword"
+                                name="newPassword"
+                                type="password"
+                                className={styles.formInput}
+                                value={formData.newPassword}
+                                onChange={handleChange}
+                                placeholder={t('profile.passwordPlaceholder')}
+                                autoComplete="new-password"
+                              />
+                              <p className={styles.inputHint}>{t('profile.passwordHint')}</p>
+                            </div>
+
+                            <div className={styles.formGroup}>
+                              <div className={styles.labelRow}>
+                                <label className={styles.formLabel} htmlFor="bio">
+                                  {t('profile.bio')} <span className={styles.optionalTag}>{t('profile.optional')}</span>
+                                </label>
+                                <span className={`${styles.charCount} ${formData.bio.length >= 200 ? styles.limitReached : ''}`}>
+                                  {formData.bio.length}/200
+                                </span>
+                              </div>
+                              <textarea
+                                id="bio"
+                                name="bio"
+                                className={styles.formTextarea}
+                                value={formData.bio}
+                                onChange={handleChange}
+                                maxLength={200}
+                                placeholder={t('profile.bioPlaceholder')}
+                                rows={3}
+                              />
+                            </div>
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            key="socials-tab-content"
+                            initial={{ opacity: 0, x: 10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -10 }}
+                            transition={{ duration: 0.2 }}
+                            style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}
+                          >
+                            <div className={styles.socialFormSection} style={{ marginTop: 0, paddingTop: 0, borderTop: 'none' }}>
+                              <h3 className={styles.formSectionTitle}>
+                                <span className={styles.rightCardTitleAccent}>// </span>
+                                {t('profile.socialLinks')}
+                              </h3>
+                              
+                              <div className={styles.socialInputsGrid}>
+                                <div className={styles.formGroup}>
+                                  <label className={styles.formLabel} htmlFor="twitter">
+                                    <FaTwitter style={{ marginRight: '6px', verticalAlign: 'middle', color: '#1a91da' }} />
+                                    {t('profile.twitter')}
+                                  </label>
+                                  <input
+                                    id="twitter"
+                                    name="twitter"
+                                    type="url"
+                                    className={styles.formInput}
+                                    value={formData.twitter}
+                                    onChange={handleChange}
+                                    placeholder={t('profile.twitterPlaceholder')}
+                                    autoComplete="off"
+                                  />
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                  <label className={styles.formLabel} htmlFor="github">
+                                    <FaGithub style={{ marginRight: '6px', verticalAlign: 'middle', color: '#ffffff' }} />
+                                    {t('profile.github')}
+                                  </label>
+                                  <input
+                                    id="github"
+                                    name="github"
+                                    type="url"
+                                    className={styles.formInput}
+                                    value={formData.github}
+                                    onChange={handleChange}
+                                    placeholder={t('profile.githubPlaceholder')}
+                                    autoComplete="off"
+                                  />
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                  <label className={styles.formLabel} htmlFor="linkedin">
+                                    <FaLinkedin style={{ marginRight: '6px', verticalAlign: 'middle', color: '#0077b5' }} />
+                                    {t('profile.linkedin')}
+                                  </label>
+                                  <input
+                                    id="linkedin"
+                                    name="linkedin"
+                                    type="url"
+                                    className={styles.formInput}
+                                    value={formData.linkedin}
+                                    onChange={handleChange}
+                                    placeholder={t('profile.linkedinPlaceholder')}
+                                    autoComplete="off"
+                                  />
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                  <label className={styles.formLabel} htmlFor="website">
+                                    <FaGlobe style={{ marginRight: '6px', verticalAlign: 'middle', color: '#24c9b8' }} />
+                                    {t('profile.website')}
+                                  </label>
+                                  <input
+                                    id="website"
+                                    name="website"
+                                    type="url"
+                                    className={styles.formInput}
+                                    value={formData.website}
+                                    onChange={handleChange}
+                                    placeholder={t('profile.websitePlaceholder')}
+                                    autoComplete="off"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      <div className={styles.formBtns}>
+                        <button type="submit" className={styles.primaryBtn} disabled={loading}>
+                          {loading ? (
+                            <><span className={styles.btnSpinner} /> {t('profile.saving')}</>
+                          ) : (
+                            <>
+                              <svg viewBox="0 0 20 20" fill="currentColor" width="15" height="15">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                              </svg>
+                              {t('profile.saveChanges')}
+                            </>
+                          )}
+                        </button>
+                        <button type="button" className={styles.ghostBtn} onClick={cancelEdit}>
+                          {t('profile.cancel')}
+                        </button>
+                      </div>
+                    </form>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
             </div>
 
             {/* Quick nav tiles */}

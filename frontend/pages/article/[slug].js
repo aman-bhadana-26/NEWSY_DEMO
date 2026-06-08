@@ -83,7 +83,7 @@ export default function Article() {
         if (res?.articles) {
           setRelatedStories(res.articles.filter(a => a.title !== article?.title).slice(0, 3));
         }
-      } catch (_) {}
+      } catch (_) { }
     };
     if (article) fetchRelated();
   }, [article]);

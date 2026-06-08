@@ -59,13 +59,24 @@
 /* ── Avatar card ── */
 .avatarCard {
   position: relative;
-  background: linear-gradient(145deg, #0d1f38, #0a1628);
-  border: 1px solid rgba(27,160,152,0.2);
-  border-radius: 14px;
+  background: rgba(13, 31, 56, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(27, 160, 152, 0.22);
+  border-radius: 16px;
   padding: 28px 22px 24px;
   text-align: center;
   overflow: hidden;
+  box-shadow: 0 8px 32px 0 rgba(5, 16, 32, 0.35);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
 }
+
+.avatarCard:hover {
+  border-color: rgba(27, 160, 152, 0.45);
+  box-shadow: 0 12px 40px 0 rgba(27, 160, 152, 0.18);
+  transform: translateY(-2px);
+}
+
 
 .avatarCardBg {
   position: absolute;
@@ -170,16 +181,17 @@
 
 .avatarRing {
   position: absolute;
-  inset: -5px;
+  inset: -6px;
   border-radius: 50%;
-  border: 2px solid rgba(27,160,152,0.4);
-  animation: ringPulse 2.5s ease-in-out infinite;
+  border: 2px dashed rgba(27, 160, 152, 0.5);
+  animation: rotateRing 12s linear infinite;
 }
 
-@keyframes ringPulse {
-  0%, 100% { transform: scale(1);    opacity: 0.6; }
-  50%       { transform: scale(1.07); opacity: 1;   }
+@keyframes rotateRing {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
+
 
 .userName {
   font-family: var(--font-headline, 'Poppins', sans-serif);
@@ -230,10 +242,19 @@
 
 .badgeGold {
   composes: badge;
-  background: rgba(203,161,53,0.1);
-  border-color: rgba(203,161,53,0.35);
-  color: #CBA135;
+  background: linear-gradient(135deg, rgba(203, 161, 53, 0.15) 0%, rgba(222, 185, 146, 0.25) 50%, rgba(203, 161, 53, 0.15) 100%);
+  background-size: 200% auto;
+  border-color: rgba(203, 161, 53, 0.45);
+  color: #DEB992;
+  animation: goldShimmer 4s ease infinite;
 }
+
+@keyframes goldShimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 
 .bioBlock {
   margin: 12px 0 16px;
@@ -324,17 +345,27 @@
 
 /* ── Info card ── */
 .infoCard {
-  background: linear-gradient(145deg, #0d1f38, #0a1628);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 14px;
+  background: rgba(13, 31, 56, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0 8px 32px 0 rgba(5, 16, 32, 0.35);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.infoCard:hover {
+  border-color: rgba(27, 160, 152, 0.25);
+  box-shadow: 0 12px 40px 0 rgba(5, 16, 32, 0.4);
 }
 
 .cardHeader {
-  padding: 14px 20px;
+  padding: 16px 20px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
-  background: rgba(27,160,152,0.04);
+  background: rgba(27,160,152,0.06);
 }
+
 
 .cardLabel {
   font-family: var(--font-body, 'Fira Code', monospace);
@@ -403,11 +434,21 @@
 
 /* ── Main settings card ── */
 .rightCard {
-  background: linear-gradient(145deg, #0d1f38, #0a1628);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 16px;
+  background: rgba(13, 31, 56, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
   overflow: hidden;
+  box-shadow: 0 8px 32px 0 rgba(5, 16, 32, 0.35);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
 }
+
+.rightCard:hover {
+  border-color: rgba(27, 160, 152, 0.25);
+  box-shadow: 0 12px 40px 0 rgba(5, 16, 32, 0.45);
+}
+
 
 .rightCardHeader {
   padding: 20px 26px 0;
@@ -541,22 +582,24 @@
   width: 100%;
   padding: 14px 18px;
   background: rgba(5,16,32,0.7);
-  border: 1px solid rgba(27,160,152,0.2);
+  border: 1px solid rgba(27,160,152,0.25);
   border-radius: 8px;
   color: rgba(255,255,255,0.88);
   font-family: var(--font-body, 'Fira Code', monospace);
   font-size: 1.04rem;
   outline: none;
-  transition: border-color 0.25s, box-shadow 0.25s;
+  transition: border-color 0.25s, box-shadow 0.25s, background-color 0.25s;
   box-sizing: border-box;
 }
 
 .formInput::placeholder { color: rgba(255,255,255,0.2); }
 
 .formInput:focus {
-  border-color: #1BA098;
-  box-shadow: 0 0 0 3px rgba(27,160,152,0.12);
+  border-color: #24c9b8;
+  box-shadow: 0 0 0 1px #24c9b8, 0 0 16px rgba(36,201,184,0.25);
+  background: rgba(5,16,32,0.85);
 }
+
 
 .inputHint {
   font-family: var(--font-body, 'Fira Code', monospace);
@@ -588,13 +631,13 @@
   width: 100%;
   padding: 14px 18px;
   background: rgba(5, 16, 32, 0.7);
-  border: 1px solid rgba(27, 160, 152, 0.2);
+  border: 1px solid rgba(27, 160, 152, 0.25);
   border-radius: 8px;
   color: rgba(255, 255, 255, 0.88);
   font-family: var(--font-body, 'Fira Code', monospace);
   font-size: 1.04rem;
   outline: none;
-  transition: border-color 0.25s, box-shadow 0.25s;
+  transition: border-color 0.25s, box-shadow 0.25s, background-color 0.25s;
   box-sizing: border-box;
   resize: vertical;
   min-height: 80px;
@@ -605,9 +648,11 @@
 }
 
 .formTextarea:focus {
-  border-color: #1BA098;
-  box-shadow: 0 0 0 3px rgba(27, 160, 152, 0.12);
+  border-color: #24c9b8;
+  box-shadow: 0 0 0 1px #24c9b8, 0 0 16px rgba(36,201,184,0.25);
+  background: rgba(5, 16, 32, 0.85);
 }
+
 
 .socialFormSection {
   margin-top: 10px;
@@ -722,13 +767,16 @@
   align-items: center;
   gap: 14px;
   padding: 18px 20px;
-  background: linear-gradient(145deg, #0d1f38, #0a1628);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 12px;
+  background: rgba(13, 31, 56, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 16px rgba(5, 16, 32, 0.25);
 }
 
 .quickLink::after {
@@ -745,15 +793,17 @@
 }
 
 .quickLink:hover {
-  border-color: rgba(27,160,152,0.25);
-  background: rgba(27,160,152,0.06);
-  transform: translateY(-2px);
+  border-color: rgba(27,160,152,0.35);
+  background: rgba(27,160,152,0.08);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(27, 160, 152, 0.15);
 }
 
 .quickLink:hover::after {
   transform: scaleX(1);
   animation: lineGradientH 2s linear infinite;
 }
+
 
 @keyframes lineGradientH {
   0%   { background-position: 0%   0; }
@@ -824,3 +874,119 @@
   .quickLinks { grid-template-columns: 1fr; }
   .primaryBtn, .ghostBtn { justify-content: center; width: 100%; }
 }
+
+/* -- Dashboard Tabs navigation inside Right Card -- */
+.tabsContainer {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 0 26px 8px;
+}
+.tabButton {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  padding: 10px 16px;
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+.tabButton:hover {
+  color: rgba(255,255,255,0.9);
+}
+.tabButtonActive {
+  color: #24c9b8 !important;
+}
+.tabIndicator {
+  position: absolute;
+  bottom: -9px;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, #1BA098, #24c9b8);
+  box-shadow: 0 0 10px rgba(36,201,184,0.6);
+  border-radius: 2px;
+}
+
+/* -- User Statistics Dashboard Widget on Left Panel -- */
+.statsSection {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.statsSectionTitle {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-align: left;
+  margin-bottom: 4px;
+  padding-left: 4px;
+}
+.statsGridMini {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.statBoxMini {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: 10px 4px;
+  text-align: center;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.statBoxMini:hover {
+  background: rgba(27,160,152,0.08);
+  border-color: rgba(27,160,152,0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(27,160,152,0.15);
+}
+.statIconMini {
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.statValMini {
+  font-family: var(--font-headline, 'Poppins', sans-serif);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.8) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.statLabelMini {
+  font-family: var(--font-body, 'Fira Code', monospace);
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  margin: 4px 0 0 0;
+  letter-spacing: 0.5px;
+}
+
+/* -- Responsive adjust for tabs padding -- */
+@media (max-width: 600px) {
+  .tabsContainer {
+    padding: 0 16px 8px;
+  }
+}
+
