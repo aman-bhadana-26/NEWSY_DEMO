@@ -1,106 +1,148 @@
 .page {
   min-height: calc(100vh - 70px);
-  background: linear-gradient(160deg, rgba(5, 16, 32, 0.95) 0%, rgba(10, 22, 40, 0.92) 55%, rgba(13, 37, 53, 0.9) 100%);
-  padding: 40px;
+  background: radial-gradient(circle at 10% 20%, rgba(27, 160, 152, 0.06) 0%, transparent 50%),
+              radial-gradient(circle at 90% 80%, rgba(222, 185, 146, 0.05) 0%, transparent 50%),
+              linear-gradient(160deg, #020b11 0%, #051622 60%, #0a2433 100%);
+  padding: 50px 40px;
   color: #fff;
 }
 
 .header {
-  margin-bottom: 32px;
+  margin-bottom: 40px;
+  position: relative;
 }
 
 .title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   font-family: var(--font-headline, 'Poppins', sans-serif);
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin: 0 0 8px;
+  font-size: 2.6rem;
+  font-weight: 800;
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
 }
 
 .titleIcon {
-  color: #1BA098;
+  color: #24c9b8;
+  filter: drop-shadow(0 0 8px rgba(36, 201, 184, 0.5));
 }
 
 .subtitle {
-  font-family: var(--font-body, 'Fira Code', monospace);
-  font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.45);
+  font-family: var(--font-body, sans-serif);
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.55);
   margin: 0;
 }
 
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 18px;
-  margin-bottom: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
 }
 
 .statCard {
-  background: linear-gradient(145deg, #0d1f38, #0a1628);
-  border: 1px solid rgba(27, 160, 152, 0.2);
-  border-radius: 12px;
-  padding: 22px;
-  transition: transform 0.25s, border-color 0.25s;
+  background: rgba(15, 45, 61, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(27, 160, 152, 0.15);
+  border-radius: 18px;
+  padding: 26px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+.statCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .statCard:hover {
-  transform: translateY(-3px);
-  border-color: rgba(27, 160, 152, 0.45);
+  transform: translateY(-5px);
+  border-color: rgba(27, 160, 152, 0.5);
+  box-shadow: 0 12px 40px 0 rgba(27, 160, 152, 0.15), 0 0 0 1px rgba(27, 160, 152, 0.2);
 }
 
 .statCardHighlight {
-  border-color: rgba(203, 161, 53, 0.4);
-  background: linear-gradient(145deg, #0d1f38, rgba(203, 161, 53, 0.08));
+  border-color: rgba(222, 185, 146, 0.3);
+  background: linear-gradient(145deg, rgba(15, 45, 61, 0.4), rgba(222, 185, 146, 0.06));
+}
+
+.statCardHighlight:hover {
+  border-color: rgba(222, 185, 146, 0.6);
+  box-shadow: 0 12px 40px 0 rgba(222, 185, 146, 0.1), 0 0 0 1px rgba(222, 185, 146, 0.15);
 }
 
 .statLabel {
-  font-family: var(--font-body, 'Fira Code', monospace);
+  font-family: var(--font-body, sans-serif);
   font-size: 0.78rem;
   color: rgba(255, 255, 255, 0.45);
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin: 0 0 8px;
+  letter-spacing: 1.8px;
+  margin: 0 0 12px;
+  font-weight: 700;
 }
 
 .statValue {
   font-family: var(--font-headline, 'Poppins', sans-serif);
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 2.2rem;
+  font-weight: 800;
   color: #fff;
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .statSub {
-  font-family: var(--font-body, 'Fira Code', monospace);
-  font-size: 0.8rem;
-  color: #1BA098;
-  margin: 6px 0 0;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.85rem;
+  color: #24c9b8;
+  margin: 10px 0 0;
+  font-weight: 500;
 }
 
 .section {
-  background: linear-gradient(145deg, #0d1f38, #0a1628);
-  border: 1px solid rgba(27, 160, 152, 0.15);
-  border-radius: 14px;
-  padding: 24px;
-  margin-bottom: 24px;
+  background: rgba(10, 36, 51, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
 }
 
 .sectionTitle {
   font-family: var(--font-headline, 'Poppins', sans-serif);
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 0 0 20px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 24px;
   color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 14px;
 }
 
 .chart {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
-  height: 160px;
-  padding-top: 10px;
+  gap: 12px;
+  height: 180px;
+  padding-top: 20px;
+  margin-top: 10px;
 }
 
 .chartBarWrap {
@@ -108,143 +150,263 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   height: 100%;
   justify-content: flex-end;
+  position: relative;
 }
 
 .chartBar {
   width: 100%;
-  max-width: 48px;
-  min-height: 4px;
+  max-width: 44px;
+  min-height: 8px;
   background: linear-gradient(180deg, #24c9b8, #1BA098);
-  border-radius: 6px 6px 2px 2px;
-  transition: height 0.4s ease;
+  border-radius: 8px 8px 3px 3px;
+  transition: background 0.3s;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(27, 160, 152, 0.15);
+}
+
+.chartBarWrap:hover .chartBar {
+  background: linear-gradient(180deg, #80f2e6, #24c9b8);
+  box-shadow: 0 0 20px rgba(36, 201, 184, 0.5), 0 0 0 2px rgba(36, 201, 184, 0.2);
+}
+
+.chartTooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: #0f2d3d;
+  border: 1px solid rgba(36, 201, 184, 0.4);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-family: var(--font-body), sans-serif;
+  color: #fff;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.chartBarWrap:hover .chartTooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 .chartLabel {
-  font-family: var(--font-body, 'Fira Code', monospace);
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.4);
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
 }
 
 .chartCount {
-  font-family: var(--font-body, 'Fira Code', monospace);
-  font-size: 0.75rem;
-  color: #1BA098;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.78rem;
+  color: #24c9b8;
   font-weight: 700;
 }
 
 .topicList {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .topicRow {
   display: grid;
-  grid-template-columns: 120px 1fr 48px;
+  grid-template-columns: 140px 1fr 50px;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  transition: background 0.25s;
+}
+
+.topicRow:hover {
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .topicName {
-  font-family: var(--font-body, 'Fira Code', monospace);
-  font-size: 0.88rem;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.9rem;
+  font-weight: 600;
   color: rgba(255, 255, 255, 0.85);
   text-transform: capitalize;
 }
 
 .topicBarBg {
-  height: 10px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 5px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.02);
 }
 
 .topicBarFill {
   height: 100%;
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+
+/* Glowing fills for specific topics */
+.topicBarFill_ai {
+  background: linear-gradient(90deg, #9C27B0, #e91e63);
+  box-shadow: 0 0 10px rgba(156, 39, 176, 0.4);
+}
+.topicBarFill_software {
+  background: linear-gradient(90deg, #4CAF50, #00E676);
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.4);
+}
+.topicBarFill_startups {
+  background: linear-gradient(90deg, #2196F3, #00B0FF);
+  box-shadow: 0 0 10px rgba(33, 150, 243, 0.4);
+}
+.topicBarFill_gadgets {
+  background: linear-gradient(90deg, #FF9800, #FFD600);
+  box-shadow: 0 0 10px rgba(255, 152, 0, 0.4);
+}
+.topicBarFill_cybersecurity {
+  background: linear-gradient(90deg, #F44336, #FF1744);
+  box-shadow: 0 0 10px rgba(244, 67, 54, 0.4);
+}
+.topicBarFill_default {
   background: linear-gradient(90deg, #1BA098, #24c9b8);
-  border-radius: 5px;
-  transition: width 0.5s ease;
+  box-shadow: 0 0 10px rgba(27, 160, 152, 0.4);
 }
 
 .topicPct {
-  font-family: var(--font-body, 'Fira Code', monospace);
-  font-size: 0.82rem;
-  color: #1BA098;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #24c9b8;
   text-align: right;
 }
 
 .twoCol {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 30px;
 }
 
 .recentList {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .recentItem {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 14px;
-  background: rgba(27, 160, 152, 0.05);
-  border: 1px solid rgba(27, 160, 152, 0.1);
-  border-radius: 8px;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.recentItem:hover {
+  background: rgba(27, 160, 152, 0.06);
+  border-color: rgba(27, 160, 152, 0.25);
+  transform: translateX(6px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.recentContent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
 }
 
 .recentTitle {
-  font-family: var(--font-body, 'Fira Code', monospace);
-  font-size: 0.88rem;
-  color: rgba(255, 255, 255, 0.85);
-  margin: 0 0 4px;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
   line-height: 1.4;
 }
 
 .recentMeta {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.4);
 }
 
+.recentCategoryBadge {
+  padding: 2px 8px;
+  border-radius: 5px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Category Badge color-coding */
+.badge_ai { background: rgba(156, 39, 176, 0.12); color: #e040fb; border: 1px solid rgba(156, 39, 176, 0.25); }
+.badge_software { background: rgba(76, 175, 80, 0.12); color: #00e676; border: 1px solid rgba(76, 175, 80, 0.25); }
+.badge_startups { background: rgba(33, 150, 243, 0.12); color: #00b0ff; border: 1px solid rgba(33, 150, 243, 0.25); }
+.badge_gadgets { background: rgba(255, 152, 0, 0.12); color: #ffd600; border: 1px solid rgba(255, 152, 0, 0.25); }
+.badge_cybersecurity { background: rgba(244, 67, 54, 0.12); color: #ff1744; border: 1px solid rgba(244, 67, 54, 0.25); }
+.badge_default { background: rgba(27, 160, 152, 0.12); color: #24c9b8; border: 1px solid rgba(27, 160, 152, 0.25); }
+
 .recentTime {
-  font-family: var(--font-body, 'Fira Code', monospace);
-  font-size: 0.78rem;
-  color: #1BA098;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #24c9b8;
   white-space: nowrap;
+  background: rgba(36, 201, 184, 0.08);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(36, 201, 184, 0.2);
 }
 
 .emptyHint {
-  font-family: var(--font-body, 'Fira Code', monospace);
-  font-size: 0.9rem;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.4);
   text-align: center;
-  padding: 24px;
+  padding: 36px;
 }
 
 .loginPrompt {
   text-align: center;
-  padding: 60px 24px;
+  padding: 80px 24px;
 }
 
 .loginPrompt p {
   color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  font-size: 1.1rem;
 }
 
 .loginBtn {
   display: inline-block;
-  padding: 12px 28px;
+  padding: 14px 32px;
   background: linear-gradient(135deg, #1BA098, #24c9b8);
   color: #051020;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: 700;
   text-decoration: none;
+  box-shadow: 0 4px 16px rgba(27, 160, 152, 0.25);
+  transition: all 0.25s;
+}
+
+.loginBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(27, 160, 152, 0.4);
 }
 
 .loadingWrap {
@@ -255,84 +417,115 @@
 }
 
 .viewTabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 28px;
-  flex-wrap: wrap;
+  display: inline-flex;
+  background: rgba(15, 45, 61, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px;
+  border-radius: 14px;
+  margin-bottom: 36px;
+  position: relative;
 }
 
 .viewTab {
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-family: var(--font-body, 'Fira Code', monospace);
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-family: var(--font-body, sans-serif);
   font-weight: 700;
   font-size: 0.88rem;
   cursor: pointer;
-  transition: all 0.25s ease;
-  border: 1px solid rgba(27, 160, 152, 0.35);
+  transition: color 0.3s;
+  border: none;
   background: transparent;
-  color: #1BA098;
+  color: rgba(255, 255, 255, 0.6);
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.viewTab:hover {
+  color: #fff;
+}
+
+/* Framer Motion Indicator handles the background, this matches its style */
+.activeTabIndicator {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  bottom: 6px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1BA098, #24c9b8);
+  z-index: 1;
+  box-shadow: 0 4px 14px rgba(27, 160, 152, 0.3);
+}
+
+.activeTabIndicatorAdmin {
+  background: linear-gradient(135deg, #9C27B0, #e91e63);
+  box-shadow: 0 4px 14px rgba(156, 39, 176, 0.3);
 }
 
 .viewTabActive {
-  background: linear-gradient(135deg, #1BA098, #24c9b8);
-  color: #051020;
-  border-color: transparent;
-}
-
-.viewTabAdmin {
-  border-color: rgba(156, 39, 176, 0.4);
-  color: #ce93d8;
+  color: #051020 !important;
 }
 
 .viewTabAdminActive {
-  background: linear-gradient(135deg, #9C27B0, #e91e63);
-  color: #fff;
-  border-color: transparent;
+  color: #fff !important;
 }
 
 .adminBadge {
   display: inline-block;
-  margin-left: 8px;
+  margin-left: 6px;
   padding: 2px 8px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.25);
   border-radius: 10px;
-  font-size: 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 800;
   vertical-align: middle;
 }
 
 .moreBtn {
   display: block;
-  margin: 16px auto 0;
-  padding: 8px 18px;
+  margin: 20px auto 0;
+  padding: 10px 24px;
   background: transparent;
   border: 1px solid rgba(27, 160, 152, 0.4);
-  color: #1BA098;
-  border-radius: 8px;
-  font-family: var(--font-body, 'Fira Code', monospace);
+  color: #24c9b8;
+  border-radius: 10px;
+  font-family: var(--font-body, sans-serif);
   font-weight: 700;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.25s ease-in-out;
 }
 
 .moreBtn:hover {
   background: rgba(27, 160, 152, 0.08);
   border-color: #24c9b8;
-  color: #24c9b8;
-  box-shadow: 0 0 10px rgba(27, 160, 152, 0.12);
+  box-shadow: 0 0 16px rgba(27, 160, 152, 0.2);
+  transform: translateY(-1px);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .page {
-    padding: 24px 16px;
+    padding: 30px 20px;
   }
 
   .twoCol {
     grid-template-columns: 1fr;
+    gap: 24px;
   }
 
+  .title {
+    font-size: 2.1rem;
+  }
+}
+
+@media (max-width: 600px) {
   .topicRow {
-    grid-template-columns: 90px 1fr 40px;
+    grid-template-columns: 100px 1fr 45px;
+    gap: 10px;
   }
 }

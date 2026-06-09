@@ -15,6 +15,7 @@ import {
   FaComment
 } from 'react-icons/fa';
 import styles from '../styles/Analytics.module.css';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const topicLabel = (t, topic) => {
   const key = `article.cat.${topic}`;
@@ -22,24 +23,47 @@ const topicLabel = (t, topic) => {
   return label === key ? topic : label;
 };
 
-function BarChartItem({ day, maxValue, valueKey }) {
-  const [height, setHeight] = useState('0px');
+// Animation Variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.06
+    }
+  }
+};
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setHeight(`${Math.max(4, (day[valueKey] / maxValue) * 120)}px`);
-    }, 100);
-    return () => clearTimeout(timeout);
-  }, [day, maxValue, valueKey]);
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 15
+    }
+  }
+};
+
+function BarChartItem({ day, maxValue, valueKey }) {
+  const heightValue = Math.max(8, (day[valueKey] / maxValue) * 120);
 
   return (
     <div className={styles.chartBarWrap}>
       <span className={styles.chartCount}>{day[valueKey]}</span>
-      <div
+      <motion.div
         className={styles.chartBar}
-        style={{ height: height }}
+        initial={{ height: 0 }}
+        animate={{ height: heightValue }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       />
       <span className={styles.chartLabel}>{day.label}</span>
+      <div className={styles.chartTooltip}>
+        <strong>{day[valueKey]}</strong> reads<br />
+        <span>{Math.round((day.timeSeconds || 0) / 60)} mins</span>
+      </div>
     </div>
   );
 }
@@ -60,26 +84,24 @@ function BarChart({ data, maxValue, valueKey = 'reads' }) {
 }
 
 function TopicBarRow({ item, t }) {
-  const [width, setWidth] = useState('0%');
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setWidth(`${item.percentage}%`);
-    }, 100);
-    return () => clearTimeout(timeout);
-  }, [item.percentage]);
+  const fillClass = styles[`topicBarFill_${item.topic}`] || styles.topicBarFill_default;
 
   return (
-    <div className={styles.topicRow}>
+    <motion.div
+      className={styles.topicRow}
+      variants={cardVariants}
+    >
       <span className={styles.topicName}>{topicLabel(t, item.topic)}</span>
       <div className={styles.topicBarBg}>
-        <div
-          className={styles.topicBarFill}
-          style={{ width: width }}
+        <motion.div
+          className={`${styles.topicBarFill} ${fillClass}`}
+          initial={{ width: 0 }}
+          animate={{ width: `${item.percentage}%` }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         />
       </div>
       <span className={styles.topicPct}>{item.percentage}%</span>
-    </div>
+    </motion.div>
   );
 }
 
@@ -88,11 +110,16 @@ function TopicBars({ topics, t }) {
     return <p className={styles.emptyHint}>{t('analytics.noTopics')}</p>;
   }
   return (
-    <div className={styles.topicList}>
+    <motion.div
+      className={styles.topicList}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {topics.map((item) => (
         <TopicBarRow key={item.topic} item={item} t={t} />
       ))}
-    </div>
+    </motion.div>
   );
 }
 
@@ -151,183 +178,315 @@ export default function AnalyticsPage() {
   return (
     <Layout title="Analytics – NEWSYTECH">
       <div className={styles.page}>
-        <header className={`${styles.header} anim-slide`}>
+        <motion.header
+          className={styles.header}
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           <h1 className={styles.title}>
             <FaChartLine className={styles.titleIcon} />
             {t('analytics.title')}
           </h1>
           <p className={styles.subtitle}>{t('analytics.subtitle')}</p>
-        </header>
+        </motion.header>
 
         {user?.isAdmin && (
-          <div className={`${styles.viewTabs} anim-scale`}>
+          <div className={styles.viewTabs}>
             <button
               type="button"
               className={`${styles.viewTab} ${activeView === 'personal' ? styles.viewTabActive : ''}`}
               onClick={() => setActiveView('personal')}
+              style={{ outline: 'none' }}
             >
-              {t('analytics.myStats')}
+              {activeView === 'personal' && (
+                <motion.div
+                  layoutId="activeTabIndicator"
+                  className={styles.activeTabIndicator}
+                  transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+                />
+              )}
+              <span style={{ position: 'relative', zIndex: 3 }}>
+                {t('analytics.myStats')}
+              </span>
             </button>
             <button
               type="button"
-              className={`${styles.viewTab} ${styles.viewTabAdmin} ${activeView === 'site' ? styles.viewTabAdminActive : ''}`}
+              className={`${styles.viewTab} ${activeView === 'site' ? styles.viewTabAdminActive : ''}`}
               onClick={() => setActiveView('site')}
+              style={{ outline: 'none' }}
             >
-              {t('analytics.siteStats')}
-              <span className={styles.adminBadge}>Admin</span>
+              {activeView === 'site' && (
+                <motion.div
+                  layoutId="activeTabIndicator"
+                  className={`${styles.activeTabIndicator} ${styles.activeTabIndicatorAdmin}`}
+                  transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+                />
+              )}
+              <span style={{ position: 'relative', zIndex: 3 }}>
+                {t('analytics.siteStats')}
+                <span className={styles.adminBadge}>Admin</span>
+              </span>
             </button>
           </div>
         )}
 
-        {activeView === 'personal' && myStats && (
-          <>
-            <div className={styles.statsGrid}>
-              <div className={`${styles.statCard} ${styles.statCardHighlight} anim-fade-up delay-1`}>
-                <p className={styles.statLabel}>{t('analytics.streak')}</p>
-                <p className={styles.statValue}>
-                  <FaFire style={{ color: '#CBA135', marginRight: 8 }} />
-                  {myStats.readingStreak}
-                </p>
-                <p className={styles.statSub}>
-                  {t('analytics.streakDays')} · {t('analytics.longest')}: {myStats.longestStreak}
-                </p>
-              </div>
+        <AnimatePresence mode="wait">
+          {activeView === 'personal' && myStats && (
+            <motion.div
+              key="personal"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.4 }}
+            >
+              <motion.div
+                className={styles.statsGrid}
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <motion.div
+                  variants={cardVariants}
+                  className={`${styles.statCard} ${styles.statCardHighlight}`}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <p className={styles.statLabel}>{t('analytics.streak')}</p>
+                  <p className={styles.statValue}>
+                    <FaFire style={{ color: '#DEB992', marginRight: 8, filter: 'drop-shadow(0 0 6px rgba(222, 185, 146, 0.5))' }} />
+                    {myStats.readingStreak}
+                  </p>
+                  <p className={styles.statSub}>
+                    {t('analytics.streakDays')} · {t('analytics.longest')}: {myStats.longestStreak}
+                  </p>
+                </motion.div>
 
-              <div className={`${styles.statCard} anim-fade-up delay-2`}>
-                <p className={styles.statLabel}>{t('analytics.articlesRead')}</p>
-                <p className={styles.statValue}>
-                  <FaBookOpen style={{ color: '#1BA098', marginRight: 8 }} />
-                  {myStats.articlesRead}
-                </p>
-                <p className={styles.statSub}>{myStats.totalSessions} {t('analytics.sessions')}</p>
-              </div>
+                <motion.div
+                  variants={cardVariants}
+                  className={styles.statCard}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <p className={styles.statLabel}>{t('analytics.articlesRead')}</p>
+                  <p className={styles.statValue}>
+                    <FaBookOpen style={{ color: '#24c9b8', marginRight: 8, filter: 'drop-shadow(0 0 6px rgba(36, 201, 184, 0.4))' }} />
+                    {myStats.articlesRead}
+                  </p>
+                  <p className={styles.statSub}>{myStats.totalSessions} {t('analytics.sessions')}</p>
+                </motion.div>
 
-              <div className={`${styles.statCard} anim-fade-up delay-3`}>
-                <p className={styles.statLabel}>{t('analytics.timeSpent')}</p>
-                <p className={styles.statValue}>
-                  <FaClock style={{ color: '#1BA098', marginRight: 8 }} />
-                  {myStats.totalTime?.label}
-                </p>
-                <p className={styles.statSub}>
-                  {t('analytics.thisWeek')}: {myStats.thisWeekTime?.label}
-                </p>
-              </div>
+                <motion.div
+                  variants={cardVariants}
+                  className={styles.statCard}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <p className={styles.statLabel}>{t('analytics.timeSpent')}</p>
+                  <p className={styles.statValue}>
+                    <FaClock style={{ color: '#24c9b8', marginRight: 8, filter: 'drop-shadow(0 0 6px rgba(36, 201, 184, 0.4))' }} />
+                    {myStats.totalTime?.label || '0m'}
+                  </p>
+                  <p className={styles.statSub}>
+                    {t('analytics.thisWeek')}: {myStats.thisWeekTime?.label || '0m'}
+                  </p>
+                </motion.div>
 
-              <div className={`${styles.statCard} anim-fade-up delay-4`}>
-                <p className={styles.statLabel}>{t('analytics.thisMonth')}</p>
-                <p className={styles.statValue}>{myStats.thisMonthTime?.label}</p>
-                <p className={styles.statSub}>{t('analytics.readingHabits')}</p>
-              </div>
-            </div>
+                <motion.div
+                  variants={cardVariants}
+                  className={styles.statCard}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <p className={styles.statLabel}>{t('analytics.thisMonth')}</p>
+                  <p className={styles.statValue}>{myStats.thisMonthTime?.label || '0m'}</p>
+                  <p className={styles.statSub}>{t('analytics.readingHabits')}</p>
+                </motion.div>
+              </motion.div>
 
-            <div className={styles.twoCol}>
-              <section className={`${styles.section} anim-fade-left delay-1`}>
-                <h2 className={styles.sectionTitle}>
-                  <FaChartLine /> {t('analytics.activityWeek')}
-                </h2>
-                {myStats.readsByDay?.length ? (
-                  <BarChart data={myStats.readsByDay} maxValue={myStats.maxReads} />
-                ) : (
-                  <p className={styles.emptyHint}>{t('analytics.noActivity')}</p>
-                )}
-              </section>
-
-              <section className={`${styles.section} anim-fade-right delay-2`}>
-                <h2 className={styles.sectionTitle}>
-                  <FaTags /> {t('analytics.topTopics')}
-                </h2>
-                <TopicBars topics={myStats.mostReadTopics} t={t} />
-              </section>
-            </div>
-
-            <section className={`${styles.section} anim-fade-up delay-3`}>
-              <h2 className={styles.sectionTitle}>{t('analytics.recentReads')}</h2>
-              {myStats.recentActivity?.length ? (
-                <>
-                  <div className={styles.recentList}>
-                    {(showAllRecent
-                      ? myStats.recentActivity
-                      : myStats.recentActivity.slice(0, 4)
-                    ).map((item, i) => (
-                      <div key={i} className={styles.recentItem}>
-                        <div>
-                          <p className={styles.recentTitle}>
-                            {item.articleTitle?.length > 60
-                              ? item.articleTitle.slice(0, 60) + '…'
-                              : item.articleTitle}
-                          </p>
-                          <span className={styles.recentMeta}>
-                            {topicLabel(t, item.topic)} ·{' '}
-                            {new Date(item.readAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <span className={styles.recentTime}>{item.timeLabel}</span>
-                      </div>
-                    ))}
-                  </div>
-                  {myStats.recentActivity.length > 4 && (
-                    <button
-                      type="button"
-                      className={styles.moreBtn}
-                      onClick={() => setShowAllRecent(!showAllRecent)}
-                    >
-                      {showAllRecent ? t('analytics.showLess') : t('analytics.showMore')}
-                    </button>
+              <div className={styles.twoCol}>
+                <motion.section
+                  className={styles.section}
+                  initial={{ opacity: 0, x: -25 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.15 }}
+                >
+                  <h2 className={styles.sectionTitle}>
+                    <FaChartLine /> {t('analytics.activityWeek')}
+                  </h2>
+                  {myStats.readsByDay?.length ? (
+                    <BarChart data={myStats.readsByDay} maxValue={myStats.maxReads} />
+                  ) : (
+                    <p className={styles.emptyHint}>{t('analytics.noActivity')}</p>
                   )}
-                </>
-              ) : (
-                <p className={styles.emptyHint}>{t('analytics.startReading')}</p>
-              )}
-            </section>
-          </>
-        )}
+                </motion.section>
 
-        {activeView === 'site' && user?.isAdmin && siteStats && (
-          <>
-            <div className={styles.statsGrid}>
-              <div className={`${styles.statCard} anim-fade-up delay-1`}>
-                <p className={styles.statLabel}>{t('analytics.site.totalReads')}</p>
-                <p className={styles.statValue}>{siteStats.totalReads}</p>
-                <p className={styles.statSub}>
-                  {siteStats.readsThisMonth} {t('analytics.thisMonth')}
-                </p>
+                <motion.section
+                  className={styles.section}
+                  initial={{ opacity: 0, x: 25 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  <h2 className={styles.sectionTitle}>
+                    <FaTags /> {t('analytics.topTopics')}
+                  </h2>
+                  <TopicBars topics={myStats.mostReadTopics} t={t} />
+                </motion.section>
               </div>
-              <div className={`${styles.statCard} anim-fade-up delay-2`}>
-                <p className={styles.statLabel}>{t('analytics.site.readers')}</p>
-                <p className={styles.statValue}>
-                  <FaUsers style={{ marginRight: 8, color: '#1BA098' }} />
-                  {siteStats.uniqueReaders}
-                </p>
-                <p className={styles.statSub}>
-                  {siteStats.activeReaders} {t('analytics.site.activeWeek')}
-                </p>
-              </div>
-              <div className={`${styles.statCard} anim-fade-up delay-3`}>
-                <p className={styles.statLabel}>{t('analytics.site.totalTime')}</p>
-                <p className={styles.statValue}>{siteStats.totalTime?.label}</p>
-              </div>
-              <div className={`${styles.statCard} anim-fade-up delay-4`}>
-                <p className={styles.statLabel}>{t('analytics.site.users')}</p>
-                <p className={styles.statValue}>{siteStats.totalUsers}</p>
-                <p className={styles.statSub}>
-                  <FaComment style={{ marginRight: 6 }} />
-                  {siteStats.totalComments} {t('analytics.site.comments')}
-                </p>
-              </div>
-            </div>
 
-            <div className={styles.twoCol}>
-              <section className={`${styles.section} anim-fade-left delay-1`}>
-                <h2 className={styles.sectionTitle}>{t('analytics.site.readsWeek')}</h2>
-                <BarChart data={siteStats.readsByDay} maxValue={siteStats.maxReads} />
-              </section>
-              <section className={`${styles.section} anim-fade-right delay-2`}>
-                <h2 className={styles.sectionTitle}>{t('analytics.site.topTopics')}</h2>
-                <TopicBars topics={siteStats.topTopics} t={t} />
-              </section>
-            </div>
-          </>
-        )}
+              <motion.section
+                className={styles.section}
+                initial={{ opacity: 0, y: 25 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                <h2 className={styles.sectionTitle}>{t('analytics.recentReads')}</h2>
+                {myStats.recentActivity?.length ? (
+                  <>
+                    <motion.div
+                      className={styles.recentList}
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="visible"
+                    >
+                      <AnimatePresence>
+                        {(showAllRecent
+                          ? myStats.recentActivity
+                          : myStats.recentActivity.slice(0, 4)
+                        ).map((item, i) => {
+                          const badgeClass = styles[`badge_${item.topic}`] || styles.badge_default;
+                          return (
+                            <motion.div
+                              key={i}
+                              variants={cardVariants}
+                              className={styles.recentItem}
+                              whileHover={{ scale: 1.01 }}
+                            >
+                              <div className={styles.recentContent}>
+                                <p className={styles.recentTitle}>
+                                  {item.articleTitle?.length > 70
+                                    ? item.articleTitle.slice(0, 70) + '…'
+                                    : item.articleTitle}
+                                </p>
+                                <div className={styles.recentMeta}>
+                                  <span className={`${styles.recentCategoryBadge} ${badgeClass}`}>
+                                    {topicLabel(t, item.topic)}
+                                  </span>
+                                  <span>·</span>
+                                  <span>{new Date(item.readAt).toLocaleDateString()}</span>
+                                </div>
+                              </div>
+                              <span className={styles.recentTime}>{item.timeLabel}</span>
+                            </motion.div>
+                          );
+                        })}
+                      </AnimatePresence>
+                    </motion.div>
+                    {myStats.recentActivity.length > 4 && (
+                      <button
+                        type="button"
+                        className={styles.moreBtn}
+                        onClick={() => setShowAllRecent(!showAllRecent)}
+                      >
+                        {showAllRecent ? t('analytics.showLess') : t('analytics.showMore')}
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <p className={styles.emptyHint}>{t('analytics.startReading')}</p>
+                )}
+              </motion.section>
+            </motion.div>
+          )}
+
+          {activeView === 'site' && user?.isAdmin && siteStats && (
+            <motion.div
+              key="site"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.4 }}
+            >
+              <motion.div
+                className={styles.statsGrid}
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <motion.div
+                  variants={cardVariants}
+                  className={styles.statCard}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <p className={styles.statLabel}>{t('analytics.site.totalReads')}</p>
+                  <p className={styles.statValue}>{siteStats.totalReads}</p>
+                  <p className={styles.statSub}>
+                    {siteStats.readsThisMonth} {t('analytics.thisMonth')}
+                  </p>
+                </motion.div>
+
+                <motion.div
+                  variants={cardVariants}
+                  className={styles.statCard}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <p className={styles.statLabel}>{t('analytics.site.readers')}</p>
+                  <p className={styles.statValue}>
+                    <FaUsers style={{ marginRight: 8, color: '#24c9b8', filter: 'drop-shadow(0 0 6px rgba(36, 201, 184, 0.4))' }} />
+                    {siteStats.uniqueReaders}
+                  </p>
+                  <p className={styles.statSub}>
+                    {siteStats.activeReaders} {t('analytics.site.activeWeek')}
+                  </p>
+                </motion.div>
+
+                <motion.div
+                  variants={cardVariants}
+                  className={styles.statCard}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <p className={styles.statLabel}>{t('analytics.site.totalTime')}</p>
+                  <p className={styles.statValue}>
+                    <FaClock style={{ color: '#24c9b8', marginRight: 8, filter: 'drop-shadow(0 0 6px rgba(36, 201, 184, 0.4))' }} />
+                    {siteStats.totalTime?.label || '0m'}
+                  </p>
+                  <p className={styles.statSub}>Accumulated total</p>
+                </motion.div>
+
+                <motion.div
+                  variants={cardVariants}
+                  className={styles.statCard}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <p className={styles.statLabel}>{t('analytics.site.users')}</p>
+                  <p className={styles.statValue}>{siteStats.totalUsers}</p>
+                  <p className={styles.statSub}>
+                    <FaComment style={{ marginRight: 6, color: '#24c9b8' }} />
+                    {siteStats.totalComments} {t('analytics.site.comments')}
+                  </p>
+                </motion.div>
+              </motion.div>
+
+              <div className={styles.twoCol}>
+                <motion.section
+                  className={styles.section}
+                  initial={{ opacity: 0, x: -25 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.15 }}
+                >
+                  <h2 className={styles.sectionTitle}>{t('analytics.site.readsWeek')}</h2>
+                  <BarChart data={siteStats.readsByDay} maxValue={siteStats.maxReads} />
+                </motion.section>
+
+                <motion.section
+                  className={styles.section}
+                  initial={{ opacity: 0, x: 25 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  <h2 className={styles.sectionTitle}>{t('analytics.site.topTopics')}</h2>
+                  <TopicBars topics={siteStats.topTopics} t={t} />
+                </motion.section>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </Layout>
   );
