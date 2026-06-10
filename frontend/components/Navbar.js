@@ -10,7 +10,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 import AdvancedSearchModal from './AdvancedSearchModal';
 import styles from '../styles/Navbar.module.css';
 
-const Navbar = () => {
+const Navbar = ({ className = '' }) => {
   const router = useRouter();
   const { user, logout, isAuthenticated, openAuthModal } = useAuth();
   const { t } = useLanguage();
@@ -217,7 +217,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}>
+    <nav className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''} ${className}`}>
       <div className={styles.container}>
         {/* Menu Button — hidden on landing page */}
         {router.pathname !== '/' && (

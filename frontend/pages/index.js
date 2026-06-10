@@ -11,6 +11,7 @@ import { newsAPI } from '../utils/api';
 import { useLanguage } from '../context/LanguageContext';
 import { formatTimeAgo } from '../utils/timeAgo';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { NewsCardSkeleton } from '../components/Skeleton';
 import styles from '../styles/Landing.module.css';
 
@@ -59,14 +60,8 @@ function HeroScene() {
   const ACCENT_FROM = Math.min(2, heroWords.length);
 
   return (
-    <div ref={containerRef} style={{ height: '100vh', position: 'relative' }}>
+    <div ref={containerRef} style={{ height: '140vh', position: 'relative' }}>
       <div className={styles.heroSticky}>
-
-        {/* ── Navbar floating over aurora ───────────────────── */}
-        <div className={styles.heroNavbar}>
-          <Navbar />
-          <div className={styles.heroNavbarGlow} />
-        </div>
 
         {/* ── Aurora background ─────────────────────────────── */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 0, opacity: 0.72 }}>
@@ -137,6 +132,67 @@ function HeroScene() {
               <Link href="/trending" className={styles.btnSecondary}>{t('landing.hero.viewTrending')}</Link>
             </motion.div>
 
+          </motion.div>
+
+          {/* RIGHT: Glass UI Card */}
+          <motion.div
+            className={styles.heroCardWrapper}
+            style={{ y: copyY, opacity: copyOpacity }}
+            initial={{ opacity: 0, scale: 0.95, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className={styles.cardBorderWrap}>
+              <div className={styles.cardInner}>
+                <div className={styles.cardHeader}>
+                  <div className={styles.liveChip}>
+                    <span className={styles.cardLiveDot} />
+                    <span>Live Intelligence</span>
+                  </div>
+                  <span className={styles.cardLogo}>Newsy Labs</span>
+                </div>
+                <div className={styles.cardPills}>
+                  <span className={styles.pillActive}>ALL</span>
+                  <span className={styles.pill}>AI</span>
+                  <span className={styles.pill}>STARTUPS</span>
+                  <span className={styles.pill}>SECURITY</span>
+                </div>
+                <div className={styles.cardFeatured}>
+                  <div className={styles.cardImgPlaceholder}>
+                    <span className={styles.cardBadge} style={{ background: 'rgba(167, 139, 250, 0.2)', color: '#a78bfa', border: '1px solid rgba(167, 139, 250, 0.3)', top: '8px', left: '8px', position: 'absolute' }}>AI FOCUS</span>
+                    <span className={styles.cardTime} style={{ position: 'absolute', bottom: '8px', right: '8px' }}>JUST NOW</span>
+                  </div>
+                  <p className={styles.cardFeaturedTitle}>GPT-5 Architecture Leaks: Inside OpenAI's Next-Gen Multi-Agent Engine</p>
+                </div>
+                <div className={styles.cardList}>
+                  <div className={styles.cardListItem}>
+                    <div className={styles.cardColorBar} style={{ background: '#f87171' }} />
+                    <div style={{ flex: 1 }}>
+                      <span className={styles.cardListCat} style={{ color: '#f87171' }}>SECURITY</span>
+                      <p className={styles.cardListTitle}>Cyber Syndicate exploits zero-day vulnerability in VPN protocols</p>
+                    </div>
+                  </div>
+                  <div className={styles.cardListItem}>
+                    <div className={styles.cardColorBar} style={{ background: '#DEB992' }} />
+                    <div style={{ flex: 1 }}>
+                      <span className={styles.cardListCat} style={{ color: '#DEB992' }}>STARTUPS</span>
+                      <p className={styles.cardListTitle}>Y-Combinator launches new $500M AI-focused incubator fund</p>
+                    </div>
+                  </div>
+                  <div className={styles.cardListItem}>
+                    <div className={styles.cardColorBar} style={{ background: '#60a5fa' }} />
+                    <div style={{ flex: 1 }}>
+                      <span className={styles.cardListCat} style={{ color: '#60a5fa' }}>SOFTWARE</span>
+                      <p className={styles.cardListTitle}>Rust 2.0 draft released with compile-time safety paradigms</p>
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.cardFooterBar}>
+                  <span className={styles.cardStat}>1.2K READS</span>
+                  <span className={styles.cardStat}>84 SECONDS AGO</span>
+                </div>
+              </div>
+            </div>
           </motion.div>
 
         </div>
@@ -333,16 +389,6 @@ function TrendingScene({ articles }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false, margin: '-30px' }}
                 transition={{ duration: 0.62, delay: Math.min(i, 4) * 0.07 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform    = 'translateY(-9px)';
-                  e.currentTarget.style.borderColor  = 'rgba(27,160,152,0.35)';
-                  e.currentTarget.style.boxShadow    = '0 18px 52px rgba(0,0,0,0.55), 0 0 28px rgba(27,160,152,0.10)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform    = 'translateY(0)';
-                  e.currentTarget.style.borderColor  = 'rgba(255,255,255,0.06)';
-                  e.currentTarget.style.boxShadow    = 'none';
-                }}
               >
                 {/* Image */}
                 <div className={styles.tCardImg}>
@@ -351,9 +397,7 @@ function TrendingScene({ articles }) {
                       src={a.urlToImage}
                       alt={a.title}
                       onError={(e) => { e.target.style.display = 'none'; }}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
-                      onMouseEnter={(e) => { e.target.style.transform = 'scale(1.07)'; }}
-                      onMouseLeave={(e) => { e.target.style.transform = 'scale(1)'; }}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   ) : (
                     <div className={`${styles.tCardImgSkeleton}`}>
@@ -508,12 +552,14 @@ export default function Landing() {
       <div id="read-progress" />
 
       <div className={styles.page}>
+        <Navbar className={styles.landingNavbar} />
         <HeroScene />
         <PlatformScene />
 
         <TrendingScene articles={articles} />
         <VisionScene />
         <CTAScene />
+        <Footer />
       </div>
     </>
   );

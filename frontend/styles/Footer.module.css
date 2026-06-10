@@ -162,3 +162,84 @@
     padding: 0 15px;
   }
 }
+
+.newsletterDescription {
+  color: #8b9ba8;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.newsletterForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputGroup {
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+  padding: 4px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.inputGroup:focus-within {
+  border-color: #1BA098;
+  box-shadow: 0 0 12px rgba(27, 160, 152, 0.15);
+}
+
+.newsletterInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+
+.newsletterInput::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.newsletterButton {
+  background: #1BA098;
+  color: #051622;
+  border: none;
+  border-radius: 4px;
+  padding: 0 16px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+
+.newsletterButton:hover {
+  background: #24c9b8;
+  color: #ffffff;
+}
+
+.newsletterButton:active {
+  transform: scale(0.96);
+}
+
+.successMessage {
+  color: #24c9b8;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.errorMessage {
+  color: #f87171;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  font-weight: 600;
+}
+

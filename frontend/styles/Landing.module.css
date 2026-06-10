@@ -9,6 +9,15 @@
   overflow-x: hidden;
 }
 
+/* Float navbar on landing page */
+.landingNavbar {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 997;
+}
+
 /* ── Gradient text utility ─────────────────────────────────── */
 .gradientText {
   background: linear-gradient(105deg, #1BA098, #24c9b8 45%, #DEB992);
@@ -78,26 +87,28 @@
 /* Hero 2-col layout — padded so content clears the floating navbar */
 .heroGrid {
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
   align-items: center;
   justify-content: center;
-  padding: 76px clamp(16px, 4vw, 60px) 0;
-  gap: 0;
+  padding: 110px clamp(16px, 4vw, 60px) 0;
+  gap: 48px;
   position: relative;
   z-index: 2;
-  text-align: center;
+  text-align: left;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
 }
 
-/* Center copy column — full width so headline can breathe */
+/* Left copy column — full width so headline can breathe */
 .heroCopy {
-  flex: 0 0 auto;
-  max-width: 1100px;
-  width: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
+
 
 /* Eyebrow pill */
 .eyebrow {
@@ -152,10 +163,10 @@
   font-size: clamp(0.9rem, 1.4vw, 1.08rem);
   color: #5a7a8a;
   line-height: 1.72;
-  max-width: 520px;
+  max-width: 580px;
   margin: 0 0 36px;
   font-family: 'Courier New', monospace;
-  text-align: center;
+  text-align: left;
 }
 
 /* CTA buttons row */
@@ -163,7 +174,7 @@
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   margin-bottom: 28px;
 }
 
@@ -746,8 +757,25 @@
   text-decoration: none;
   display: flex;
   flex-direction: column;
-  transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
+
+.trendingCard:hover {
+  transform: translateY(-8px);
+  border-color: rgba(27,160,152,0.35);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(27, 160, 152, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.trendingCard img {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.trendingCard:hover img {
+  transform: scale(1.06);
+}
+
 
 .tCardImg {
   height: 152px;
@@ -983,9 +1011,13 @@
 ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 900px) {
   .heroGrid {
+    display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-top: 20px;
+    align-items: center;
+    padding-top: 40px;
+    text-align: center;
+    gap: 24px;
   }
 
   .heroCardWrapper {
@@ -995,6 +1027,7 @@
   .heroCopy {
     max-width: 100%;
     text-align: center;
+    align-items: center;
   }
 
   .heroH1 {
@@ -1009,6 +1042,7 @@
   }
 
   .heroSub {
+    text-align: center;
     margin-left: auto;
     margin-right: auto;
   }
