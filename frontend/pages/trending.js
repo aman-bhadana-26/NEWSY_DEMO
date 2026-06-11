@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 import Layout from '../components/Layout';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { newsAPI } from '../utils/api';
@@ -62,6 +63,25 @@ const getTodayDate = (lang) => {
   return d.toLocaleDateString(LOCALE_MAP[lang] || 'en-US', { month: 'long', day: '2-digit', year: 'numeric' });
 };
 
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.06 }
+  }
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 24, scale: 0.97 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 100, damping: 16 }
+  }
+};
+
 const TickerItem = ({ article, rank }) => (
   <Link href={buildArticleUrl(article)} className={styles.tickerItem}>
     <span className={styles.tickerRank}>#{rank}</span>
@@ -78,7 +98,10 @@ const HeroCard = ({ article, rank, t }) => {
   const isUp = score >= 0;
 
   return (
-    <div className={styles.heroCard}>
+    <motion.div variants={cardVariants} className={styles.heroCard}>
+      {/* Giant outlined rank background */}
+      <span className={styles.bgRank}>#{rank}</span>
+
       <div className={styles.heroCardHeader}>
         <div className={styles.rankBadge}>
           <span className={styles.rankNum}>{rank}</span>
@@ -129,11 +152,10 @@ const HeroCard = ({ article, rank, t }) => {
           </span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
-/* ─── side list card (ranks #2–5) ─────────────────────────── */
 const SideCard = ({ article, rank, t }) => {
   const score = getScore(rank - 1);
   const category = detectCategory(article);
@@ -141,7 +163,10 @@ const SideCard = ({ article, rank, t }) => {
   const isUp = score >= 0;
 
   return (
-    <div className={styles.sideCard}>
+    <motion.div variants={cardVariants} className={styles.sideCard}>
+      {/* Giant background rank */}
+      <span className={styles.bgRank} style={{ fontSize: '6rem', bottom: '-15px' }}>#{rank}</span>
+
       <div className={styles.sideRank}>{rank}</div>
       <div className={styles.sideCardBody}>
         <div className={styles.sideCardTop}>
@@ -160,11 +185,10 @@ const SideCard = ({ article, rank, t }) => {
           <span className={styles.sideTime}>{formatDate(article.publishedAt)}</span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
-/* ─── full list row (ranks #6+) ───────────────────────────── */
 const FullListRow = ({ article, rank }) => {
   const score = getScore(rank - 1);
   const category = detectCategory(article);
@@ -172,39 +196,46 @@ const FullListRow = ({ article, rank }) => {
   const isUp = score >= 0;
 
   return (
-    <Link href={url} className={styles.fullRow}>
-      <span className={styles.fullRowRank}>#{rank}</span>
-      <div className={styles.fullRowBody}>
-        <span className={styles.fullRowCategory}>{category}</span>
-        <span className={styles.fullRowTitle}>{article.title}</span>
-        <span className={styles.fullRowMeta}>
-          {article.source?.name} • {formatDate(article.publishedAt)}
-        </span>
-      </div>
-      <div className={`${styles.scoreBadge} ${styles.scoreBadgeSm} ${isUp ? styles.scoreUp : styles.scoreDown}`}>
-        {isUp ? <FaArrowUp /> : <FaArrowDown />}
-        {isUp ? ` +${score}` : ` ${score}`}
-      </div>
-    </Link>
+    <motion.div variants={cardVariants}>
+      <Link href={url} className={styles.fullRow}>
+        <span className={styles.fullRowRank}>#{rank}</span>
+        <div className={styles.fullRowBody}>
+          <span className={styles.fullRowCategory}>{category}</span>
+          <span className={styles.fullRowTitle}>{article.title}</span>
+          <span className={styles.fullRowMeta}>
+            {article.source?.name} • {formatDate(article.publishedAt)}
+          </span>
+        </div>
+        <div className={`${styles.scoreBadge} ${styles.scoreBadgeSm} ${isUp ? styles.scoreUp : styles.scoreDown}`}>
+          {isUp ? <FaArrowUp /> : <FaArrowDown />}
+          {isUp ? ` +${score}` : ` ${score}`}
+        </div>
+      </Link>
+    </motion.div>
   );
 };
 
-/* ─── page ─────────────────────────────────────────────────── */
+const CATEGORIES_LIST = ['ALL', 'AI', 'SECURITY', 'STARTUPS', 'WEB3', 'SPACE', 'HARDWARE', 'BIG TECH'];
+
 export default function Trending() {
   const { t, language } = useLanguage();
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('ALL');
+  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => { fetchTrending(); }, []);
+  useEffect(() => {
+    setMounted(true);
+    fetchTrending();
+  }, []);
 
   const fetchTrending = async () => {
     try {
       setLoading(true);
       setError(null);
       const data = await newsAPI.getTrendingNews(1, 30);
-      // NewsAPI free plan often returns <5 articles for sortBy=popularity —
-      // fall back to the general feed whenever we don't have enough to fill the layout
+      
       if (data?.articles?.length >= 5) {
         setNews(data.articles);
       } else {
@@ -213,7 +244,7 @@ export default function Trending() {
           ...(data?.articles || []),
           ...(fallback.articles || []),
         ];
-        // deduplicate by url
+        // Deduplicate
         const seen = new Set();
         setNews(combined.filter(a => {
           if (seen.has(a.url)) return false;
@@ -228,9 +259,14 @@ export default function Trending() {
     }
   };
 
-  const topFive = news.slice(0, 5);
-  const bottomFive = news.slice(5, 10);
-  const restArticles = news.slice(10);
+  // Dynamic filter logic
+  const filteredArticles = activeTab === 'ALL'
+    ? news
+    : news.filter(a => detectCategory(a) === activeTab);
+
+  // Layout calculations
+  const topFive = filteredArticles.slice(0, 5);
+  const bottomFive = news.slice(5, 10); // keep tickers global for rich scroll volume
 
   return (
     <Layout title="Trending Now — NEWSY TECH" show3DBackground={true}>
@@ -240,31 +276,90 @@ export default function Trending() {
         <div className={styles.pageHeader}>
           <div className={styles.titleRow}>
             <h1 className={styles.mainTitle}>
-              {t('trending.title.line1')} <span className={styles.nowText}>{t('trending.title.line2')}</span>
-              <FaFire className={styles.fireIcon} />
+              {mounted ? (
+                <>
+                  <motion.span
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    style={{ display: 'inline-block' }}
+                  >
+                    {t('trending.title.line1')}
+                  </motion.span>{' '}
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.82 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.22, duration: 0.6 }}
+                    className={styles.nowText}
+                    style={{ display: 'inline-block' }}
+                  >
+                    {t('trending.title.line2')}
+                  </motion.span>{' '}
+                  <motion.span
+                    initial={{ opacity: 0, rotate: -25 }}
+                    animate={{ opacity: 1, rotate: 0 }}
+                    transition={{ delay: 0.42, type: 'spring', stiffness: 120 }}
+                    style={{ display: 'inline-flex', alignItems: 'center' }}
+                  >
+                    <FaFire className={styles.fireIcon} />
+                  </motion.span>
+                </>
+              ) : (
+                <>
+                  <span style={{ display: 'inline-block' }}>{t('trending.title.line1')}</span>{' '}
+                  <span className={styles.nowText} style={{ display: 'inline-block' }}>{t('trending.title.line2')}</span>{' '}
+                  <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+                    <FaFire className={styles.fireIcon} />
+                  </span>
+                </>
+              )}
             </h1>
             <a href="#allTrending" className={styles.viewAll}>{t('trending.viewAll')}</a>
           </div>
           <div className={styles.subtitleRow}>
             <span>{t('trending.subtitleStories')}</span>
-            <span className={styles.liveBadge}><FaCircle className={styles.liveDot} /> {t('time.live')}</span>
+            <span className={styles.liveBadge}>
+              <span className={styles.liveDot} /> {t('time.live')}
+            </span>
             <span>{getTodayDate(language)}</span>
           </div>
         </div>
 
-        {/* ── TOP TICKER ── */}
-        {topFive.length > 0 && (
+        {/* ── TOP TICKER (Ranks #1–5 global) ── */}
+        {!loading && news.length > 0 && (
           <div className={styles.tickerBar}>
             <div className={styles.tickerLabel}>
               <FaFire /> {t('trending.tickerLabel')}
             </div>
             <div className={styles.tickerTrack}>
               <div className={styles.tickerScroll}>
-                {[...topFive, ...topFive].map((a, i) => (
-                  <TickerItem key={`top-${i}`} article={a} rank={(i % topFive.length) + 1} />
+                {[...news.slice(0, 5), ...news.slice(0, 5)].map((a, i) => (
+                  <TickerItem key={`top-${i}`} article={a} rank={(i % 5) + 1} />
                 ))}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ── INTERACTIVE CATEGORY TABS ── */}
+        {!loading && (
+          <div className={styles.filtersRow}>
+            {CATEGORIES_LIST.map((cat, idx) => (
+              <button
+                key={cat}
+                onClick={() => setActiveTab(cat)}
+                className={`${styles.filterPill} ${activeTab === cat ? styles.filterPillActive : ''}`}
+              >
+                {activeTab === cat && (
+                  <motion.div
+                    layoutId="activeTrendingTabBg"
+                    className={styles.filterPillActiveBg}
+                    transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+                  />
+                )}
+                <span className={styles.filterPillText}>{cat}</span>
+              </button>
+            ))}
           </div>
         )}
 
@@ -278,22 +373,54 @@ export default function Trending() {
         ) : (
           <>
             {/* ── MAIN GRID ── */}
-            {news.length > 0 && (
-              <div className={styles.mainGrid}>
-                {/* Hero */}
-                {news[0] && <HeroCard article={news[0]} rank={1} t={t} />}
+            <AnimatePresence mode="wait">
+              {filteredArticles.length > 0 ? (
+                <motion.div
+                  key={activeTab} // Re-animate whole grid when category switches
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="show"
+                  exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                  className={styles.mainGrid}
+                >
+                  {/* Hero Card (#1 in category) */}
+                  {topFive[0] && (
+                    <HeroCard
+                      article={topFive[0]}
+                      rank={news.indexOf(topFive[0]) + 1}
+                      t={t}
+                    />
+                  )}
 
-                {/* Side list #2–5 */}
-                <div className={styles.sideList}>
-                  {topFive.slice(1).map((a, i) => (
-                    <SideCard key={a.url + i} article={a} rank={i + 2} t={t} />
-                  ))}
-                </div>
-              </div>
-            )}
+                  {/* Side List Cards (#2–5 in category) */}
+                  <div className={styles.sideList}>
+                    {topFive.slice(1).map((a) => (
+                      <SideCard
+                        key={a.url}
+                        article={a}
+                        rank={news.indexOf(a) + 1}
+                        t={t}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={styles.error}
+                  style={{ color: '#8b9ba8', padding: '60px 20px' }}
+                >
+                  <p>No trending articles in "{activeTab}" category right now. Check back shortly!</p>
+                  <button onClick={() => setActiveTab('ALL')} className={styles.retryBtn}>
+                    View All Categories
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-            {/* ── BOTTOM TICKER (#6–10) ── */}
-            {bottomFive.length > 0 && (
+            {/* ── BOTTOM TICKER (#6–10 global) ── */}
+            {!loading && bottomFive.length > 0 && (
               <div className={`${styles.tickerBar} ${styles.tickerBarBottom}`}>
                 <div className={`${styles.tickerLabel} ${styles.tickerLabelAlt}`}>
                   # 6–10
@@ -308,17 +435,30 @@ export default function Trending() {
               </div>
             )}
 
-            {/* ── FULL LIST ── */}
-            {news.length > 5 && (
+            {/* ── FULL LIST SECTION (Remaining Stories) ── */}
+            {filteredArticles.length > 5 && (
               <div id="allTrending" className={styles.fullListSection}>
                 <h2 className={styles.fullListHeading}>
                   <FaFire className={styles.fullListIcon} /> {t('trending.allStories')}
                 </h2>
-                <div className={styles.fullList}>
-                  {news.slice(5).map((a, i) => (
-                    <FullListRow key={a.url + i} article={a} rank={i + 6} />
-                  ))}
-                </div>
+                
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTab} // Re-animate lists when tab switches
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="show"
+                    className={styles.fullList}
+                  >
+                    {filteredArticles.slice(5).map((a) => (
+                      <FullListRow
+                        key={a.url}
+                        article={a}
+                        rank={news.indexOf(a) + 1}
+                      />
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
               </div>
             )}
           </>

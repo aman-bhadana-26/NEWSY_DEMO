@@ -14,7 +14,7 @@ const Navbar = ({ className = '' }) => {
   const router = useRouter();
   const { user, logout, isAuthenticated, openAuthModal } = useAuth();
   const { t } = useLanguage();
-  
+
   const BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
   const profileImageUrl = user?.profilePicture ? `${BASE_URL}${user.profilePicture}` : null;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -137,10 +137,10 @@ const Navbar = ({ className = '' }) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       // Construct search URL with filter
-      const searchUrl = selectedFilter === 'all' 
+      const searchUrl = selectedFilter === 'all'
         ? `/home?search=${encodeURIComponent(searchQuery.trim())}`
         : `/home?category=${selectedFilter}&search=${encodeURIComponent(searchQuery.trim())}`;
-      
+
       router.push(searchUrl);
       setSearchQuery('');
       setShowFilters(false);
@@ -166,7 +166,7 @@ const Navbar = ({ className = '' }) => {
     // Capture the element reference before the timeout
     const inputElement = e.currentTarget;
     const searchContainer = inputElement.closest(`.${styles.searchInputWrapper}`);
-    
+
     // Small delay to allow clicking on filter button or submit
     setTimeout(() => {
       // Check if focus moved to another element within the search container
@@ -221,8 +221,8 @@ const Navbar = ({ className = '' }) => {
       <div className={styles.container}>
         {/* Menu Button — hidden on landing page */}
         {router.pathname !== '/' && (
-          <button 
-            className={styles.menuButton} 
+          <button
+            className={styles.menuButton}
             onMouseEnter={handleSideMenuMouseEnter}
             onMouseLeave={handleSideMenuMouseLeave}
             title={t('nav.menu')}
@@ -246,9 +246,8 @@ const Navbar = ({ className = '' }) => {
           >
             <Link
               href="/home"
-              className={`${styles.navLink} ${styles.homeNavButton} ${
-                router.pathname === '/home' ? styles.active : ''
-              }`}
+              className={`${styles.navLink} ${styles.homeNavButton} ${router.pathname === '/home' ? styles.active : ''
+                }`}
             >
               {t('nav.home')} <FaChevronDown className={`${styles.dropdownArrow} ${homeDropdownOpen ? styles.dropdownArrowOpen : ''}`} />
             </Link>
@@ -268,7 +267,7 @@ const Navbar = ({ className = '' }) => {
           </div>
 
           {/* Categories Dropdown */}
-          <div 
+          <div
             className={styles.categoriesDropdownContainer}
             onMouseEnter={handleCategoriesMouseEnter}
             onMouseLeave={handleCategoriesMouseLeave}
@@ -276,7 +275,7 @@ const Navbar = ({ className = '' }) => {
             <button className={`${styles.navLink} ${styles.categoriesButton} ${router.query.category ? styles.active : ''}`}>
               {t('nav.categories')} <FaChevronDown className={`${styles.dropdownArrow} ${categoriesDropdownOpen ? styles.dropdownArrowOpen : ''}`} />
             </button>
-            
+
             {categoriesDropdownOpen && (
               <div className={styles.categoriesDropdown}>
                 {categories.map((category) => {
@@ -285,9 +284,8 @@ const Navbar = ({ className = '' }) => {
                     <Link
                       key={category.query}
                       href={`/home?category=${category.query}`}
-                      className={`${styles.categoryDropdownItem} ${
-                        router.query.category === category.query ? styles.categoryDropdownItemActive : ''
-                      }`}
+                      className={`${styles.categoryDropdownItem} ${router.query.category === category.query ? styles.categoryDropdownItemActive : ''
+                        }`}
                     >
                       {Icon && <Icon className={styles.categoryDropdownIcon} />}
                       <span>{t(category.nameKey)}</span>
@@ -300,27 +298,24 @@ const Navbar = ({ className = '' }) => {
 
           <Link
             href="/about"
-            className={`${styles.navLink} ${
-              router.pathname === '/about' ? styles.active : ''
-            }`}
+            className={`${styles.navLink} ${router.pathname === '/about' ? styles.active : ''
+              }`}
           >
             {t('nav.about')}
           </Link>
 
           <Link
             href="/faqs"
-            className={`${styles.navLink} ${
-              router.pathname === '/faqs' ? styles.active : ''
-            }`}
+            className={`${styles.navLink} ${router.pathname === '/faqs' ? styles.active : ''
+              }`}
           >
             {t('nav.faqs')}
           </Link>
 
           <Link
             href="/contact"
-            className={`${styles.navLink} ${
-              router.pathname === '/contact' ? styles.active : ''
-            }`}
+            className={`${styles.navLink} ${router.pathname === '/contact' ? styles.active : ''
+              }`}
           >
             {t('nav.contact')}
           </Link>
@@ -330,9 +325,8 @@ const Navbar = ({ className = '' }) => {
         {isAuthenticated && (
           <Link
             href="/my-news"
-            className={`${styles.navLink} ${styles.myNewsLink} ${
-              router.pathname === '/my-news' ? styles.active : ''
-            }`}
+            className={`${styles.navLink} ${styles.myNewsLink} ${router.pathname === '/my-news' ? styles.active : ''
+              }`}
           >
             <FaNewspaper className={styles.myNewsIcon} /> {t('nav.myNews')}
           </Link>
@@ -342,7 +336,7 @@ const Navbar = ({ className = '' }) => {
         <div className={styles.searchContainer} style={router.pathname === '/' ? { display: 'none' } : {}}>
           <form onSubmit={handleSearch} className={styles.searchForm}>
             <div className={`${styles.searchInputWrapper} ${searchExpanded ? styles.expanded : ''}`}>
-              <button 
+              <button
                 type="button"
                 onClick={toggleSearch}
                 className={styles.searchIconButton}
@@ -360,7 +354,7 @@ const Navbar = ({ className = '' }) => {
                     onBlur={handleSearchBlur}
                     className={styles.searchInput}
                   />
-                  <button 
+                  <button
                     type="button"
                     onClick={toggleFilters}
                     className={styles.filterButton}
@@ -372,7 +366,7 @@ const Navbar = ({ className = '' }) => {
                 </>
               )}
             </div>
-            
+
             {showFilters && searchExpanded && (
               <div className={styles.filterDropdown}>
                 <div className={styles.filterHeader}>
@@ -409,7 +403,7 @@ const Navbar = ({ className = '' }) => {
         <div className={styles.authButtons}>
           <LanguageSwitcher />
           {isAuthenticated ? (
-            <div 
+            <div
               className={styles.userMenuContainer}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
@@ -421,7 +415,7 @@ const Navbar = ({ className = '' }) => {
                   <FaUser />
                 )}
               </button>
-              
+
               {userDropdownOpen && (
                 <div className={styles.userDropdown}>
                   <div className={styles.dropdownHeader}>
@@ -440,9 +434,9 @@ const Navbar = ({ className = '' }) => {
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className={styles.dropdownDivider}></div>
-                  
+
                   <button onClick={handleProfileClick} className={styles.dropdownItem}>
                     <FaUserCircle className={styles.dropdownIcon} />
                     {t('nav.myAccount')}
@@ -452,14 +446,14 @@ const Navbar = ({ className = '' }) => {
                     <FaChartLine className={styles.dropdownIcon} />
                     {t('nav.analytics')}
                   </button>
-                  
+
                   {user?.isAdmin && (
                     <button onClick={() => router.push('/admin')} className={styles.dropdownItem}>
                       <FaUserShield className={styles.dropdownIcon} />
                       Admin Dashboard
                     </button>
                   )}
-                  
+
                   <button onClick={handleLogout} className={styles.dropdownItemLogout}>
                     <FaSignOutAlt className={styles.dropdownIcon} />
                     {t('nav.signOut')}
@@ -500,7 +494,7 @@ const Navbar = ({ className = '' }) => {
                 className={styles.mobileSearchInput}
               />
             </div>
-            <button 
+            <button
               type="button"
               onClick={toggleFilters}
               className={styles.mobileFilterButton}
@@ -511,7 +505,7 @@ const Navbar = ({ className = '' }) => {
               <FaSearch />
             </button>
           </form>
-          
+
           {showFilters && (
             <div className={styles.mobileFilterOptions}>
               <p className={styles.mobileFilterLabel}>{t('nav.filterBy')}</p>
@@ -540,9 +534,9 @@ const Navbar = ({ className = '' }) => {
               </button>
             </div>
           )}
-          
+
           <div className={styles.mobileDivider}></div>
-          
+
           <Link
             href="/"
             className={`${styles.mobileNavLink} ${router.pathname === '/' && !router.query.category ? styles.mobileNavLinkActive : ''}`}
@@ -550,7 +544,7 @@ const Navbar = ({ className = '' }) => {
           >
             <FaHome /> {t('nav.home')}
           </Link>
-          
+
           <Link
             href="/trending"
             className={`${styles.mobileNavLink} ${styles.mobileTrendingLink}`}
@@ -567,27 +561,26 @@ const Navbar = ({ className = '' }) => {
               <FaNewspaper /> {t('nav.myNews')}
             </Link>
           )}
-          
+
           <div className={styles.mobileDivider}></div>
-          
+
           <div className={styles.mobileCategoriesSection}>
             <p className={styles.mobileSectionTitle}>{t('nav.categories')}</p>
             {categories.map((category) => (
               <Link
                 key={category.query}
                 href={`/home?category=${category.query}`}
-                className={`${styles.mobileNavLink} ${
-                  router.query.category === category.query ? styles.mobileNavLinkActive : ''
-                }`}
+                className={`${styles.mobileNavLink} ${router.query.category === category.query ? styles.mobileNavLinkActive : ''
+                  }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {t(category.nameKey)}
               </Link>
             ))}
           </div>
-          
+
           <div className={styles.mobileDivider}></div>
-          
+
           <Link
             href="/about"
             className={`${styles.mobileNavLink} ${router.pathname === '/about' ? styles.mobileNavLinkActive : ''}`}
@@ -603,7 +596,7 @@ const Navbar = ({ className = '' }) => {
           >
             <FaQuestionCircle /> {t('nav.faqs')}
           </Link>
-          
+
           <Link
             href="/contact"
             className={`${styles.mobileNavLink} ${router.pathname === '/contact' ? styles.mobileNavLinkActive : ''}`}
@@ -611,7 +604,7 @@ const Navbar = ({ className = '' }) => {
           >
             <FaEnvelopeOpen /> {t('nav.contact')}
           </Link>
-          
+
           <div className={styles.mobileDivider}></div>
           {isAuthenticated ? (
             <>
@@ -665,9 +658,9 @@ const Navbar = ({ className = '' }) => {
         <>
           {/* Overlay */}
           <div className={styles.sideMenuOverlay}></div>
-          
+
           {/* Side Menu Panel */}
-          <div 
+          <div
             className={styles.sideMenu}
             onMouseEnter={handleSideMenuMouseEnter}
             onMouseLeave={handleSideMenuMouseLeave}

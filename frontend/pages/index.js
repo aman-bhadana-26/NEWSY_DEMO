@@ -31,11 +31,11 @@ const AuroraBg = dynamic(() => import('../components/Aurora'), {
 
 /* ── Framer variants ────────────────────────────────────────── */
 const fadeUp = {
-  hidden:  { opacity: 0, y: 44, filter: 'blur(4px)' },
-  visible: { opacity: 1, y: 0,  filter: 'blur(0px)', transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } },
+  hidden: { opacity: 0, y: 44, filter: 'blur(4px)' },
+  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } },
 };
 const stagger = {
-  hidden:  {},
+  hidden: {},
   visible: { transition: { staggerChildren: 0.11 } },
 };
 
@@ -51,8 +51,8 @@ function HeroScene() {
   });
 
   /* Copy: drifts up and fades as user scrolls */
-  const copyY       = useTransform(scrollYProgress, [0, 1],    ['0%', '-24%']);
-  const copyOpacity = useTransform(scrollYProgress, [0, 0.7],  [1, 0]);
+  const copyY = useTransform(scrollYProgress, [0, 1], ['0%', '-24%']);
+  const copyOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   // Split the localized headline into words. Words from index 2 onward
   // get the gradient accent (matches the original "for the Modern World." styling).
@@ -269,8 +269,8 @@ function PlatformScene() {
       {/* Three pillars */}
       <div className={styles.pillarsRow}>
         {[
-          { label: t('landing.pillars.realtime.label'),  desc: t('landing.pillars.realtime.desc'),  color: '#1BA098' },
-          { label: t('landing.pillars.curated.label'),   desc: t('landing.pillars.curated.desc'),   color: '#a78bfa' },
+          { label: t('landing.pillars.realtime.label'), desc: t('landing.pillars.realtime.desc'), color: '#1BA098' },
+          { label: t('landing.pillars.curated.label'), desc: t('landing.pillars.curated.desc'), color: '#a78bfa' },
           { label: t('landing.pillars.editorial.label'), desc: t('landing.pillars.editorial.desc'), color: '#DEB992' },
         ].map((p, i) => (
           <motion.div
@@ -299,17 +299,17 @@ function PlatformScene() {
 ══════════════════════════════════════════════════════════════ */
 function TrendingScene({ articles }) {
   const { t } = useLanguage();
-  const trackRef   = useRef(null);
+  const trackRef = useRef(null);
   const isDragging = useRef(false);
-  const startX     = useRef(0);
+  const startX = useRef(0);
   const scrollLeft = useRef(0);
 
   const detectCat = (a) => {
     const text = `${a.title} ${a.description || ''}`.toLowerCase();
-    if (/\bai\b|gpt|machine learning|openai/.test(text)) return { label: 'AI',       color: '#a78bfa', bg: 'rgba(167,139,250,' };
-    if (/security|hack|breach|cyber/.test(text))          return { label: 'SECURITY', color: '#f87171', bg: 'rgba(248,113,113,' };
-    if (/startup|funding|unicorn/.test(text))              return { label: 'STARTUP',  color: '#DEB992', bg: 'rgba(222,185,146,' };
-    if (/software|code|developer/.test(text))              return { label: 'SOFTWARE', color: '#60a5fa', bg: 'rgba(96,165,250,'  };
+    if (/\bai\b|gpt|machine learning|openai/.test(text)) return { label: 'AI', color: '#a78bfa', bg: 'rgba(167,139,250,' };
+    if (/security|hack|breach|cyber/.test(text)) return { label: 'SECURITY', color: '#f87171', bg: 'rgba(248,113,113,' };
+    if (/startup|funding|unicorn/.test(text)) return { label: 'STARTUP', color: '#DEB992', bg: 'rgba(222,185,146,' };
+    if (/software|code|developer/.test(text)) return { label: 'SOFTWARE', color: '#60a5fa', bg: 'rgba(96,165,250,' };
     return { label: 'TECH', color: '#1BA098', bg: 'rgba(27,160,152,' };
   };
 
@@ -326,7 +326,7 @@ function TrendingScene({ articles }) {
     <section className={styles.trendingSection}>
       <div className={styles.sectionInner}>
         <div style={{ display: 'flex', gap: 20, overflow: 'hidden', padding: '20px 0' }}>
-          {[0,1,2,3].map(i => <div key={i} style={{ minWidth: 280, flex: '0 0 280px' }}><NewsCardSkeleton /></div>)}
+          {[0, 1, 2, 3].map(i => <div key={i} style={{ minWidth: 280, flex: '0 0 280px' }}><NewsCardSkeleton /></div>)}
         </div>
       </div>
     </section>
@@ -362,7 +362,7 @@ function TrendingScene({ articles }) {
           className={styles.trendingTrack}
           onMouseDown={(e) => {
             isDragging.current = true;
-            startX.current     = e.pageX - trackRef.current.offsetLeft;
+            startX.current = e.pageX - trackRef.current.offsetLeft;
             scrollLeft.current = trackRef.current.scrollLeft;
             trackRef.current.style.cursor = 'grabbing';
           }}
@@ -376,9 +376,9 @@ function TrendingScene({ articles }) {
           onMouseLeave={() => { isDragging.current = false; if (trackRef.current) trackRef.current.style.cursor = 'grab'; }}
         >
           {articles.slice(0, 10).map((a, i) => {
-            const cat  = detectCat(a);
-            const url  = buildUrl(a);
-            const ago  = formatTimeAgo(a.publishedAt, t);
+            const cat = detectCat(a);
+            const url = buildUrl(a);
+            const ago = formatTimeAgo(a.publishedAt, t);
 
             return (
               <motion.a
@@ -441,9 +441,9 @@ function VisionScene() {
     target: ref,
     offset: ['start end', 'end start'],
   });
-  const scale         = useTransform(scrollYProgress, [0, 0.28, 0.72, 1], [0.86, 1, 1, 0.92]);
-  const opacity       = useTransform(scrollYProgress, [0, 0.18, 0.82, 1], [0,    1, 1, 0   ]);
-  const letterSpacing = useTransform(scrollYProgress, [0, 0.3],            ['-0.04em', '-0.015em']);
+  const scale = useTransform(scrollYProgress, [0, 0.28, 0.72, 1], [0.86, 1, 1, 0.92]);
+  const opacity = useTransform(scrollYProgress, [0, 0.18, 0.82, 1], [0, 1, 1, 0]);
+  const letterSpacing = useTransform(scrollYProgress, [0, 0.3], ['-0.04em', '-0.015em']);
 
   return (
     <section ref={ref} className={styles.visionSection}>
@@ -538,7 +538,7 @@ export default function Landing() {
   useEffect(() => {
     newsAPI.getNews('all', 1, 10)
       .then(d => setArticles(d?.articles || []))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   return (
