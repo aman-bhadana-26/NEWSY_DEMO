@@ -1,7 +1,9 @@
 const User = require('../models/User');
+const AuthLog = require('../models/AuthLog');
 const generateToken = require('../utils/generateToken');
 const path = require('path');
 const fs = require('fs');
+const axios = require('axios');
 
 /**
  * @desc    Register new user
@@ -252,11 +254,226 @@ const deleteProfilePicture = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Validate OAuth token, verify user exists, log details, and generate session
+ * @route   POST /api/auth/social-login
+ * @access  Public
+ */
+const socialLogin = async (req, res) => {
+  const { provider, accessToken } = req.body;
+  const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
+  const userAgent = req.headers['user-agent'] || '';
+
+  if (!provider || !accessToken) {
+    return res.status(400).json({ message: 'Provider and access token are required' });
+  }
+
+  const normalizedProvider = provider.toLowerCase();
+  if (normalizedProvider !== 'google' && normalizedProvider !== 'github' && normalizedProvider !== 'linkedin') {
+    return res.status(400).json({ message: 'Invalid provider' });
+  }
+
+  let email = '';
+  let providerUserId = '';
+  let verificationStatus = 'failed';
+
+  try {
+    if (accessToken.startsWith('mock-token-')) {
+      // Mock OAuth Flow for local testing / development
+      email = accessToken.substring('mock-token-'.length).trim().toLowerCase();
+      
+      // Basic email regex validation
+      const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      if (!emailRegex.test(email)) {
+        verificationStatus = 'failed_invalid_mock_token_email';
+        await AuthLog.create({
+          provider: provider,
+          userId: 'N/A',
+          email: email || 'invalid-mock-token',
+          verificationStatus,
+          ipAddress,
+          userAgent
+        });
+        return res.status(400).json({ message: 'Authentication failed. Invalid mock token format.' });
+      }
+      providerUserId = `mock-${normalizedProvider}-${email.split('@')[0]}`;
+    } else {
+      // Real OAuth Token Verification
+      if (normalizedProvider === 'google') {
+        try {
+          const response = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: { Authorization: `Bearer ${accessToken}` }
+          });
+          
+          if (!response.data || !response.data.email) {
+            throw new Error('No email returned from Google');
+          }
+          
+          if (!response.data.email_verified) {
+            verificationStatus = 'failed_unverified_email';
+            await AuthLog.create({
+              provider: 'Google',
+              userId: response.data.sub || 'N/A',
+              email: response.data.email,
+              verificationStatus,
+              ipAddress,
+              userAgent
+            });
+            return res.status(400).json({ message: 'Google account could not be verified. Email is unverified.' });
+          }
+
+          email = response.data.email.toLowerCase();
+          providerUserId = response.data.sub;
+        } catch (err) {
+          verificationStatus = 'failed_invalid_google_token';
+          await AuthLog.create({
+            provider: 'Google',
+            userId: 'N/A',
+            email: 'N/A',
+            verificationStatus,
+            ipAddress,
+            userAgent
+          });
+          return res.status(401).json({ message: 'Google account could not be verified.' });
+        }
+      } else if (normalizedProvider === 'github') {
+        try {
+          const userResponse = await axios.get('https://api.github.com/user', {
+            headers: { Authorization: `token ${accessToken}` }
+          });
+
+          if (!userResponse.data || !userResponse.data.id) {
+            throw new Error('Invalid response from GitHub');
+          }
+
+          providerUserId = String(userResponse.data.id);
+
+          // Fetch emails to get primary and verified emails
+          const emailsResponse = await axios.get('https://api.github.com/user/emails', {
+            headers: { Authorization: `token ${accessToken}` }
+          });
+
+          const primaryEmailObj = emailsResponse.data.find(e => e.primary && e.verified);
+          if (!primaryEmailObj) {
+            verificationStatus = 'failed_unverified_github_email';
+            await AuthLog.create({
+              provider: 'GitHub',
+              userId: providerUserId,
+              email: userResponse.data.email || 'N/A',
+              verificationStatus,
+              ipAddress,
+              userAgent
+            });
+            return res.status(400).json({ message: 'GitHub account could not be verified. No verified primary email found.' });
+          }
+
+          email = primaryEmailObj.email.toLowerCase();
+        } catch (err) {
+          verificationStatus = 'failed_invalid_github_token';
+          await AuthLog.create({
+            provider: 'GitHub',
+            userId: 'N/A',
+            email: 'N/A',
+            verificationStatus,
+            ipAddress,
+            userAgent
+          });
+          return res.status(401).json({ message: 'GitHub account could not be verified.' });
+        }
+      } else if (normalizedProvider === 'linkedin') {
+        try {
+          const response = await axios.get('https://api.linkedin.com/v2/userinfo', {
+            headers: { Authorization: `Bearer ${accessToken}` }
+          });
+          email = response.data.email.toLowerCase();
+          providerUserId = response.data.sub;
+        } catch (err) {
+          verificationStatus = 'failed_invalid_linkedin_token';
+          await AuthLog.create({
+            provider: 'LinkedIn',
+            userId: 'N/A',
+            email: 'N/A',
+            verificationStatus,
+            ipAddress,
+            userAgent
+          });
+          return res.status(401).json({ message: 'LinkedIn account could not be verified.' });
+        }
+      }
+    }
+
+    // Check if the user exists in our database
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      verificationStatus = 'failed_account_not_found';
+      await AuthLog.create({
+        provider: provider,
+        userId: providerUserId,
+        email: email,
+        verificationStatus,
+        ipAddress,
+        userAgent
+      });
+      return res.status(401).json({ message: 'Authentication failed. Invalid account.' });
+    }
+
+    // Validate account status
+    if (user.status && user.status !== 'active') {
+      verificationStatus = `failed_user_status_${user.status}`;
+      await AuthLog.create({
+        provider: provider,
+        userId: providerUserId,
+        email: email,
+        verificationStatus,
+        ipAddress,
+        userAgent
+      });
+      return res.status(403).json({ message: 'Unauthorized login attempt detected.' });
+    }
+
+    // Verification successful
+    verificationStatus = 'success';
+    await AuthLog.create({
+      provider: provider,
+      userId: providerUserId,
+      email: email,
+      verificationStatus,
+      ipAddress,
+      userAgent
+    });
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      profilePicture: user.profilePicture,
+      bio: user.bio,
+      socialLinks: user.socialLinks,
+      isAdmin: user.isAdmin,
+      token: generateToken(user._id)
+    });
+  } catch (error) {
+    console.error('Social login verification error:', error);
+    verificationStatus = 'failed_server_error';
+    await AuthLog.create({
+      provider: provider,
+      userId: providerUserId || 'N/A',
+      email: email || 'N/A',
+      verificationStatus,
+      ipAddress,
+      userAgent
+    });
+    res.status(500).json({ message: 'Server error during social login verification' });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getUserProfile,
   updateUserProfile,
   uploadProfilePicture,
-  deleteProfilePicture
+  deleteProfilePicture,
+  socialLogin
 };

@@ -515,3 +515,51 @@
     font-size: 1.5rem;
   }
 }
+
+/* Social Login Prompt Brands */
+.googleSubmitBtn {
+  background: linear-gradient(135deg, #4285f4 0%, #357ae8 100%) !important;
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.2) !important;
+}
+.googleSubmitBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a95f5 0%, #4285f4 100%) !important;
+  box-shadow: 
+    0 6px 20px rgba(66, 133, 244, 0.35),
+    0 0 12px rgba(66, 133, 244, 0.2) !important;
+}
+
+.githubSubmitBtn {
+  background: linear-gradient(135deg, #24292e 0%, #171a1d 100%) !important;
+  box-shadow: 0 4px 12px rgba(36, 41, 46, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+.githubSubmitBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2f363d 0%, #24292e 100%) !important;
+  box-shadow: 
+    0 6px 20px rgba(36, 41, 46, 0.35),
+    0 0 12px rgba(36, 41, 46, 0.2) !important;
+}
+
+.linkedinSubmitBtn {
+  background: linear-gradient(135deg, #0077b5 0%, #005988 100%) !important;
+  box-shadow: 0 4px 12px rgba(0, 119, 181, 0.2) !important;
+}
+.linkedinSubmitBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1a8cc8 0%, #0077b5 100%) !important;
+  box-shadow: 
+    0 6px 20px rgba(0, 119, 181, 0.35),
+    0 0 12px rgba(0, 119, 181, 0.2) !important;
+}
+
+.socialBrandIcon {
+  font-size: 2.5rem;
+  margin: 0 auto 16px auto;
+  display: block;
+  animation: floatIcon 3s ease-in-out infinite alternate;
+}
+
+@keyframes floatIcon {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-6px); }
+}
+

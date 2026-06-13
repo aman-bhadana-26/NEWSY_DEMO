@@ -104,6 +104,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const socialLogin = async (provider, accessToken) => {
+    try {
+      const userData = await authAPI.socialLogin(provider, accessToken);
+      setUser(userData);
+      if (authModalCallback) {
+        authModalCallback(userData);
+      }
+      return { success: true, user: userData };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Social login failed',
+      };
+    }
+  };
+
   const logout = () => {
     authAPI.logout();
     setUser(null);
@@ -144,6 +160,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateUser,
     refreshUser,
+    socialLogin,
     isAuthenticated: !!user,
     isAuthModalOpen,
     authModalTab,

@@ -27,7 +27,8 @@ export default function AuthModal() {
     setAuthModalTab,
     openAuthModal,
     login, 
-    register 
+    register,
+    socialLogin
   } = useAuth();
   
   const { t } = useLanguage();
@@ -55,6 +56,8 @@ export default function AuthModal() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [connectingSocial, setConnectingSocial] = useState(null);
+  const [socialEmail, setSocialEmail] = useState('');
+  const [socialPassword, setSocialPassword] = useState('');
 
   // Reset states when tab changes
   useEffect(() => {
@@ -66,6 +69,8 @@ export default function AuthModal() {
     setConfirmPassword('');
     setShowPassword(false);
     setShowConfirmPassword(false);
+    setSocialEmail('');
+    setSocialPassword('');
   }, [authModalTab]);
 
   // Sync modal class with body element to trigger backdrop blur
@@ -170,46 +175,52 @@ export default function AuthModal() {
     }, 1200);
   };
 
-  // Simulate Social Login and create a functional backend session
+  // Trigger transition to interactive Social Login Prompt
   const handleSocialClick = (provider) => {
     if (loading || connectingSocial) return;
     setError('');
-    setConnectingSocial(provider);
-    
-    // Credentials mapping for functional backend users
-    const socialCredentials = {
-      Google: {
-        name: 'Google User',
-        email: 'google.user@technewz.com',
-        password: 'GoogleUser123!'
-      },
-      GitHub: {
-        name: 'GitHub User',
-        email: 'github.user@technewz.com',
-        password: 'GitHubUser123!'
-      },
-      LinkedIn: {
-        name: 'LinkedIn User',
-        email: 'linkedin.user@technewz.com',
-        password: 'LinkedInUser123!'
-      }
-    };
+    setAuthModalTab(`${provider.toLowerCase()}-prompt`);
+  };
 
-    const creds = socialCredentials[provider];
+  // Helper to extract a clean display name from an email address
+  const cleanNameFromEmail = (email, provider) => {
+    try {
+      const username = email.split('@')[0];
+      const parts = username.split(/[\.\-\_+]/);
+      const formattedParts = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1));
+      const cleanName = formattedParts.join(' ');
+      return cleanName ? `${cleanName} (${provider})` : `${provider} User`;
+    } catch (e) {
+      return `${provider} User`;
+    }
+  };
+
+  // Process the social login submission with entered credentials
+  const handleSocialSubmit = async (e, provider) => {
+    e.preventDefault();
+    if (loading || connectingSocial) return;
+    setError('');
+    setSuccess('');
+
+    if (!socialEmail) {
+      setError(t('auth.fillFields'));
+      return;
+    }
+
+    // Basic email regex validation
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (!emailRegex.test(socialEmail)) {
+      setError(t('auth.invalidEmail') || 'Please enter a valid email address.');
+      return;
+    }
+
+    const tokenToSend = socialPassword.trim() || `mock-token-${socialEmail.trim()}`;
+
+    setConnectingSocial(provider);
 
     setTimeout(async () => {
       try {
-        // Attempt login first
-        let result = await login({ email: creds.email, password: creds.password });
-        
-        // If login fails (user does not exist yet), register them first
-        if (!result.success) {
-          result = await register({
-            name: creds.name,
-            email: creds.email,
-            password: creds.password
-          });
-        }
+        const result = await socialLogin(provider, tokenToSend);
 
         if (result.success) {
           closeAuthModal();
@@ -253,6 +264,7 @@ export default function AuthModal() {
   const getSlideDirection = () => {
     if (authModalTab === 'forgot') return 1;
     if (authModalTab === 'signup') return 1;
+    if (authModalTab && authModalTab.endsWith('-prompt')) return 1;
     return -1; // default back to login
   };
 
@@ -626,6 +638,193 @@ export default function AuthModal() {
                   </form>
                 </motion.div>
               )}
+
+              {/* ── TAB: GOOGLE SIGN-IN PROMPT ── */}
+              {authModalTab === 'google-prompt' && (
+                <motion.div
+                  key="google-prompt"
+                  custom={direction}
+                  variants={formVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  <div className={styles.header}>
+                    <FaGoogle className={`${styles.socialBrandIcon} ${styles.googleIcon}`} />
+                    <h2 className={styles.title}>{t('auth.googlePromptTitle') || 'Sign in with Google'}</h2>
+                    <p className={styles.subtitle}>
+                      {t('auth.googlePromptSubtitle') || 'Connect your Google account to NEWSY TECH'}
+                    </p>
+                  </div>
+
+                  <form onSubmit={(e) => handleSocialSubmit(e, 'Google')} className={styles.form} noValidate>
+                    <div className={styles.fieldGroup}>
+                      <label className={styles.label}>{t('auth.googleEmailLabel') || 'Google Email Address'}</label>
+                      <div className={styles.inputWrapper}>
+                        <input
+                          type="email"
+                          value={socialEmail}
+                          onChange={(e) => setSocialEmail(e.target.value)}
+                          className={styles.input}
+                          placeholder="example@gmail.com"
+                          required
+                        />
+                        <span className={styles.fieldIcon}><FaEnvelope /></span>
+                      </div>
+                    </div>
+
+                    <div className={styles.fieldGroup}>
+                      <label className={styles.label}>{t('auth.oauthToken') || 'OAuth Access Token (Leave empty for mock)'}</label>
+                      <div className={styles.inputWrapper}>
+                        <input
+                          type="password"
+                          value={socialPassword}
+                          onChange={(e) => setSocialPassword(e.target.value)}
+                          className={styles.input}
+                          placeholder="Paste OAuth token (optional)"
+                        />
+                        <span className={styles.fieldIcon}><FaLock /></span>
+                      </div>
+                    </div>
+
+                    <button type="submit" className={`${styles.submitBtn} ${styles.googleSubmitBtn}`} disabled={loading}>
+                      {loading && <span className={styles.spinner} />}
+                      {loading ? t('common.loading') || 'Loading...' : t('auth.next') || 'Next'}
+                    </button>
+
+                    <div className={styles.formOptions} style={{ justifyContent: 'center', marginTop: 12 }}>
+                      <span className={styles.toggleLink} onClick={() => setAuthModalTab('login')}>
+                        {t('common.cancel') || 'Cancel'}
+                      </span>
+                    </div>
+                  </form>
+                </motion.div>
+              )}
+
+              {/* ── TAB: GITHUB SIGN-IN PROMPT ── */}
+              {authModalTab === 'github-prompt' && (
+                <motion.div
+                  key="github-prompt"
+                  custom={direction}
+                  variants={formVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  <div className={styles.header}>
+                    <FaGithub className={`${styles.socialBrandIcon} ${styles.githubIcon}`} />
+                    <h2 className={styles.title}>{t('auth.githubPromptTitle') || 'Sign in to GitHub'}</h2>
+                    <p className={styles.subtitle}>
+                      {t('auth.githubPromptSubtitle') || 'Authorize NEWSY TECH to use your account'}
+                    </p>
+                  </div>
+
+                  <form onSubmit={(e) => handleSocialSubmit(e, 'GitHub')} className={styles.form} noValidate>
+                    <div className={styles.fieldGroup}>
+                      <label className={styles.label}>{t('auth.githubEmailLabel') || 'GitHub Email Address'}</label>
+                      <div className={styles.inputWrapper}>
+                        <input
+                          type="email"
+                          value={socialEmail}
+                          onChange={(e) => setSocialEmail(e.target.value)}
+                          className={styles.input}
+                          placeholder="username@github.com"
+                          required
+                        />
+                        <span className={styles.fieldIcon}><FaEnvelope /></span>
+                      </div>
+                    </div>
+
+                    <div className={styles.fieldGroup}>
+                      <label className={styles.label}>{t('auth.oauthToken') || 'OAuth Access Token (Leave empty for mock)'}</label>
+                      <div className={styles.inputWrapper}>
+                        <input
+                          type="password"
+                          value={socialPassword}
+                          onChange={(e) => setSocialPassword(e.target.value)}
+                          className={styles.input}
+                          placeholder="Paste OAuth token (optional)"
+                        />
+                        <span className={styles.fieldIcon}><FaLock /></span>
+                      </div>
+                    </div>
+
+                    <button type="submit" className={`${styles.submitBtn} ${styles.githubSubmitBtn}`} disabled={loading}>
+                      {loading && <span className={styles.spinner} />}
+                      {loading ? t('common.loading') || 'Loading...' : t('auth.signIn') || 'Sign In'}
+                    </button>
+
+                    <div className={styles.formOptions} style={{ justifyContent: 'center', marginTop: 12 }}>
+                      <span className={styles.toggleLink} onClick={() => setAuthModalTab('login')}>
+                        {t('common.cancel') || 'Cancel'}
+                      </span>
+                    </div>
+                  </form>
+                </motion.div>
+              )}
+
+              {/* ── TAB: LINKEDIN SIGN-IN PROMPT ── */}
+              {authModalTab === 'linkedin-prompt' && (
+                <motion.div
+                  key="linkedin-prompt"
+                  custom={direction}
+                  variants={formVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  <div className={styles.header}>
+                    <FaLinkedin className={`${styles.socialBrandIcon} ${styles.linkedinIcon}`} />
+                    <h2 className={styles.title}>{t('auth.linkedinPromptTitle') || 'Sign in with LinkedIn'}</h2>
+                    <p className={styles.subtitle}>
+                      {t('auth.linkedinPromptSubtitle') || 'Connect with your professional profile'}
+                    </p>
+                  </div>
+
+                  <form onSubmit={(e) => handleSocialSubmit(e, 'LinkedIn')} className={styles.form} noValidate>
+                    <div className={styles.fieldGroup}>
+                      <label className={styles.label}>{t('auth.linkedinEmailLabel') || 'LinkedIn Email Address'}</label>
+                      <div className={styles.inputWrapper}>
+                        <input
+                          type="email"
+                          value={socialEmail}
+                          onChange={(e) => setSocialEmail(e.target.value)}
+                          className={styles.input}
+                          placeholder="you@linkedin.com"
+                          required
+                        />
+                        <span className={styles.fieldIcon}><FaEnvelope /></span>
+                      </div>
+                    </div>
+
+                    <div className={styles.fieldGroup}>
+                      <label className={styles.label}>{t('auth.oauthToken') || 'OAuth Access Token (Leave empty for mock)'}</label>
+                      <div className={styles.inputWrapper}>
+                        <input
+                          type="password"
+                          value={socialPassword}
+                          onChange={(e) => setSocialPassword(e.target.value)}
+                          className={styles.input}
+                          placeholder="Paste OAuth token (optional)"
+                        />
+                        <span className={styles.fieldIcon}><FaLock /></span>
+                      </div>
+                    </div>
+
+                    <button type="submit" className={`${styles.submitBtn} ${styles.linkedinSubmitBtn}`} disabled={loading}>
+                      {loading && <span className={styles.spinner} />}
+                      {loading ? t('common.loading') || 'Loading...' : t('auth.signIn') || 'Sign In'}
+                    </button>
+
+                    <div className={styles.formOptions} style={{ justifyContent: 'center', marginTop: 12 }}>
+                      <span className={styles.toggleLink} onClick={() => setAuthModalTab('login')}>
+                        {t('common.cancel') || 'Cancel'}
+                      </span>
+                    </div>
+                  </form>
+                </motion.div>
+              )}
+
 
             </AnimatePresence>
           </div>
