@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import Layout from '../components/Layout';
 import { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import styles from '../styles/StaticPage.module.css';
@@ -36,7 +35,7 @@ export default function Contact() {
   };
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>Contact Us - NewsyTech</title>
         <meta name="description" content="Get in touch with the NewsyTech team" />
@@ -148,6 +147,6 @@ export default function Contact() {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

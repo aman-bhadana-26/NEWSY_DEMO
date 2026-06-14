@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import Layout from '../components/Layout';
 import { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { FaQuestionCircle, FaChevronDown, FaChevronUp, FaLightbulb, FaShieldAlt, FaCogs, FaSave, FaSyncAlt } from 'react-icons/fa';
@@ -42,7 +41,7 @@ export default function Faqs() {
   ];
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>{`${t('nav.faqs')} - NewsyTech`}</title>
         <meta name="description" content="Frequently Asked Questions about NewsyTech technology intelligence feed platform." />
@@ -92,6 +91,6 @@ export default function Faqs() {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

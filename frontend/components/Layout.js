@@ -125,23 +125,30 @@ const Layout = ({ children, title = 'NEWSY TECH - Latest Technology News', show3
         padding: 0,
         position: 'relative',
       }}>
-        {show3DBackground && (
-          <>
-            {/* Aurora background */}
-            <div style={{ position: 'fixed', inset: 0, zIndex: 0, opacity: 0.22, pointerEvents: 'none' }}>
-              <AuroraBg
-                colorStops={['#1BA098', '#051622', '#DEB992']}
-                blend={0.65}
-                amplitude={0.95}
-                speed={0.45}
-              />
-            </div>
-            {/* R3F Particles (depth layer on top of Aurora) */}
-            <div style={{ position: 'fixed', inset: 0, zIndex: 0, opacity: 0.38, pointerEvents: 'none' }}>
-              <ParticleLayer />
-            </div>
-          </>
-        )}
+        {/* Persistent 3D Background - always mounted, opacity & activity controlled by show3DBackground */}
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: 'none',
+          opacity: show3DBackground ? 1 : 0,
+          transition: 'opacity 0.4s ease-in-out',
+        }}>
+          {/* Aurora background */}
+          <div style={{ position: 'absolute', inset: 0, opacity: 0.22 }}>
+            <AuroraBg
+              colorStops={['#1BA098', '#051622', '#DEB992']}
+              blend={0.65}
+              amplitude={0.95}
+              speed={0.45}
+              active={show3DBackground}
+            />
+          </div>
+          {/* R3F Particles (depth layer on top of Aurora) */}
+          <div style={{ position: 'absolute', inset: 0, opacity: 0.38 }}>
+            <ParticleLayer active={show3DBackground} />
+          </div>
+        </div>
 
         <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', flex: 1, width: '100%' }}>
           <TopUtilityBar />

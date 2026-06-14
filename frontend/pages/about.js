@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import Layout from '../components/Layout';
 import { useLanguage } from '../context/LanguageContext';
 import styles from '../styles/StaticPage.module.css';
 import { FaInfoCircle, FaNewspaper, FaRocket, FaUsers } from 'react-icons/fa';
@@ -8,7 +7,7 @@ export default function About() {
   const { t } = useLanguage();
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>About Us - NewsyTech</title>
         <meta name="description" content="Learn more about NewsyTech - Your source for tech news and innovation." />
@@ -56,6 +55,6 @@ export default function About() {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

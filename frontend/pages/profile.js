@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -206,9 +205,7 @@ export default function Profile() {
 
   if (authLoading) {
     return (
-      <Layout title="Profile – NEWSYTECH">
-        <div className={styles.stateWrap}><LoadingSpinner /></div>
-      </Layout>
+      <div className={styles.stateWrap}><LoadingSpinner /></div>
     );
   }
 
@@ -219,7 +216,10 @@ export default function Profile() {
   const profileImageUrl = user.profilePicture ? `${BASE_URL}${user.profilePicture}?t=${imageKey}` : null;
 
   return (
-    <Layout title="Profile – NEWSYTECH">
+    <>
+      <Head>
+        <title>Profile – NEWSYTECH</title>
+      </Head>
       {/* ── Particles fixed behind everything including navbar ── */}
       <div style={{
         position: 'fixed',
@@ -737,7 +737,7 @@ export default function Profile() {
           </main>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 

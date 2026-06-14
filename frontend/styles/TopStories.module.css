@@ -286,6 +286,7 @@
 }
 
 .sideStoryImage {
+  position: relative;
   width: 150px;
   height: 100%;
   flex-shrink: 0;

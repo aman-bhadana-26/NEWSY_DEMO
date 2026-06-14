@@ -3,16 +3,16 @@ import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { 
-  FaTimes, 
-  FaEnvelope, 
-  FaLock, 
-  FaUser, 
-  FaEye, 
-  FaEyeSlash, 
-  FaGoogle, 
-  FaGithub, 
-  FaLinkedin, 
+import {
+  FaTimes,
+  FaEnvelope,
+  FaLock,
+  FaUser,
+  FaEye,
+  FaEyeSlash,
+  FaGoogle,
+  FaGithub,
+  FaLinkedin,
   FaExclamationCircle,
   FaCheckCircle
 } from 'react-icons/fa';
@@ -20,17 +20,17 @@ import styles from '../styles/AuthModal.module.css';
 
 export default function AuthModal() {
   const router = useRouter();
-  const { 
-    isAuthModalOpen, 
-    authModalTab, 
-    closeAuthModal, 
+  const {
+    isAuthModalOpen,
+    authModalTab,
+    closeAuthModal,
     setAuthModalTab,
     openAuthModal,
-    login, 
+    login,
     register,
     socialLogin
   } = useAuth();
-  
+
   const { t } = useLanguage();
   const modalRef = useRef(null);
 
@@ -48,7 +48,7 @@ export default function AuthModal() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  
+
   // UI States
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -77,7 +77,7 @@ export default function AuthModal() {
   useEffect(() => {
     if (isAuthModalOpen) {
       document.body.classList.add('auth-modal-open');
-      
+
       // Escape key event listener
       const handleKeyDown = (e) => {
         if (e.key === 'Escape') {
@@ -271,7 +271,7 @@ export default function AuthModal() {
   const direction = getSlideDirection();
 
   return (
-    <motion.div 
+    <motion.div
       className={styles.overlay}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -279,13 +279,13 @@ export default function AuthModal() {
       onClick={handleBackdropClick}
     >
       <div className={styles.modalWrapper}>
-        
+
         {/* Floating Background Glow Orbs */}
         <div className={`${styles.orb} ${styles.orbTeal}`} />
         <div className={`${styles.orb} ${styles.orbGold}`} />
 
         {/* Centered Modal Card */}
-        <motion.div 
+        <motion.div
           ref={modalRef}
           className={styles.card}
           layout
@@ -314,7 +314,7 @@ export default function AuthModal() {
           {/* Social Auth Overlay Loader */}
           <AnimatePresence>
             {connectingSocial && (
-              <motion.div 
+              <motion.div
                 className={styles.socialOverlay}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -336,7 +336,7 @@ export default function AuthModal() {
           {/* Error and Success Banners */}
           <AnimatePresence mode="popLayout">
             {error && (
-              <motion.div 
+              <motion.div
                 className={styles.errorAlert}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -348,7 +348,7 @@ export default function AuthModal() {
             )}
 
             {success && (
-              <motion.div 
+              <motion.div
                 className={styles.errorAlert}
                 style={{ background: 'rgba(27, 160, 152, 0.12)', border: '1px solid rgba(27, 160, 152, 0.25)', color: '#24c9b8' }}
                 initial={{ opacity: 0, y: -10 }}
@@ -364,7 +364,7 @@ export default function AuthModal() {
           {/* Form Content Tabs */}
           <div style={{ position: 'relative', overflow: 'hidden' }}>
             <AnimatePresence mode="wait" initial={false} custom={direction}>
-              
+
               {/* ── TAB: LOGIN ── */}
               {authModalTab === 'login' && (
                 <motion.div
@@ -530,7 +530,7 @@ export default function AuthModal() {
                       </div>
                       {password.length > 0 && (
                         <div className={`${styles.hintText} ${password.length >= 6 ? styles.hintTextSuccess : ''}`}>
-                          {password.length < 6 
+                          {password.length < 6
                             ? `${6 - password.length} ${t('auth.charactersNeeded') || 'more characters needed'}`
                             : t('auth.passwordGood') || '✓ Password length is good'}
                         </div>

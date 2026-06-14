@@ -1,6 +1,14 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { parse } = require('node-html-parser');
+const MemoryCache = require('../utils/cache');
+
+const newsCache = new MemoryCache();
+const articleContentCache = new MemoryCache();
+
+const NEWS_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+const ARTICLE_CONTENT_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+
 
 /**
  * @desc    Get tech news from NewsAPI
@@ -10,6 +18,13 @@ const { parse } = require('node-html-parser');
 const getNews = async (req, res) => {
   try {
     const { category, page = 1, pageSize = 20, search, from, to, source, author } = req.query;
+
+    const cacheKey = `news:cat:${category}:p:${page}:sz:${pageSize}:q:${search || ''}:f:${from || ''}:t:${to || ''}:src:${source || ''}:auth:${author || ''}`;
+    const cachedResponse = newsCache.get(cacheKey);
+    if (cachedResponse) {
+      console.log('Serving news from cache:', cacheKey);
+      return res.json(cachedResponse);
+    }
 
     let searchQuery;
 
@@ -92,14 +107,19 @@ const getNews = async (req, res) => {
       articles = articles.slice(0, parseInt(pageSize));
     }
 
-    res.json({
+    const jsonResponse = {
       success: true,
       totalResults: totalResults,
       articles: articles,
       page: parseInt(page),
       pageSize: parseInt(pageSize),
       searchQuery: search || null
-    });
+    };
+
+    // Store in cache
+    newsCache.set(cacheKey, jsonResponse, NEWS_CACHE_TTL);
+
+    res.json(jsonResponse);
   } catch (error) {
     console.error('News API Error:', error.response?.data || error.message);
     
@@ -166,13 +186,19 @@ const getNews = async (req, res) => {
         mockArticles = mockArticles.filter(a => a.author && a.author.toLowerCase().includes(authorLower));
       }
 
-      res.json({
+      const jsonResponse = {
         success: true,
         totalResults: mockArticles.length,
         articles: mockArticles.slice((page - 1) * pageSize, page * pageSize),
         page: parseInt(page),
         pageSize: parseInt(pageSize)
-      });
+      };
+
+      // Store in cache
+      const cacheKey = `news:cat:${category}:p:${page}:sz:${pageSize}:q:${search || ''}:f:${from || ''}:t:${to || ''}:src:${source || ''}:auth:${author || ''}`;
+      newsCache.set(cacheKey, jsonResponse, NEWS_CACHE_TTL);
+
+      res.json(jsonResponse);
     } else {
       res.status(500).json({
         success: false,
@@ -192,6 +218,13 @@ const getHeadlines = async (req, res) => {
   try {
     const { page = 1, pageSize = 10 } = req.query;
 
+    const cacheKey = `headlines:p:${page}:sz:${pageSize}`;
+    const cachedResponse = newsCache.get(cacheKey);
+    if (cachedResponse) {
+      console.log('Serving headlines from cache:', cacheKey);
+      return res.json(cachedResponse);
+    }
+
     const response = await axios.get('https://newsapi.org/v2/top-headlines', {
       params: {
         category: 'technology',
@@ -202,13 +235,17 @@ const getHeadlines = async (req, res) => {
       }
     });
 
-    res.json({
+    const jsonResponse = {
       success: true,
       totalResults: response.data.totalResults,
       articles: response.data.articles,
       page: parseInt(page),
       pageSize: parseInt(pageSize)
-    });
+    };
+
+    newsCache.set(cacheKey, jsonResponse, NEWS_CACHE_TTL);
+
+    res.json(jsonResponse);
   } catch (error) {
     console.error('News API Error:', error.response?.data || error.message);
     res.status(500).json({
@@ -228,6 +265,13 @@ const getTrendingNews = async (req, res) => {
   try {
     const { page = 1, pageSize = 30 } = req.query;
 
+    const cacheKey = `trending:p:${page}:sz:${pageSize}`;
+    const cachedResponse = newsCache.get(cacheKey);
+    if (cachedResponse) {
+      console.log('Serving trending news from cache:', cacheKey);
+      return res.json(cachedResponse);
+    }
+
     // Get date from 7 days ago
     const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 7);
@@ -246,7 +290,7 @@ const getTrendingNews = async (req, res) => {
       }
     });
 
-    res.json({
+    const jsonResponse = {
       success: true,
       totalResults: response.data.totalResults,
       articles: response.data.articles,
@@ -256,14 +300,19 @@ const getTrendingNews = async (req, res) => {
         from: fromDate,
         to: new Date().toISOString().split('T')[0]
       }
-    });
+    };
+
+    newsCache.set(cacheKey, jsonResponse, NEWS_CACHE_TTL);
+
+    res.json(jsonResponse);
   } catch (error) {
     console.error('Trending News API Error:', error.response?.data || error.message);
     
     // Return mock data if API fails (for development)
     if (process.env.NODE_ENV === 'development') {
       console.log('Returning mock trending data for development');
-      res.json({
+      const fromDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const jsonResponse = {
         success: true,
         totalResults: 12,
         articles: [
@@ -391,10 +440,15 @@ const getTrendingNews = async (req, res) => {
         page: 1,
         pageSize: 30,
         dateRange: {
-          from: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          from: fromDate,
           to: new Date().toISOString().split('T')[0]
         }
-      });
+      };
+
+      const cacheKey = `trending:p:${page}:sz:${pageSize}`;
+      newsCache.set(cacheKey, jsonResponse, NEWS_CACHE_TTL);
+
+      res.json(jsonResponse);
     } else {
       res.status(500).json({
         success: false,
@@ -506,6 +560,13 @@ const getArticleContent = async (req, res) => {
       });
     }
 
+    const cacheKey = `article-content:${url}`;
+    const cachedResponse = articleContentCache.get(cacheKey);
+    if (cachedResponse) {
+      console.log('Serving article content from cache:', url);
+      return res.json(cachedResponse);
+    }
+
     console.log(`Attempting to extract content from: ${url}`);
 
     // Method 1: Try direct web scraping (most reliable)
@@ -513,7 +574,7 @@ const getArticleContent = async (req, res) => {
     
     if (scrapedData.success && scrapedData.content.length > 300) {
       console.log('✅ Successfully extracted via web scraping');
-      return res.json({
+      const jsonResponse = {
         success: true,
         article: {
           title: scrapedData.title,
@@ -524,7 +585,9 @@ const getArticleContent = async (req, res) => {
           siteName: new URL(url).hostname,
           method: 'web-scraping'
         }
-      });
+      };
+      articleContentCache.set(cacheKey, jsonResponse, ARTICLE_CONTENT_CACHE_TTL);
+      return res.json(jsonResponse);
     }
 
     // Method 2: Try ArticleXtractor API as fallback
@@ -545,7 +608,7 @@ const getArticleContent = async (req, res) => {
         
         if (content.length > 300) {
           console.log('✅ Successfully extracted via ArticleXtractor');
-          return res.json({
+          const jsonResponse = {
             success: true,
             article: {
               title: articleData.title || '',
@@ -556,7 +619,9 @@ const getArticleContent = async (req, res) => {
               siteName: articleData.site_name || '',
               method: 'articlextractor'
             }
-          });
+          };
+          articleContentCache.set(cacheKey, jsonResponse, ARTICLE_CONTENT_CACHE_TTL);
+          return res.json(jsonResponse);
         }
       }
     } catch (apiError) {
@@ -566,7 +631,7 @@ const getArticleContent = async (req, res) => {
     // Method 3: If both fail, return partial content or error
     if (scrapedData.content.length > 100) {
       console.log('⚠️ Returning partial content');
-      return res.json({
+      const jsonResponse = {
         success: true,
         partial: true,
         article: {
@@ -578,7 +643,9 @@ const getArticleContent = async (req, res) => {
           siteName: new URL(url).hostname,
           method: 'partial-scraping'
         }
-      });
+      };
+      articleContentCache.set(cacheKey, jsonResponse, ARTICLE_CONTENT_CACHE_TTL);
+      return res.json(jsonResponse);
     }
 
     // All methods failed

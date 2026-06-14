@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import Layout from '../../components/Layout';
+import Head from 'next/head';
 import { ArticleSkeleton } from '../../components/Skeleton';
 import { getFullDate } from '../../utils/formatDate';
 import { newsAPI } from '../../utils/api';
@@ -138,27 +138,25 @@ export default function Article() {
 
   if (loading) {
     return (
-      <Layout title="Loading Article – NEWSY TECH">
+      <div className={styles.loadingWrap || styles.articleContainer}>
         <ArticleSkeleton />
-      </Layout>
+      </div>
     );
   }
 
   if (!article) {
     return (
-      <Layout title="Article Not Found – NEWSY TECH">
-        <div className={styles.articleContainer}>
-          <div className={styles.articleContent}>
-            <button onClick={() => router.back()} className={styles.backButton}>
-              <FaArrowLeft /> {t('article.back')}
-            </button>
-            <div className={styles.errorMessage}>
-              <h2>{t('article.notFound.title')}</h2>
-              <p>{t('article.notFound.text')}</p>
-            </div>
+      <div className={styles.articleContainer}>
+        <div className={styles.articleContent}>
+          <button onClick={() => router.back()} className={styles.backButton}>
+            <FaArrowLeft /> {t('article.back')}
+          </button>
+          <div className={styles.errorMessage}>
+            <h2>{t('article.notFound.title')}</h2>
+            <p>{t('article.notFound.text')}</p>
           </div>
         </div>
-      </Layout>
+      </div>
     );
   }
 
@@ -172,7 +170,10 @@ export default function Article() {
   const shortTitle = article.title?.length > 40 ? article.title.slice(0, 40) + '…' : article.title;
 
   return (
-    <Layout title={`${article.title} – NEWSY TECH`}>
+    <>
+      <Head>
+        <title>{`${article.title} – NEWSY TECH`}</title>
+      </Head>
       {/* Breadcrumb */}
       <div className={styles.breadcrumb}>
         <span onClick={() => router.push('/')}>{t('nav.home')}</span>
@@ -376,6 +377,6 @@ export default function Article() {
 
         </aside>
       </div>
-    </Layout>
+    </>
   );
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '../../components/Layout';
+import Head from 'next/head';
 import { useAuth } from '../../context/AuthContext';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { adminAPI } from '../../utils/api';
@@ -147,11 +147,9 @@ export default function UserManagement() {
 
   if (authLoading || (loading && users.length === 0)) {
     return (
-      <Layout title="User Management – NEWSYTECH Admin">
-        <div className={styles.loadingContainer}>
-          <LoadingSpinner />
-        </div>
-      </Layout>
+      <div className={styles.loadingContainer}>
+        <LoadingSpinner />
+      </div>
     );
   }
 
@@ -160,7 +158,10 @@ export default function UserManagement() {
   }
 
   return (
-    <Layout title="User Management – NEWSYTECH Admin">
+    <>
+      <Head>
+        <title>User Management – NEWSYTECH Admin</title>
+      </Head>
       <div className={styles.adminPage}>
         <div className={styles.header}>
           <button onClick={() => router.push('/admin')} className={styles.backButton}>
@@ -345,6 +346,6 @@ export default function UserManagement() {
           </div>
         )}
       </div>
-    </Layout>
+    </>
   );
 }

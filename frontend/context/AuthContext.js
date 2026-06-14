@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext, useMemo, useCallback } from 'react';
 import { authAPI } from '../utils/api';
 
 const AuthContext = createContext();
@@ -26,20 +26,20 @@ export const AuthProvider = ({ children }) => {
   const [authModalTab, setAuthModalTabState] = useState('login'); // 'login' | 'signup' | 'forgot'
   const [authModalCallback, setAuthModalCallback] = useState(null);
 
-  const openAuthModal = (tab = 'login', callback = null) => {
+  const openAuthModal = useCallback((tab = 'login', callback = null) => {
     setAuthModalTabState(tab);
     setAuthModalCallback(() => callback);
     setIsAuthModalOpen(true);
-  };
+  }, []);
 
-  const closeAuthModal = () => {
+  const closeAuthModal = useCallback(() => {
     setIsAuthModalOpen(false);
     setAuthModalCallback(null);
-  };
+  }, []);
 
-  const setAuthModalTab = (tab) => {
+  const setAuthModalTab = useCallback((tab) => {
     setAuthModalTabState(tab);
-  };
+  }, []);
 
   useEffect(() => {
     // Decide between two cases:
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = async (credentials) => {
+  const login = useCallback(async (credentials) => {
     try {
       const userData = await authAPI.login(credentials);
       setUser(userData);
@@ -86,9 +86,9 @@ export const AuthProvider = ({ children }) => {
         error: error.response?.data?.message || 'Login failed',
       };
     }
-  };
+  }, [authModalCallback]);
 
-  const register = async (userData) => {
+  const register = useCallback(async (userData) => {
     try {
       const newUser = await authAPI.register(userData);
       setUser(newUser);
@@ -102,9 +102,9 @@ export const AuthProvider = ({ children }) => {
         error: error.response?.data?.message || 'Registration failed',
       };
     }
-  };
+  }, [authModalCallback]);
 
-  const socialLogin = async (provider, accessToken) => {
+  const socialLogin = useCallback(async (provider, accessToken) => {
     try {
       const userData = await authAPI.socialLogin(provider, accessToken);
       setUser(userData);
@@ -118,14 +118,14 @@ export const AuthProvider = ({ children }) => {
         error: error.response?.data?.message || 'Social login failed',
       };
     }
-  };
+  }, [authModalCallback]);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     authAPI.logout();
     setUser(null);
-  };
+  }, []);
 
-  const updateUser = async (userData) => {
+  const updateUser = useCallback(async (userData) => {
     try {
       const updatedUser = await authAPI.updateProfile(userData);
       setUser(updatedUser);
@@ -136,9 +136,9 @@ export const AuthProvider = ({ children }) => {
         error: error.response?.data?.message || 'Update failed',
       };
     }
-  };
+  }, []);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     try {
       const freshProfile = await authAPI.getProfile();
       localStorage.setItem('user', JSON.stringify(freshProfile));
@@ -150,9 +150,9 @@ export const AuthProvider = ({ children }) => {
         error: error.response?.data?.message || 'Failed to refresh user',
       };
     }
-  };
+  }, []);
 
-  const value = {
+  const value = useMemo(() => ({
     user,
     loading,
     login,
@@ -168,7 +168,22 @@ export const AuthProvider = ({ children }) => {
     openAuthModal,
     closeAuthModal,
     setAuthModalTab,
-  };
+  }), [
+    user,
+    loading,
+    login,
+    register,
+    logout,
+    updateUser,
+    refreshUser,
+    socialLogin,
+    isAuthModalOpen,
+    authModalTab,
+    authModalCallback,
+    openAuthModal,
+    closeAuthModal,
+    setAuthModalTab,
+  ]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

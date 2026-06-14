@@ -532,6 +532,8 @@ function CTAScene() {
 /* ══════════════════════════════════════════════════════════════
    ROOT PAGE
 ══════════════════════════════════════════════════════════════ */
+Landing.noLayout = true;
+
 export default function Landing() {
   const [articles, setArticles] = useState([]);
 

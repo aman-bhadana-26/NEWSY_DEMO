@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '../components/Layout';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -165,18 +164,19 @@ export default function AnalyticsPage() {
 
   if (authLoading || loading) {
     return (
-      <Layout title="Analytics – NEWSYTECH">
-        <div className={styles.loadingWrap}>
-          <LoadingSpinner />
-        </div>
-      </Layout>
+      <div className={styles.loadingWrap}>
+        <LoadingSpinner />
+      </div>
     );
   }
 
   if (!isAuthenticated) return null;
 
   return (
-    <Layout title="Analytics – NEWSYTECH">
+    <>
+      <Head>
+        <title>Analytics – NEWSYTECH</title>
+      </Head>
       <div className={styles.page}>
         <motion.header
           className={styles.header}
@@ -488,6 +488,6 @@ export default function AnalyticsPage() {
           )}
         </AnimatePresence>
       </div>
-    </Layout>
+    </>
   );
 }

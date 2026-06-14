@@ -113,6 +113,7 @@ export default function Aurora(props) {
     amplitude  = 1.0,
     blend      = 0.5,
     speed      = 1.0,
+    active     = true,
   } = props;
 
   const propsRef  = useRef(props);
@@ -176,6 +177,7 @@ export default function Aurora(props) {
     let animateId = 0;
     const update = t => {
       animateId = requestAnimationFrame(update);
+      if (propsRef.current.active === false) return;
       const { time = t * 0.01, speed: spd = 1.0 } = propsRef.current;
       program.uniforms.uTime.value      = time * spd * 0.1;
       program.uniforms.uAmplitude.value = propsRef.current.amplitude ?? 1.0;

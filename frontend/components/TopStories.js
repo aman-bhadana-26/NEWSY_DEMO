@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FaClock, FaArrowRight, FaNewspaper } from 'react-icons/fa';
 import { useLanguage } from '../context/LanguageContext';
 import { formatTimeAgo } from '../utils/timeAgo';
@@ -56,12 +57,16 @@ const TopStories = ({ stories }) => {
     <div className={styles.topStoriesSection}>
       {/* Background Image Layer */}
       <div className={styles.backgroundLayer} key={`bg-${activeStory}`}>
-        <img 
+        <Image 
           src={mainStory.urlToImage} 
           alt={mainStory.title}
+          fill
+          priority={true}
+          sizes="100vw"
+          quality={85}
           className={styles.backgroundImage}
           onError={(e) => {
-            e.target.style.display = 'none';
+            e.currentTarget.style.display = 'none';
           }}
         />
         <div className={styles.backgroundOverlay} />
@@ -114,12 +119,15 @@ const TopStories = ({ stories }) => {
             {sideStories.map((story, index) => (
               <Link key={index} href={createSlug(story)} className={styles.sideStory}>
                 <div className={styles.sideStoryImage}>
-                  <img 
+                  <Image 
                     src={story.urlToImage} 
                     alt={story.title}
+                    fill
+                    sizes="150px"
+                    quality={75}
                     onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.parentElement.classList.add(styles.sideImageFailed);
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement.classList.add(styles.sideImageFailed);
                     }}
                   />
                 </div>

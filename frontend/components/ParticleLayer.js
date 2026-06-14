@@ -94,13 +94,14 @@ function WhiteParticles() {
   );
 }
 
-export default function ParticleLayer() {
+export default function ParticleLayer({ active = true }) {
   return (
     <Canvas
       camera={{ position: [0, 0, 10], fov: 70 }}
       style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
       gl={{ antialias: false, alpha: true, powerPreference: 'low-power' }}
       dpr={[1, 1.5]}
+      frameloop={active ? "always" : "never"}
     >
       <TealParticles />
       <GoldParticles />

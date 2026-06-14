@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { formatDate } from '../utils/formatDate';
@@ -34,6 +35,11 @@ const NewsCard = ({ article, category }) => {
   // Check if article has image
   const hasImage = article.urlToImage && article.urlToImage !== '';
   const imageUrl = article.urlToImage || 'https://via.placeholder.com/800x400/0066cc/ffffff?text=Tech+News';
+  
+  const [imgSrc, setImgSrc] = useState(imageUrl);
+  useEffect(() => {
+    setImgSrc(imageUrl);
+  }, [imageUrl]);
 
   return (
     <div className={`${styles.card} anim-fade-up`}>
@@ -41,7 +47,7 @@ const NewsCard = ({ article, category }) => {
         {hasImage ? (
           <div className={styles.imageContainer}>
             <Image
-              src={imageUrl}
+              src={imgSrc}
               alt={article.title}
               width={800}
               height={400}
@@ -50,9 +56,8 @@ const NewsCard = ({ article, category }) => {
               quality={85}
               placeholder="blur"
               blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2YwZjBmMCIvPjwvc3ZnPg=="
-              unoptimized
-              onError={(e) => {
-                e.target.src = 'https://via.placeholder.com/800x400/0066cc/ffffff?text=Tech+News';
+              onError={() => {
+                setImgSrc('https://via.placeholder.com/800x400/0066cc/ffffff?text=Tech+News');
               }}
             />
             {category && (

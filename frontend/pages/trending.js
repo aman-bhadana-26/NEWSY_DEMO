@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import Head from 'next/head';
 import { motion, AnimatePresence } from 'framer-motion';
-import Layout from '../components/Layout';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { newsAPI } from '../utils/api';
 import { formatDate } from '../utils/formatDate';
 import { useLanguage } from '../context/LanguageContext';
 import { FaFire, FaEye, FaArrowUp, FaArrowDown, FaCircle } from 'react-icons/fa';
+import { useNewsData } from '../hooks/useNewsData';
 import styles from '../styles/Trending.module.css';
 
 /* ─── helpers ─────────────────────────────────────────────── */
@@ -220,44 +221,43 @@ const CATEGORIES_LIST = ['ALL', 'AI', 'SECURITY', 'STARTUPS', 'WEB3', 'SPACE', '
 export default function Trending() {
   const { t, language } = useLanguage();
   const [news, setNews] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('ALL');
   const [mounted, setMounted] = useState(false);
 
+  const { data: initialData, loading: initialLoading, error: initialError, mutate } = useNewsData(
+    'trending-news-1-30',
+    async () => {
+      const data = await newsAPI.getTrendingNews(1, 30);
+      if (data?.articles?.length >= 5) {
+        return data;
+      }
+      const fallback = await newsAPI.getNews('all', 1, 30);
+      const combined = [
+        ...(data?.articles || []),
+        ...(fallback.articles || []),
+      ];
+      const seen = new Set();
+      const articles = combined.filter(a => {
+        if (seen.has(a.url)) return false;
+        seen.add(a.url);
+        return true;
+      });
+      return { articles };
+    }
+  );
+
   useEffect(() => {
     setMounted(true);
-    fetchTrending();
   }, []);
 
-  const fetchTrending = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await newsAPI.getTrendingNews(1, 30);
-      
-      if (data?.articles?.length >= 5) {
-        setNews(data.articles);
-      } else {
-        const fallback = await newsAPI.getNews('all', 1, 30);
-        const combined = [
-          ...(data?.articles || []),
-          ...(fallback.articles || []),
-        ];
-        // Deduplicate
-        const seen = new Set();
-        setNews(combined.filter(a => {
-          if (seen.has(a.url)) return false;
-          seen.add(a.url);
-          return true;
-        }));
-      }
-    } catch (err) {
-      setError(t('trending.error'));
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (initialData) {
+      setNews(initialData.articles || []);
     }
-  };
+  }, [initialData]);
+
+  const loading = initialLoading && news.length === 0;
+  const error = initialError ? t('trending.error') : null;
 
   // Dynamic filter logic
   const filteredArticles = activeTab === 'ALL'
@@ -269,7 +269,10 @@ export default function Trending() {
   const bottomFive = news.slice(5, 10); // keep tickers global for rich scroll volume
 
   return (
-    <Layout title="Trending Now — NEWSY TECH" show3DBackground={true}>
+    <>
+      <Head>
+        <title>Trending Now — NEWSY TECH</title>
+      </Head>
       <div className={styles.page}>
 
         {/* ── PAGE HEADER ── */}
@@ -464,6 +467,8 @@ export default function Trending() {
           </>
         )}
       </div>
-    </Layout>
+    </>
   );
 }
+
+Trending.show3DBackground = true;

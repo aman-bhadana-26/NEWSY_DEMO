@@ -9,6 +9,8 @@ import FlowingMenu from './FlowingMenu';
 import LanguageSwitcher from './LanguageSwitcher';
 import AdvancedSearchModal from './AdvancedSearchModal';
 import styles from '../styles/Navbar.module.css';
+import { prefetchNewsData, getNewsCacheKey } from '../hooks/useNewsData';
+import { newsAPI } from '../utils/api';
 
 const Navbar = ({ className = '' }) => {
   const router = useRouter();
@@ -32,6 +34,16 @@ const Navbar = ({ className = '' }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(false);
   const [advancedSearchOpen, setAdvancedSearchOpen] = useState(false);
+
+  const handleHomeHover = useCallback(() => {
+    const key = getNewsCacheKey('all', 1);
+    prefetchNewsData(key, () => newsAPI.getNews('all', 1, 20));
+  }, []);
+
+  const handleCategoryHover = useCallback((categoryQuery) => {
+    const key = getNewsCacheKey(categoryQuery, 1);
+    prefetchNewsData(key, () => newsAPI.getNews(categoryQuery, 1, 20));
+  }, []);
 
   const categories = [
     { nameKey: 'cat.all', path: '/home', query: 'all', icon: FaThList },
@@ -246,6 +258,7 @@ const Navbar = ({ className = '' }) => {
           >
             <Link
               href="/home"
+              onMouseEnter={handleHomeHover}
               className={`${styles.navLink} ${styles.homeNavButton} ${router.pathname === '/home' ? styles.active : ''
                 }`}
             >
@@ -284,6 +297,7 @@ const Navbar = ({ className = '' }) => {
                     <Link
                       key={category.query}
                       href={`/home?category=${category.query}`}
+                      onMouseEnter={() => handleCategoryHover(category.query)}
                       className={`${styles.categoryDropdownItem} ${router.query.category === category.query ? styles.categoryDropdownItemActive : ''
                         }`}
                     >
@@ -570,6 +584,7 @@ const Navbar = ({ className = '' }) => {
               <Link
                 key={category.query}
                 href={`/home?category=${category.query}`}
+                onMouseEnter={() => handleCategoryHover(category.query)}
                 className={`${styles.mobileNavLink} ${router.query.category === category.query ? styles.mobileNavLinkActive : ''
                   }`}
                 onClick={() => setMobileMenuOpen(false)}

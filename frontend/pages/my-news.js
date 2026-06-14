@@ -1,19 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { myNewsAPI } from '../utils/api';
-import Layout from '../components/Layout';
 import TopicSelector from '../components/TopicSelector';
 import CategoryPage from '../components/CategoryPage';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { FaNewspaper, FaBookmark, FaSync, FaExclamationCircle } from 'react-icons/fa';
+import { useNewsData } from '../hooks/useNewsData';
 import styles from '../styles/MyNews.module.css';
 
 const MyNews = () => {
   const router = useRouter();
   const { t } = useLanguage();
-  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [activeTab, setActiveTab] = useState('feed'); // 'feed' or 'saved'
 
   // User preferences
@@ -23,8 +24,6 @@ const MyNews = () => {
   // News feed
   const [news, setNews] = useState([]);
   const [totalResults, setTotalResults] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -48,13 +47,6 @@ const MyNews = () => {
     }
   }, [isAuthenticated]);
 
-  // Fetch news when preferences change
-  useEffect(() => {
-    if (isAuthenticated && !preferencesLoading) {
-      fetchNews(1);
-    }
-  }, [userTopics, isAuthenticated, preferencesLoading]);
-
   const fetchPreferences = async () => {
     try {
       setPreferencesLoading(true);
@@ -67,40 +59,26 @@ const MyNews = () => {
     }
   };
 
-  const fetchNews = async (pageNum = 1, isRefresh = false) => {
-    try {
-      if (pageNum === 1) {
-        setLoading(true);
-        setNews([]);
-        setPage(1);
-        setHasMore(true);
-      } else {
-        setLoadingMore(true);
-      }
-      setError(null);
+  const cacheKey = `my-news-${user?.id || 'user'}`;
+  const { data: initialData, loading: initialLoading, error: initialError, mutate } = useNewsData(
+    cacheKey,
+    () => myNewsAPI.getMyNews(1, 20, false),
+    { enabled: isAuthenticated && !preferencesLoading }
+  );
 
-      const data = await myNewsAPI.getMyNews(pageNum, 20, isRefresh);
-
-      if (pageNum === 1) {
-        setNews(data.articles);
-      } else {
-        setNews(prev => [...prev, ...data.articles]);
-      }
-
-      setPage(pageNum);
-      setTotalResults(data.totalResults || 0);
-
-      const receivedFullPage = data.articles.length === 20;
-      const notLastPage = data.isLastPage === false;
+  useEffect(() => {
+    if (initialData) {
+      setNews(initialData.articles || []);
+      setTotalResults(initialData.totalResults || 0);
+      const receivedFullPage = (initialData.articles || []).length === 20;
+      const notLastPage = initialData.isLastPage === false;
       setHasMore(notLastPage && receivedFullPage);
-    } catch (err) {
-      console.error('Error fetching news:', err);
-      setError(t('myNews.error'));
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
+      setPage(1);
     }
-  };
+  }, [initialData]);
+
+  const loading = initialLoading && news.length === 0;
+  const error = initialError ? t('myNews.error') : null;
 
   const fetchSavedArticles = async () => {
     try {
@@ -118,7 +96,7 @@ const MyNews = () => {
     try {
       await myNewsAPI.updatePreferences(topics);
       setUserTopics(topics);
-      fetchNews(1);
+      mutate();
     } catch (err) {
       console.error('Error saving preferences:', err);
       alert(t('myNews.savePrefError'));
@@ -127,26 +105,38 @@ const MyNews = () => {
 
   const handleRefresh = () => {
     if (activeTab === 'feed') {
-      fetchNews(1, true);
+      mutate();
     } else {
       fetchSavedArticles();
     }
   };
 
-  const handleLoadMore = () => {
+  const handleLoadMore = async () => {
     if (!loadingMore && hasMore) {
-      fetchNews(page + 1);
+      try {
+        setLoadingMore(true);
+        const nextPage = page + 1;
+        const data = await myNewsAPI.getMyNews(nextPage, 20, false);
+        setNews(prev => [...prev, ...data.articles]);
+        setTotalResults(data.totalResults || 0);
+        const receivedFullPage = data.articles.length === 20;
+        const notLastPage = data.isLastPage === false;
+        setHasMore(notLastPage && receivedFullPage);
+        setPage(nextPage);
+      } catch (err) {
+        console.error('Error fetching more news:', err);
+      } finally {
+        setLoadingMore(false);
+      }
     }
   };
 
   // ── Loading while checking auth ──
   if (authLoading) {
     return (
-      <Layout title="My News - NEWSY TECH" show3DBackground={true}>
-        <div className={styles.stateContainer}>
-          <LoadingSpinner />
-        </div>
-      </Layout>
+      <div className={styles.stateContainer}>
+        <LoadingSpinner />
+      </div>
     );
   }
 
@@ -154,7 +144,10 @@ const MyNews = () => {
 
   // ── Render ──
   return (
-    <Layout title="My News - NEWSY TECH" show3DBackground={true}>
+    <>
+      <Head>
+        <title>My News - NEWSY TECH</title>
+      </Head>
       <div className={styles.myNewsPage}>
 
         {/* ── Header: tabs + refresh ── */}
@@ -273,8 +266,10 @@ const MyNews = () => {
         )}
 
       </div>
-    </Layout>
+    </>
   );
 };
+
+MyNews.show3DBackground = true;
 
 export default MyNews;

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '../../components/Layout';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -49,11 +48,9 @@ export default function AdminDashboard() {
 
   if (authLoading || loading) {
     return (
-      <Layout title="Admin Dashboard – NEWSYTECH">
-        <div className={styles.loadingContainer}>
-          <LoadingSpinner />
-        </div>
-      </Layout>
+      <div className={styles.loadingContainer}>
+        <LoadingSpinner />
+      </div>
     );
   }
 
@@ -63,19 +60,20 @@ export default function AdminDashboard() {
 
   if (error) {
     return (
-      <Layout title="Admin Dashboard – NEWSYTECH">
-        <div className={styles.errorContainer}>
-          <p className={styles.errorMessage}>{error}</p>
-          <button onClick={fetchDashboardStats} className={styles.retryButton}>
-            Retry
-          </button>
-        </div>
-      </Layout>
+      <div className={styles.errorContainer}>
+        <p className={styles.errorMessage}>{error}</p>
+        <button onClick={fetchDashboardStats} className={styles.retryButton}>
+          Retry
+        </button>
+      </div>
     );
   }
 
   return (
-    <Layout title="Admin Dashboard – NEWSYTECH">
+    <>
+      <Head>
+        <title>Admin Dashboard – NEWSYTECH</title>
+      </Head>
       <div className={styles.adminPage}>
         <div className={styles.header}>
           <h1 className={styles.title}>
@@ -216,6 +214,6 @@ export default function AdminDashboard() {
           </div>
         )}
       </div>
-    </Layout>
+    </>
   );
 }
