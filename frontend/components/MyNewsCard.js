@@ -69,6 +69,7 @@ const MyNewsCard = ({ article, onSave, onUnsave, isSaved = false, compact = fals
                   height={80}
                   className={styles.compactImg}
                   unoptimized
+                  referrerPolicy="no-referrer"
                 />
               </div>
             )}
@@ -106,6 +107,7 @@ const MyNewsCard = ({ article, onSave, onUnsave, isSaved = false, compact = fals
               height={340}
               className={styles.image}
               unoptimized
+              referrerPolicy="no-referrer"
               onError={(e) => {
                 e.target.src = 'https://via.placeholder.com/800x400/0066cc/ffffff?text=Tech+News';
               }}

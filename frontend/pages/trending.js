@@ -124,6 +124,7 @@ const HeroCard = ({ article, rank, t }) => {
             style={{ objectFit: 'cover' }}
             sizes="(max-width: 768px) 100vw, 58vw"
             unoptimized
+            referrerPolicy="no-referrer"
           />
         ) : (
           <div className={styles.heroImagePlaceholder}>

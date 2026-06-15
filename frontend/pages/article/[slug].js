@@ -227,6 +227,7 @@ export default function Article() {
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 priority
                 unoptimized
+                referrerPolicy="no-referrer"
                 onError={() => setImageError(true)}
               />
             </div>

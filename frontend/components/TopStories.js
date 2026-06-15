@@ -65,6 +65,8 @@ const TopStories = ({ stories }) => {
           sizes="100vw"
           quality={85}
           className={styles.backgroundImage}
+          unoptimized
+          referrerPolicy="no-referrer"
           onError={(e) => {
             e.currentTarget.style.display = 'none';
           }}
@@ -125,6 +127,8 @@ const TopStories = ({ stories }) => {
                     fill
                     sizes="150px"
                     quality={75}
+                    unoptimized
+                    referrerPolicy="no-referrer"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
                       e.currentTarget.parentElement.classList.add(styles.sideImageFailed);

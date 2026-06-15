@@ -2,6 +2,7 @@ import { AuthProvider } from '../context/AuthContext';
 import { LanguageProvider } from '../context/LanguageContext';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import AuthModal from '../components/AuthModal';
 import Layout from '../components/Layout';
 import '../styles/globals.css';
@@ -31,6 +32,9 @@ function MyApp({ Component, pageProps }) {
   return (
     <LanguageProvider>
       <AuthProvider>
+        <Head>
+          <meta name="referrer" content="no-referrer" />
+        </Head>
         <div style={{ width: '100%', margin: 0, padding: 0 }}>
           {useDefaultLayout ? (
             <Layout title={title} show3DBackground={show3DBackground}>
