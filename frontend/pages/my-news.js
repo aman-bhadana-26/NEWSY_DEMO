@@ -181,20 +181,18 @@ const MyNews = () => {
               {t('myNews.refresh')}
             </button>
           </div>
-
-          {/* Topic selector (feed only) */}
-          {activeTab === 'feed' && (
-            <TopicSelector
-              initialTopics={userTopics}
-              onSave={handleSavePreferences}
-              loading={preferencesLoading}
-            />
-          )}
         </div>
 
         {/* ── Feed Tab ── */}
         {activeTab === 'feed' && (
           <>
+            <div className={styles.selectorWrapper}>
+              <TopicSelector
+                initialTopics={userTopics}
+                onSave={handleSavePreferences}
+                loading={preferencesLoading}
+              />
+            </div>
             {loading ? (
               <div className={styles.stateContainer}>
                 <LoadingSpinner />
