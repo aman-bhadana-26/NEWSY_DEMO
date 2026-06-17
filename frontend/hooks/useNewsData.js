@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 // Global cache variables outside component lifecycle to survive page transitions
 const globalCache = new Map();
@@ -97,6 +97,10 @@ export const getNewsCacheKey = (category, page, search, from, to, source, author
 export const useNewsData = (key, fetcher, options = {}) => {
   const { enabled = true, ttl = 5 * 60 * 1000 } = options;
 
+  const fetcherRef = useRef(fetcher);
+  fetcherRef.current = fetcher;
+
+  const [prevKey, setPrevKey] = useState(key);
   const [data, setData] = useState(() => {
     const cached = globalCache.get(key);
     return cached ? cached.data : null;
@@ -110,12 +114,21 @@ export const useNewsData = (key, fetcher, options = {}) => {
 
   const [error, setError] = useState(null);
 
+  // Sync state immediately during render if the cache key changes
+  if (key !== prevKey) {
+    setPrevKey(key);
+    const cached = globalCache.get(key);
+    setData(cached ? cached.data : null);
+    setLoading(!cached && enabled);
+    setError(null);
+  }
+
   const mutate = useCallback(async () => {
     // Force bypass cache and fetch fresh data
     setLoading(true);
     try {
       invalidateNewsCache(key);
-      const freshData = await fetchWithCache(key, fetcher);
+      const freshData = await fetchWithCache(key, () => fetcherRef.current());
       setData(freshData);
       setError(null);
     } catch (err) {
@@ -123,7 +136,7 @@ export const useNewsData = (key, fetcher, options = {}) => {
     } finally {
       setLoading(false);
     }
-  }, [key, fetcher]);
+  }, [key]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -143,7 +156,7 @@ export const useNewsData = (key, fetcher, options = {}) => {
         setLoading(true);
       }
 
-      fetchWithCache(key, fetcher)
+      fetchWithCache(key, () => fetcherRef.current())
         .catch((err) => {
           if (!globalCache.has(key)) {
             setError(err);
@@ -158,7 +171,7 @@ export const useNewsData = (key, fetcher, options = {}) => {
     }
 
     return unsubscribe;
-  }, [key, fetcher, enabled, ttl]);
+  }, [key, enabled, ttl]);
 
   return { data, loading, error, mutate };
 }

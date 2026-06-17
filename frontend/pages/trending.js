@@ -372,7 +372,7 @@ export default function Trending() {
         ) : error ? (
           <div className={styles.error}>
             <p>{error}</p>
-            <button onClick={fetchTrending} className={styles.retryBtn}>{t('common.tryAgain')}</button>
+            <button onClick={() => mutate()} className={styles.retryBtn}>{t('common.tryAgain')}</button>
           </div>
         ) : (
           <>

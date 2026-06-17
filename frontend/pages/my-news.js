@@ -204,7 +204,7 @@ const MyNews = () => {
               <div className={styles.stateContainer}>
                 <FaExclamationCircle className={styles.errorIcon} />
                 <p className={styles.stateText}>{error}</p>
-                <button onClick={() => fetchNews(1)} className={styles.actionBtn}>
+                <button onClick={() => mutate()} className={styles.actionBtn}>
                   {t('common.tryAgain')}
                 </button>
               </div>

@@ -79,7 +79,7 @@ export default function Article() {
   useEffect(() => {
     const fetchRelated = async () => {
       try {
-        const res = await newsAPI.getNews({ category: 'all', page: 1, limit: 3 });
+        const res = await newsAPI.getNews('all', 1, 3);
         if (res?.articles) {
           setRelatedStories(res.articles.filter(a => a.title !== article?.title).slice(0, 3));
         }
