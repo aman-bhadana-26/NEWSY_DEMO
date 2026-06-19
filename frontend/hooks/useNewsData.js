@@ -123,16 +123,19 @@ export const useNewsData = (key, fetcher, options = {}) => {
     setError(null);
   }
 
-  const mutate = useCallback(async () => {
+  const mutate = useCallback(async (customFetcher = null) => {
     // Force bypass cache and fetch fresh data
     setLoading(true);
     try {
       invalidateNewsCache(key);
-      const freshData = await fetchWithCache(key, () => fetcherRef.current());
+      const fetchFn = customFetcher || fetcherRef.current;
+      const freshData = await fetchWithCache(key, () => fetchFn());
       setData(freshData);
       setError(null);
+      return freshData;
     } catch (err) {
       setError(err);
+      throw err;
     } finally {
       setLoading(false);
     }

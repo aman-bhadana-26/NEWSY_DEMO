@@ -61,33 +61,61 @@ const TopicSelector = ({ initialTopics = ['all'], onSave, loading = false }) => 
   return (
     <div className={styles.topicSelector}>
       <div className={styles.header}>
-        <h3 className={styles.title}>{t('topics.title')}</h3>
-        {hasChanges && (
-          <button
-            onClick={handleSave}
-            className={styles.saveButton}
-            disabled={loading}
-          >
-            <FaSave /> {loading ? t('topics.saving') : t('topics.save')}
-          </button>
-        )}
+        <div className={styles.headerInfo}>
+          <h3 className={styles.title}>{t('topics.title')}</h3>
+          <p className={styles.subtitle}>Select the topics you want to follow in your personalized news feed.</p>
+        </div>
+        <div className={styles.headerActions}>
+          {hasChanges && (
+            <>
+              <button
+                onClick={handleReset}
+                className={styles.resetButton}
+                disabled={loading}
+              >
+                <FaRedo /> Reset
+              </button>
+              <button
+                onClick={handleSave}
+                className={styles.saveButton}
+                disabled={loading}
+              >
+                <FaSave /> {loading ? t('topics.saving') : t('topics.save')}
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
-      <div className={styles.topicsRow}>
+      <div className={styles.topicsGrid}>
         {availableTopics.map(topic => {
           const isSelected = selectedTopics.includes(topic.id);
           
           return (
-            <button
+            <div
               key={topic.id}
-              onClick={() => handleTopicToggle(topic.id)}
-              className={`${styles.topicButton} ${isSelected ? styles.selected : ''}`}
-              disabled={loading}
+              onClick={() => !loading && handleTopicToggle(topic.id)}
+              className={`${styles.topicCard} ${isSelected ? styles.selectedCard : ''}`}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  if (!loading) handleTopicToggle(topic.id);
+                }
+              }}
             >
-              <span className={styles.topicIcon}>{topic.icon}</span>
-              <span className={styles.topicName}>{topic.name}</span>
-              {isSelected && <FaCheckCircle className={styles.checkIcon} />}
-            </button>
+              <div className={styles.cardHeader}>
+                <span className={styles.cardIcon}>{topic.icon}</span>
+                <div className={`${styles.selectionIndicator} ${isSelected ? styles.indicatorSelected : ''}`}>
+                  {isSelected ? <FaCheckCircle className={styles.checkIcon} /> : <FaCircle className={styles.emptyCircle} />}
+                </div>
+              </div>
+              <div className={styles.cardBody}>
+                <h4 className={styles.cardName}>{topic.name}</h4>
+                <p className={styles.cardDescription}>{topic.description}</p>
+              </div>
+            </div>
           );
         })}
       </div>

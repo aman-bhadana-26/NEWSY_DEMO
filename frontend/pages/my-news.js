@@ -103,9 +103,13 @@ const MyNews = () => {
     }
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     if (activeTab === 'feed') {
-      mutate();
+      try {
+        await mutate(() => myNewsAPI.getMyNews(1, 20, true));
+      } catch (err) {
+        console.error('Error refreshing news:', err);
+      }
     } else {
       fetchSavedArticles();
     }
@@ -175,9 +179,9 @@ const MyNews = () => {
             <button
               onClick={handleRefresh}
               className={styles.refreshButton}
-              disabled={loading || savedLoading}
+              disabled={initialLoading || savedLoading}
             >
-              <FaSync className={(loading || savedLoading) ? styles.spinning : ''} />
+              <FaSync className={(initialLoading || savedLoading) ? styles.spinning : ''} />
               {t('myNews.refresh')}
             </button>
           </div>
