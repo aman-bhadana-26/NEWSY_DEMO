@@ -482,6 +482,7 @@ const socialLogin = async (req, res) => {
     });
     res.status(500).json({ message: 'Server error during social login verification' });
   }
+};
 
 /**
  * @desc    Request new user registration (OTP check)
