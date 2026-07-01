@@ -1,100 +1,18 @@
 const User = require('../models/User');
 const AuthLog = require('../models/AuthLog');
 const generateToken = require('../utils/generateToken');
+const PendingRegistration = require('../models/PendingRegistration');
+const sendEmail = require('../utils/sendEmail');
 const path = require('path');
 const fs = require('fs');
 const axios = require('axios');
 const dns = require('dns').promises;
 const net = require('net');
 
-// Verify Gmail format and SMTP inbox existence
+// Verify Gmail format
 const verifyGmailExists = async (email) => {
-  // 1. Basic syntax and domain check
   const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-  if (!emailRegex.test(email)) {
-    return false;
-  }
-
-  // 2. DNS MX lookup for gmail.com to get the server address
-  let mxRecords;
-  try {
-    mxRecords = await dns.resolveMx('gmail.com');
-  } catch (err) {
-    // If DNS resolve fails, fallback to true to prevent blocking valid signups on network issues
-    return true; 
-  }
-
-  if (!mxRecords || mxRecords.length === 0) {
-    return true;
-  }
-
-  // Sort MX records by priority
-  mxRecords.sort((a, b) => a.priority - b.priority);
-  const mxhname = mxRecords[0].exchange;
-
-  // 3. SMTP Verification
-  return new Promise((resolve) => {
-    const socket = net.createConnection(25, mxhname);
-    let stage = 0;
-
-    // Timeout after 4 seconds
-    socket.setTimeout(4000);
-
-    socket.on('timeout', () => {
-      socket.destroy();
-      resolve(true); // Fallback to true on timeout
-    });
-
-    socket.on('error', (err) => {
-      socket.destroy();
-      resolve(true); // Fallback to true on connection errors (like blocked port 25)
-    });
-
-    socket.on('data', (data) => {
-      const response = data.toString();
-      const code = parseInt(response.substring(0, 3), 10);
-
-      if (stage === 0) {
-        // Connected, server sent 220 banner
-        if (code === 220) {
-          socket.write('EHLO gmail.com\r\n');
-          stage = 1;
-        } else {
-          socket.destroy();
-          resolve(true);
-        }
-      } else if (stage === 1) {
-        // EHLO response
-        if (code === 250) {
-          socket.write('MAIL FROM:<newsytechtest@gmail.com>\r\n');
-          stage = 2;
-        } else {
-          socket.destroy();
-          resolve(true);
-        }
-      } else if (stage === 2) {
-        // MAIL FROM response
-        if (code === 250) {
-          socket.write(`RCPT TO:<${email}>\r\n`);
-          stage = 3;
-        } else {
-          socket.destroy();
-          resolve(true);
-        }
-      } else if (stage === 3) {
-        // RCPT TO response
-        socket.write('QUIT\r\n');
-        socket.destroy();
-        if (code === 550) {
-          resolve(false); // Definitely does not exist
-        } else if (code === 250) {
-          resolve(true); // Exists
-        } else {
-          resolve(true); // Unknown/fallback to true
-        }
-      }
-    });
-  });
+  return emailRegex.test(email);
 };
 
 /**
@@ -564,10 +482,139 @@ const socialLogin = async (req, res) => {
     });
     res.status(500).json({ message: 'Server error during social login verification' });
   }
+
+/**
+ * @desc    Request new user registration (OTP check)
+ * @route   POST /api/auth/register-request
+ * @access  Public
+ */
+const registerRequest = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // Validation
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Please provide all fields' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
+    // Verify Gmail exists
+    const gmailExists = await verifyGmailExists(email);
+    if (!gmailExists) {
+      return res.status(400).json({ message: 'Invalid mail' });
+    }
+
+    // Check if user is already registered in User collection
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // Generate a secure 6-digit numeric OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Store in PendingRegistration (upsert by email)
+    await PendingRegistration.findOneAndUpdate(
+      { email },
+      { name, email, password, otp, createdAt: Date.now() },
+      { upsert: true, new: true, runValidators: true }
+    );
+
+    // Send verification email
+    const subject = 'Verify Your Email - NEWSY TECH';
+    const text = `Hi ${name},\n\nThank you for signing up for NEWSY TECH. Your one-time verification code is:\n\n${otp}\n\nThis code will expire in 10 minutes.\n\nBest regards,\nNEWSY TECH Team`;
+    const html = `
+      <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 12px; background-color: #051622; color: #ffffff;">
+        <h2 style="color: #1ba098; text-align: center;">NEWSY TECH</h2>
+        <h3 style="text-align: center; color: #ffffff;">Verify Your Email Address</h3>
+        <p style="font-size: 16px; color: #e0e0e0;">Hi ${name},</p>
+        <p style="font-size: 16px; color: #e0e0e0;">Thank you for registering. Please enter the following 6-digit verification code to activate your account:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <span style="font-size: 32px; font-weight: bold; letter-spacing: 6px; padding: 12px 24px; background-color: rgba(27, 160, 152, 0.1); border: 1px dashed #1ba098; border-radius: 8px; color: #1ba098;">${otp}</span>
+        </div>
+        <p style="font-size: 14px; color: #a0a0a0; text-align: center;">This code is valid for 10 minutes.</p>
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;" />
+        <p style="font-size: 12px; color: #808080; text-align: center;">If you did not request this code, please ignore this email.</p>
+      </div>
+    `;
+
+    try {
+      await sendEmail({ to: email, subject, text, html });
+    } catch (emailErr) {
+      console.error('Email send failed:', emailErr);
+      return res.status(500).json({ message: 'Unable to verify this email address. Please enter a valid email address.' });
+    }
+
+    res.json({ success: true, message: 'Verification code sent to your email.' });
+  } catch (error) {
+    console.error('Register request error:', error);
+    res.status(500).json({ message: 'Server error during registration request' });
+  }
+};
+
+/**
+ * @desc    Verify OTP and complete user registration
+ * @route   POST /api/auth/verify-otp
+ * @access  Public
+ */
+const verifyOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ message: 'Email and verification code are required' });
+    }
+
+    // Find pending registration
+    const pendingReg = await PendingRegistration.findOne({ email });
+    if (!pendingReg) {
+      return res.status(400).json({ message: 'Verification request expired or not found. Please resend the code.' });
+    }
+
+    // Verify OTP code matches
+    if (pendingReg.otp !== otp) {
+      return res.status(400).json({ message: 'Invalid verification code' });
+    }
+
+    // Double check email is not already taken
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // Create active user
+    const user = await User.create({
+      name: pendingReg.name,
+      email: pendingReg.email,
+      password: pendingReg.password
+    });
+
+    // Delete pending registration
+    await PendingRegistration.deleteOne({ email });
+
+    res.status(201).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      profilePicture: user.profilePicture,
+      bio: user.bio,
+      socialLinks: user.socialLinks,
+      isAdmin: user.isAdmin,
+      token: generateToken(user._id)
+    });
+  } catch (error) {
+    console.error('Verify OTP error:', error);
+    res.status(500).json({ message: 'Server error during OTP verification' });
+  }
 };
 
 module.exports = {
   registerUser,
+  registerRequest,
+  verifyOtp,
   loginUser,
   getUserProfile,
   updateUserProfile,

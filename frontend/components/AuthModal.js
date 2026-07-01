@@ -12,7 +12,6 @@ import {
   FaEyeSlash,
   FaGoogle,
   FaGithub,
-  FaLinkedin,
   FaExclamationCircle,
   FaCheckCircle
 } from 'react-icons/fa';
@@ -28,6 +27,8 @@ export default function AuthModal() {
     openAuthModal,
     login,
     register,
+    registerRequest,
+    verifyOtp,
     socialLogin
   } = useAuth();
 
@@ -48,6 +49,7 @@ export default function AuthModal() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [otpCode, setOtpCode] = useState('');
 
   // UI States
   const [loading, setLoading] = useState(false);
@@ -59,19 +61,25 @@ export default function AuthModal() {
   const [socialEmail, setSocialEmail] = useState('');
   const [socialPassword, setSocialPassword] = useState('');
 
-  // Reset states when tab changes
+  // Reset states when tab changes or modal opens/closes
   useEffect(() => {
     setError('');
     setSuccess('');
-    setEmail('');
-    setPassword('');
-    setName('');
-    setConfirmPassword('');
+    setLoading(false);
     setShowPassword(false);
     setShowConfirmPassword(false);
     setSocialEmail('');
     setSocialPassword('');
-  }, [authModalTab]);
+    setOtpCode('');
+
+    // Only clear form fields if we are NOT on the OTP verification tab
+    if (authModalTab !== 'otp-verify') {
+      setEmail('');
+      setPassword('');
+      setName('');
+      setConfirmPassword('');
+    }
+  }, [authModalTab, isAuthModalOpen]);
 
   // Sync modal class with body element to trigger backdrop blur
   useEffect(() => {
@@ -122,7 +130,7 @@ export default function AuthModal() {
     }
   };
 
-  // Submit standard Email/Password/Name Signup
+  // Submit standard Email/Password/Name Signup Request
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -154,9 +162,48 @@ export default function AuthModal() {
       return;
     }
 
-    const result = await register({ name, email, password });
+    const result = await registerRequest({ name, email, password });
+    if (result.success) {
+      setSuccess(t('auth.otpSent') || 'Verification code sent to your email.');
+      setLoading(false);
+      setAuthModalTab('otp-verify');
+    } else {
+      setError(result.error);
+      setLoading(false);
+    }
+  };
+
+  // Submit OTP Verification
+  const handleOtpSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    if (!otpCode || otpCode.length !== 6) {
+      setError(t('auth.invalidOtp') || 'Please enter a valid 6-digit verification code.');
+      setLoading(false);
+      return;
+    }
+
+    const result = await verifyOtp({ email, otp: otpCode });
     if (result.success) {
       closeAuthModal();
+    } else {
+      setError(result.error);
+      setLoading(false);
+    }
+  };
+
+  // Resend OTP
+  const handleResendOtp = async () => {
+    setError('');
+    setSuccess('');
+    setLoading(true);
+
+    const result = await registerRequest({ name, email, password });
+    if (result.success) {
+      setSuccess(t('auth.otpSent') || 'Verification code resent successfully.');
+      setLoading(false);
     } else {
       setError(result.error);
       setLoading(false);
@@ -455,9 +502,6 @@ export default function AuthModal() {
                     <button type="button" className={styles.socialBtn} onClick={() => handleSocialClick('Google')}>
                       <FaGoogle className={`${styles.socialBtnIcon} ${styles.googleIcon}`} />
                     </button>
-                    <button type="button" className={styles.socialBtn} onClick={() => handleSocialClick('LinkedIn')}>
-                      <FaLinkedin className={`${styles.socialBtnIcon} ${styles.linkedinIcon}`} />
-                    </button>
                   </div>
                 </motion.div>
               )}
@@ -491,7 +535,8 @@ export default function AuthModal() {
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           className={styles.input}
-                          placeholder={t('auth.namePlaceholder') || 'John Doe'}
+                          placeholder={t('auth.namePlaceholder') || 'Your Name'}
+                          autoComplete="off"
                           required
                         />
                         <span className={styles.fieldIcon}><FaUser /></span>
@@ -507,6 +552,7 @@ export default function AuthModal() {
                           onChange={(e) => setEmail(e.target.value)}
                           className={styles.input}
                           placeholder={t('auth.emailPlaceholder') || 'you@example.com'}
+                          autoComplete="off"
                           required
                         />
                         <span className={styles.fieldIcon}><FaEnvelope /></span>
@@ -522,6 +568,7 @@ export default function AuthModal() {
                           onChange={(e) => setPassword(e.target.value)}
                           className={styles.input}
                           placeholder={t('auth.passwordMinPlaceholder') || 'Min. 6 characters'}
+                          autoComplete="new-password"
                           required
                         />
                         <span className={styles.fieldIcon}><FaLock /></span>
@@ -551,6 +598,7 @@ export default function AuthModal() {
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           className={styles.input}
                           placeholder={t('auth.confirmPasswordPlaceholder') || 'Re-enter your password'}
+                          autoComplete="new-password"
                           required
                         />
                         <span className={styles.fieldIcon}><FaLock /></span>
@@ -587,10 +635,60 @@ export default function AuthModal() {
                     <button type="button" className={styles.socialBtn} onClick={() => handleSocialClick('Google')}>
                       <FaGoogle className={`${styles.socialBtnIcon} ${styles.googleIcon}`} />
                     </button>
-                    <button type="button" className={styles.socialBtn} onClick={() => handleSocialClick('LinkedIn')}>
-                      <FaLinkedin className={`${styles.socialBtnIcon} ${styles.linkedinIcon}`} />
-                    </button>
                   </div>
+                </motion.div>
+              )}
+
+              {/* ── TAB: OTP VERIFICATION ── */}
+              {authModalTab === 'otp-verify' && (
+                <motion.div
+                  key="otp-verify"
+                  custom={direction}
+                  variants={formVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  <div className={styles.header}>
+                    <h2 className={styles.title}>{t('auth.verifyEmail') || 'Verify Your Email'}</h2>
+                    <p className={styles.subtitle}>
+                      {t('auth.otpSentTo') || 'We have sent a verification code to:'} <br />
+                      <strong style={{ color: '#1ba098' }}>{email}</strong>
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleOtpSubmit} className={styles.form} noValidate>
+                    <div className={styles.fieldGroup}>
+                      <label className={styles.label}>{t('auth.verificationCode') || 'Verification Code'}</label>
+                      <div className={styles.inputWrapper}>
+                        <input
+                          type="text"
+                          maxLength={6}
+                          value={otpCode}
+                          onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                          className={styles.input}
+                          placeholder="123456"
+                          style={{ letterSpacing: '4px', textAlign: 'center', fontSize: '1.2rem' }}
+                          required
+                        />
+                        <span className={styles.fieldIcon}><FaCheckCircle /></span>
+                      </div>
+                    </div>
+
+                    <button type="submit" className={styles.submitBtn} disabled={loading}>
+                      {loading && <span className={styles.spinner} />}
+                      {loading ? t('common.loading') || 'Verifying...' : t('auth.verifyBtn') || 'Verify & Create Account'}
+                    </button>
+
+                    <div className={styles.formOptions} style={{ justifyContent: 'center', marginTop: 16, flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                      <span className={styles.toggleLink} onClick={handleResendOtp}>
+                        {t('auth.resendOtp') || 'Resend Verification Code'}
+                      </span>
+                      <span className={styles.toggleLink} onClick={() => setAuthModalTab('signup')} style={{ opacity: 0.6, fontSize: '0.85rem' }}>
+                        {t('auth.backToSignup') || 'Back to Sign Up'}
+                      </span>
+                    </div>
+                  </form>
                 </motion.div>
               )}
 
@@ -668,7 +766,7 @@ export default function AuthModal() {
                           value={socialEmail}
                           onChange={(e) => setSocialEmail(e.target.value)}
                           className={styles.input}
-                          placeholder="example@gmail.com"
+                          placeholder="Name"
                           required
                         />
                         <span className={styles.fieldIcon}><FaEnvelope /></span>
@@ -765,67 +863,6 @@ export default function AuthModal() {
                 </motion.div>
               )}
 
-              {/* ── TAB: LINKEDIN SIGN-IN PROMPT ── */}
-              {authModalTab === 'linkedin-prompt' && (
-                <motion.div
-                  key="linkedin-prompt"
-                  custom={direction}
-                  variants={formVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                >
-                  <div className={styles.header}>
-                    <FaLinkedin className={`${styles.socialBrandIcon} ${styles.linkedinIcon}`} />
-                    <h2 className={styles.title}>{t('auth.linkedinPromptTitle') || 'Sign in with LinkedIn'}</h2>
-                    <p className={styles.subtitle}>
-                      {t('auth.linkedinPromptSubtitle') || 'Connect with your professional profile'}
-                    </p>
-                  </div>
-
-                  <form onSubmit={(e) => handleSocialSubmit(e, 'LinkedIn')} className={styles.form} noValidate>
-                    <div className={styles.fieldGroup}>
-                      <label className={styles.label}>{t('auth.linkedinEmailLabel') || 'LinkedIn Email Address'}</label>
-                      <div className={styles.inputWrapper}>
-                        <input
-                          type="email"
-                          value={socialEmail}
-                          onChange={(e) => setSocialEmail(e.target.value)}
-                          className={styles.input}
-                          placeholder="you@linkedin.com"
-                          required
-                        />
-                        <span className={styles.fieldIcon}><FaEnvelope /></span>
-                      </div>
-                    </div>
-
-                    <div className={styles.fieldGroup}>
-                      <label className={styles.label}>{t('auth.oauthToken') || 'OAuth Access Token (Leave empty for mock)'}</label>
-                      <div className={styles.inputWrapper}>
-                        <input
-                          type="password"
-                          value={socialPassword}
-                          onChange={(e) => setSocialPassword(e.target.value)}
-                          className={styles.input}
-                          placeholder="Paste OAuth token (optional)"
-                        />
-                        <span className={styles.fieldIcon}><FaLock /></span>
-                      </div>
-                    </div>
-
-                    <button type="submit" className={`${styles.submitBtn} ${styles.linkedinSubmitBtn}`} disabled={loading}>
-                      {loading && <span className={styles.spinner} />}
-                      {loading ? t('common.loading') || 'Loading...' : t('auth.signIn') || 'Sign In'}
-                    </button>
-
-                    <div className={styles.formOptions} style={{ justifyContent: 'center', marginTop: 12 }}>
-                      <span className={styles.toggleLink} onClick={() => setAuthModalTab('login')}>
-                        {t('common.cancel') || 'Cancel'}
-                      </span>
-                    </div>
-                  </form>
-                </motion.div>
-              )}
 
 
             </AnimatePresence>

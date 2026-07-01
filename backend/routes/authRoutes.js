@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const {
   registerUser,
+  registerRequest,
+  verifyOtp,
   loginUser,
   getUserProfile,
   updateUserProfile,
@@ -14,6 +16,8 @@ const upload = require('../middleware/upload');
 
 // Public routes
 router.post('/register', registerUser);
+router.post('/register-request', registerRequest);
+router.post('/verify-otp', verifyOtp);
 router.post('/login', loginUser);
 router.post('/social-login', socialLogin);
 

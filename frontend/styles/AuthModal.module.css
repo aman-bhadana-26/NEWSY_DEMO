@@ -54,13 +54,23 @@
 }
 
 @keyframes floatOrb1 {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(-30px, 40px) scale(1.15); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate(-30px, 40px) scale(1.15);
+  }
 }
 
 @keyframes floatOrb2 {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(40px, -30px) scale(1.1); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate(40px, -30px) scale(1.1);
+  }
 }
 
 /* ── Glassmorphic 3D Card ── */
@@ -73,9 +83,9 @@
   border-radius: 24px;
   padding: 40px;
   overflow: hidden;
-  box-shadow: 
-    0 24px 60px rgba(0, 0, 0, 0.5), 
-    inset 0 1px 1px rgba(255, 255, 255, 0.15), 
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
     0 0 40px rgba(27, 160, 152, 0.12);
   display: flex;
   flex-direction: column;
@@ -90,7 +100,7 @@
 .techGrid {
   position: absolute;
   inset: 0;
-  background-image: 
+  background-image:
     linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
   background-size: 20px 20px;
@@ -112,8 +122,13 @@
 }
 
 @keyframes scanner {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(500px); }
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(500px);
+  }
 }
 
 /* Close Button */
@@ -262,13 +277,13 @@
   outline: none;
   border-color: var(--secondary-teal);
   background: rgba(5, 22, 34, 0.7);
-  box-shadow: 
-    0 0 0 3px rgba(27, 160, 152, 0.15), 
+  box-shadow:
+    0 0 0 3px rgba(27, 160, 152, 0.15),
     0 0 16px rgba(27, 160, 152, 0.2);
 }
 
 /* Focus Animations via Sibling Selectors */
-.input:focus ~ .fieldIcon {
+.input:focus~.fieldIcon {
   color: var(--secondary-teal);
   transform: scale(1.1);
 }
@@ -310,9 +325,19 @@
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  75% {
+    transform: translateX(5px);
+  }
 }
 
 .hintText {
@@ -370,7 +395,7 @@
 .submitBtn:hover:not(:disabled) {
   background: linear-gradient(135deg, var(--teal-light) 0%, var(--secondary-teal) 100%);
   transform: translateY(-2px);
-  box-shadow: 
+  box-shadow:
     0 6px 20px rgba(27, 160, 152, 0.35),
     0 0 12px rgba(27, 160, 152, 0.2);
 }
@@ -394,7 +419,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ── Divider ── */
@@ -422,8 +449,8 @@
 
 /* ── Social Login ── */
 .socialGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  justify-content: center;
   gap: 12px;
 }
 
@@ -438,6 +465,7 @@
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   color: #ffffff;
+  width: 120px;
 }
 
 .socialBtn:hover {
@@ -456,9 +484,17 @@
   font-size: 1.25rem;
 }
 
-.googleIcon { color: #ea4335; }
-.githubIcon { color: #ffffff; }
-.linkedinIcon { color: #0077b5; }
+.googleIcon {
+  color: #ea4335;
+}
+
+.githubIcon {
+  color: #ffffff;
+}
+
+.linkedinIcon {
+  color: #0077b5;
+}
 
 /* ── Social Connecting Overlay ── */
 .socialOverlay {
@@ -500,8 +536,13 @@
 }
 
 @keyframes progressPulse {
-  0% { left: -45%; }
-  100% { left: 100%; }
+  0% {
+    left: -45%;
+  }
+
+  100% {
+    left: 100%;
+  }
 }
 
 /* Responsive Styles */
@@ -510,7 +551,7 @@
     padding: 30px 24px;
     border-radius: 20px;
   }
-  
+
   .title {
     font-size: 1.5rem;
   }
@@ -521,9 +562,10 @@
   background: linear-gradient(135deg, #4285f4 0%, #357ae8 100%) !important;
   box-shadow: 0 4px 12px rgba(66, 133, 244, 0.2) !important;
 }
+
 .googleSubmitBtn:hover:not(:disabled) {
   background: linear-gradient(135deg, #5a95f5 0%, #4285f4 100%) !important;
-  box-shadow: 
+  box-shadow:
     0 6px 20px rgba(66, 133, 244, 0.35),
     0 0 12px rgba(66, 133, 244, 0.2) !important;
 }
@@ -533,9 +575,10 @@
   box-shadow: 0 4px 12px rgba(36, 41, 46, 0.2) !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
+
 .githubSubmitBtn:hover:not(:disabled) {
   background: linear-gradient(135deg, #2f363d 0%, #24292e 100%) !important;
-  box-shadow: 
+  box-shadow:
     0 6px 20px rgba(36, 41, 46, 0.35),
     0 0 12px rgba(36, 41, 46, 0.2) !important;
 }
@@ -544,9 +587,10 @@
   background: linear-gradient(135deg, #0077b5 0%, #005988 100%) !important;
   box-shadow: 0 4px 12px rgba(0, 119, 181, 0.2) !important;
 }
+
 .linkedinSubmitBtn:hover:not(:disabled) {
   background: linear-gradient(135deg, #1a8cc8 0%, #0077b5 100%) !important;
-  box-shadow: 
+  box-shadow:
     0 6px 20px rgba(0, 119, 181, 0.35),
     0 0 12px rgba(0, 119, 181, 0.2) !important;
 }
@@ -559,7 +603,11 @@
 }
 
 @keyframes floatIcon {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-6px); }
-}
+  0% {
+    transform: translateY(0);
+  }
 
+  100% {
+    transform: translateY(-6px);
+  }
+}

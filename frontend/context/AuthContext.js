@@ -104,6 +104,34 @@ export const AuthProvider = ({ children }) => {
     }
   }, [authModalCallback]);
 
+  const registerRequest = useCallback(async (userData) => {
+    try {
+      const response = await authAPI.registerRequest(userData);
+      return { success: true, message: response.message };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Registration request failed',
+      };
+    }
+  }, []);
+
+  const verifyOtp = useCallback(async (payload) => {
+    try {
+      const newUser = await authAPI.verifyOtp(payload);
+      setUser(newUser);
+      if (authModalCallback) {
+        authModalCallback(newUser);
+      }
+      return { success: true, user: newUser };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Verification failed',
+      };
+    }
+  }, [authModalCallback]);
+
   const socialLogin = useCallback(async (provider, accessToken) => {
     try {
       const userData = await authAPI.socialLogin(provider, accessToken);
@@ -157,6 +185,8 @@ export const AuthProvider = ({ children }) => {
     loading,
     login,
     register,
+    registerRequest,
+    verifyOtp,
     logout,
     updateUser,
     refreshUser,
@@ -173,6 +203,8 @@ export const AuthProvider = ({ children }) => {
     loading,
     login,
     register,
+    registerRequest,
+    verifyOtp,
     logout,
     updateUser,
     refreshUser,

@@ -424,7 +424,7 @@ export const translations = {
     'auth.haveAccount': 'Already have an account?',
     'auth.signInHere': 'Sign in here',
     'auth.fullName': 'Full Name',
-    'auth.namePlaceholder': 'John Doe',
+    'auth.namePlaceholder': 'Your Name',
     'auth.passwordMinPlaceholder': 'Min. 6 characters',
     'auth.confirmPassword': 'Confirm Password',
     'auth.confirmPasswordPlaceholder': 'Re-enter your password',
