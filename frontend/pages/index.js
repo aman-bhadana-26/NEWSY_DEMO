@@ -45,6 +45,7 @@ const stagger = {
 function HeroScene() {
   const { t } = useLanguage();
   const containerRef = useRef(null);
+  const inView = useInView(containerRef, { margin: "0px 0px -100px 0px" });
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
@@ -70,12 +71,13 @@ function HeroScene() {
             blend={0.55}
             amplitude={1.1}
             speed={0.7}
+            active={inView}
           />
         </div>
 
         {/* ── R3F Particles (depth layer on top of Aurora) ──── */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 1, opacity: 0.45 }}>
-          <ParticleLayer />
+          <ParticleLayer active={inView} />
         </div>
 
         {/* ── Ambient glow orbs ─────────────────────────────── */}
@@ -443,7 +445,6 @@ function VisionScene() {
   });
   const scale = useTransform(scrollYProgress, [0, 0.28, 0.72, 1], [0.86, 1, 1, 0.92]);
   const opacity = useTransform(scrollYProgress, [0, 0.18, 0.82, 1], [0, 1, 1, 0]);
-  const letterSpacing = useTransform(scrollYProgress, [0, 0.3], ['-0.04em', '-0.015em']);
 
   return (
     <section ref={ref} className={styles.visionSection}>
@@ -464,7 +465,7 @@ function VisionScene() {
           <span className={styles.eyebrowLine} style={{ background: '#DEB992' }} />
         </motion.div>
 
-        <motion.h2 className={styles.visionH2} style={{ letterSpacing }}>
+        <motion.h2 className={styles.visionH2}>
           {t('landing.vision.h2_part1')}{' '}
           <span className={styles.gradientText}>{t('landing.vision.h2_part2')}</span>{' '}
           {t('landing.vision.h2_part3')}

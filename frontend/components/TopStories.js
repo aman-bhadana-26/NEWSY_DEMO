@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaClock, FaArrowRight, FaNewspaper } from 'react-icons/fa';
@@ -11,8 +11,10 @@ const TopStories = ({ stories }) => {
   const [activeStory, setActiveStory] = useState(0);
 
   // Filter stories with images and get top 5
-  const storiesWithImages = stories ? stories.filter(story => story.urlToImage && story.urlToImage.trim() !== '') : [];
-  const topStories = storiesWithImages.slice(0, 5);
+  const topStories = useMemo(() => {
+    const storiesWithImages = stories ? stories.filter(story => story.urlToImage && story.urlToImage.trim() !== '') : [];
+    return storiesWithImages.slice(0, 5);
+  }, [stories]);
 
   // Auto-rotate stories every 5 seconds
   useEffect(() => {
@@ -156,4 +158,4 @@ const TopStories = ({ stories }) => {
   );
 };
 
-export default TopStories;
+export default memo(TopStories);

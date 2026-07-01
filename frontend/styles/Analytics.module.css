@@ -251,7 +251,6 @@
 .topicBarFill {
   height: 100%;
   border-radius: 6px;
-  transition: width 0.3s ease;
 }
 
 /* Glowing fills for specific topics */

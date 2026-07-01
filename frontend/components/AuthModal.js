@@ -146,6 +146,14 @@ export default function AuthModal() {
       return;
     }
 
+    // Verify it is a valid Gmail format
+    const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    if (!gmailRegex.test(email)) {
+      setError('Invalid mail');
+      setLoading(false);
+      return;
+    }
+
     const result = await register({ name, email, password });
     if (result.success) {
       closeAuthModal();
@@ -447,9 +455,6 @@ export default function AuthModal() {
                     <button type="button" className={styles.socialBtn} onClick={() => handleSocialClick('Google')}>
                       <FaGoogle className={`${styles.socialBtnIcon} ${styles.googleIcon}`} />
                     </button>
-                    <button type="button" className={styles.socialBtn} onClick={() => handleSocialClick('GitHub')}>
-                      <FaGithub className={`${styles.socialBtnIcon} ${styles.githubIcon}`} />
-                    </button>
                     <button type="button" className={styles.socialBtn} onClick={() => handleSocialClick('LinkedIn')}>
                       <FaLinkedin className={`${styles.socialBtnIcon} ${styles.linkedinIcon}`} />
                     </button>
@@ -581,9 +586,6 @@ export default function AuthModal() {
                   <div className={styles.socialGrid}>
                     <button type="button" className={styles.socialBtn} onClick={() => handleSocialClick('Google')}>
                       <FaGoogle className={`${styles.socialBtnIcon} ${styles.googleIcon}`} />
-                    </button>
-                    <button type="button" className={styles.socialBtn} onClick={() => handleSocialClick('GitHub')}>
-                      <FaGithub className={`${styles.socialBtnIcon} ${styles.githubIcon}`} />
                     </button>
                     <button type="button" className={styles.socialBtn} onClick={() => handleSocialClick('LinkedIn')}>
                       <FaLinkedin className={`${styles.socialBtnIcon} ${styles.linkedinIcon}`} />

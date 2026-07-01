@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { FaClock, FaNewspaper, FaBookmark, FaRegBookmark, FaExternalLinkAlt } from 'react-icons/fa';
 import { formatDate } from '../utils/formatDate';
 import { useLanguage } from '../context/LanguageContext';
@@ -162,4 +162,4 @@ const MyNewsCard = ({ article, onSave, onUnsave, isSaved = false, compact = fals
   );
 };
 
-export default MyNewsCard;
+export default memo(MyNewsCard);

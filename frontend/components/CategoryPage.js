@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { useRouter } from 'next/router';
 import { formatDate } from '../utils/formatDate';
 import { useAuth } from '../context/AuthContext';
@@ -155,7 +155,7 @@ const CAT_LABEL_KEY_MAP = {
   saved: 'saved',
 };
 
-export default function CategoryPage({
+const CategoryPage = memo(function CategoryPage({
   category,
   news,
   totalResults,
@@ -279,7 +279,7 @@ export default function CategoryPage({
 
   const localHasMore = visibleCount < allGridArticles.length || hasMore;
 
-  const ImageOrPlaceholder = ({ src, alt, className }) => {
+  const renderImageOrPlaceholder = (src, alt, className) => {
     if (src && !imageErrors[src]) {
       return (
         <img
@@ -299,7 +299,7 @@ export default function CategoryPage({
   };
 
   // ── Save button helper ──
-  const SaveBtn = ({ article }) => {
+  const renderSaveBtn = (article) => {
     const isSaved = savedUrls.has(article.url);
     const isSaving = savingUrl === article.url;
     return (
@@ -447,13 +447,9 @@ export default function CategoryPage({
         {/* Featured article – big left */}
         <div className={styles.featuredCard} onClick={() => goToArticle(featured)}>
           <div className={styles.featuredImgWrap}>
-            <ImageOrPlaceholder
-              src={featured.urlToImage}
-              alt={featured.title}
-              className={styles.featuredImg}
-            />
+            {renderImageOrPlaceholder(featured.urlToImage, featured.title, styles.featuredImg)}
             <div className={styles.featuredOverlay} />
-            <SaveBtn article={featured} />
+            {renderSaveBtn(featured)}
           </div>
           <div className={styles.featuredContent}>
             <span className={styles.featuredBadge}>{t('catPage.featured')}</span>
@@ -480,13 +476,9 @@ export default function CategoryPage({
         {heroRight && (
           <div className={styles.heroRightCard} onClick={() => goToArticle(heroRight)}>
             <div className={styles.heroRightImgWrap}>
-              <ImageOrPlaceholder
-                src={heroRight.urlToImage}
-                alt={heroRight.title}
-                className={styles.heroRightImg}
-              />
+              {renderImageOrPlaceholder(heroRight.urlToImage, heroRight.title, styles.heroRightImg)}
               <div className={styles.heroRightOverlay} />
-              <SaveBtn article={heroRight} />
+              {renderSaveBtn(heroRight)}
             </div>
             <div className={styles.heroRightContent}>
               <span className={styles.heroRightCategory}>
@@ -530,15 +522,11 @@ export default function CategoryPage({
             {visibleGridArticles.map((article, i) => (
               <div key={`${article.url}-${i}`} className={`${styles.gridCard} anim-fade-up delay-${(i % 3) + 1}`} onClick={() => goToArticle(article)}>
                 <div className={styles.gridImgWrap}>
-                  <ImageOrPlaceholder
-                    src={article.urlToImage}
-                    alt={article.title}
-                    className={styles.gridImg}
-                  />
+                  {renderImageOrPlaceholder(article.urlToImage, article.title, styles.gridImg)}
                   <span className={styles.gridCategoryBadge}>
                     {category !== 'all' && labelKey ? t(`catPage.label.${labelKey}`).toUpperCase() : t('common.tech').toUpperCase()}
                   </span>
-                  <SaveBtn article={article} />
+                  {renderSaveBtn(article)}
                 </div>
                 <div className={styles.gridContent}>
                   <h4 className={styles.gridTitle}>{article.title}</h4>
@@ -574,7 +562,7 @@ export default function CategoryPage({
                 <div key={`latest-${i}`} className={`${styles.latestItem} ${i % 2 === 0 ? 'anim-fade-left' : 'anim-fade-right'} delay-${(i % 6) + 1}`} onClick={() => goToArticle(article)}>
                   <span className={styles.latestNum}>{String(i + 1).padStart(2, '0')}</span>
                   <div className={styles.latestBody}>
-                    <SaveBtn article={article} />
+                    {renderSaveBtn(article)}
                     <span className={styles.latestCategory}>
                       {category !== 'all' && labelKey ? t(`catPage.label.${labelKey}`).toUpperCase() : t('common.tech').toUpperCase()}
                     </span>
@@ -602,12 +590,8 @@ export default function CategoryPage({
               {editorPicks.map((article, i) => (
                 <div key={`editor-${i}`} className={`${styles.editorCard} anim-fade-up delay-${i + 1}`} onClick={() => goToArticle(article)}>
                   <div className={styles.editorImgWrap}>
-                    <ImageOrPlaceholder
-                      src={article.urlToImage}
-                      alt={article.title}
-                      className={styles.editorImg}
-                    />
-                    <SaveBtn article={article} />
+                    {renderImageOrPlaceholder(article.urlToImage, article.title, styles.editorImg)}
+                    {renderSaveBtn(article)}
                   </div>
                   <div className={styles.editorBody}>
                     <span className={styles.editorCategory}>
@@ -654,4 +638,6 @@ export default function CategoryPage({
       </div>
     </div>
   );
-}
+});
+
+export default CategoryPage;

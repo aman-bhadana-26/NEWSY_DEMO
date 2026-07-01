@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { formatDate } from '../utils/formatDate';
@@ -109,4 +109,4 @@ const NewsCard = ({ article, category }) => {
   );
 };
 
-export default NewsCard;
+export default memo(NewsCard);

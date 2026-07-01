@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FaShareAlt } from 'react-icons/fa';
@@ -6,25 +6,16 @@ import { useLanguage } from '../context/LanguageContext';
 import { formatTimeAgo } from '../utils/timeAgo';
 import styles from '../styles/TopTrending.module.css';
 
-export default function TopTrending({ news }) {
-  const router = useRouter();
-  const { t } = useLanguage();
-  const [imageErrors, setImageErrors] = useState({});
+const RotatingTrendingWord = memo(({ t }) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
 
-  // Rotating words for "Trending" — translated each render so language changes
-  // immediately propagate to the rotation.
-  const rotatingWords = [
+  const rotatingWords = useMemo(() => [
     t('topTrending.word.trending'),
     t('topTrending.word.hot'),
     t('topTrending.word.popular'),
     t('topTrending.word.viral'),
-  ];
+  ], [t]);
 
-  // Use the same news data passed from parent
-  const trendingArticles = news ? news.slice(0, 12) : [];
-
-  // Rotate words every 2 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentWordIndex((prevIndex) => (prevIndex + 1) % rotatingWords.length);
@@ -32,6 +23,26 @@ export default function TopTrending({ news }) {
 
     return () => clearInterval(interval);
   }, [rotatingWords.length]);
+
+  return (
+    <span 
+      key={currentWordIndex}
+      className={styles.rotatingText}
+    >
+      {rotatingWords[currentWordIndex]}
+    </span>
+  );
+});
+
+RotatingTrendingWord.displayName = 'RotatingTrendingWord';
+
+const TopTrending = ({ news }) => {
+  const router = useRouter();
+  const { t } = useLanguage();
+  const [imageErrors, setImageErrors] = useState({});
+
+  // Use the same news data passed from parent
+  const trendingArticles = useMemo(() => (news ? news.slice(0, 12) : []), [news]);
 
   const handleImageError = (articleUrl) => {
     setImageErrors(prev => ({ ...prev, [articleUrl]: true }));
@@ -72,10 +83,6 @@ export default function TopTrending({ news }) {
       author: article.author
     }));
 
-    // Use Next.js client-side navigation (router.push) instead of
-    // window.location.href so the React tree (and AuthProvider) is not
-    // remounted on every click — otherwise the user gets unexpectedly
-    // logged out on a full page reload.
     router.push(`/article/${slug}?data=${articleData}`);
   };
 
@@ -88,12 +95,7 @@ export default function TopTrending({ news }) {
           <h2 className={styles.title}>
             {t('topTrending.top')}{' '}
             <span className={styles.rotatingTextWrapper}>
-              <span 
-                key={currentWordIndex}
-                className={styles.rotatingText}
-              >
-                {rotatingWords[currentWordIndex]}
-              </span>
+              <RotatingTrendingWord t={t} />
             </span>
           </h2>
           <Link href="/trending" className={styles.moreLink}>
@@ -149,3 +151,5 @@ export default function TopTrending({ news }) {
     </section>
   );
 }
+
+export default memo(TopTrending);

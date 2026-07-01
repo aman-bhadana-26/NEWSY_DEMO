@@ -4,6 +4,98 @@ const generateToken = require('../utils/generateToken');
 const path = require('path');
 const fs = require('fs');
 const axios = require('axios');
+const dns = require('dns').promises;
+const net = require('net');
+
+// Verify Gmail format and SMTP inbox existence
+const verifyGmailExists = async (email) => {
+  // 1. Basic syntax and domain check
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+  if (!emailRegex.test(email)) {
+    return false;
+  }
+
+  // 2. DNS MX lookup for gmail.com to get the server address
+  let mxRecords;
+  try {
+    mxRecords = await dns.resolveMx('gmail.com');
+  } catch (err) {
+    // If DNS resolve fails, fallback to true to prevent blocking valid signups on network issues
+    return true; 
+  }
+
+  if (!mxRecords || mxRecords.length === 0) {
+    return true;
+  }
+
+  // Sort MX records by priority
+  mxRecords.sort((a, b) => a.priority - b.priority);
+  const mxhname = mxRecords[0].exchange;
+
+  // 3. SMTP Verification
+  return new Promise((resolve) => {
+    const socket = net.createConnection(25, mxhname);
+    let stage = 0;
+
+    // Timeout after 4 seconds
+    socket.setTimeout(4000);
+
+    socket.on('timeout', () => {
+      socket.destroy();
+      resolve(true); // Fallback to true on timeout
+    });
+
+    socket.on('error', (err) => {
+      socket.destroy();
+      resolve(true); // Fallback to true on connection errors (like blocked port 25)
+    });
+
+    socket.on('data', (data) => {
+      const response = data.toString();
+      const code = parseInt(response.substring(0, 3), 10);
+
+      if (stage === 0) {
+        // Connected, server sent 220 banner
+        if (code === 220) {
+          socket.write('EHLO gmail.com\r\n');
+          stage = 1;
+        } else {
+          socket.destroy();
+          resolve(true);
+        }
+      } else if (stage === 1) {
+        // EHLO response
+        if (code === 250) {
+          socket.write('MAIL FROM:<newsytechtest@gmail.com>\r\n');
+          stage = 2;
+        } else {
+          socket.destroy();
+          resolve(true);
+        }
+      } else if (stage === 2) {
+        // MAIL FROM response
+        if (code === 250) {
+          socket.write(`RCPT TO:<${email}>\r\n`);
+          stage = 3;
+        } else {
+          socket.destroy();
+          resolve(true);
+        }
+      } else if (stage === 3) {
+        // RCPT TO response
+        socket.write('QUIT\r\n');
+        socket.destroy();
+        if (code === 550) {
+          resolve(false); // Definitely does not exist
+        } else if (code === 250) {
+          resolve(true); // Exists
+        } else {
+          resolve(true); // Unknown/fallback to true
+        }
+      }
+    });
+  });
+};
 
 /**
  * @desc    Register new user
@@ -21,6 +113,12 @@ const registerUser = async (req, res) => {
 
     if (password.length < 6) {
       return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
+    // Verify Gmail exists
+    const gmailExists = await verifyGmailExists(email);
+    if (!gmailExists) {
+      return res.status(400).json({ message: 'Invalid mail' });
     }
 
     // Check if user exists
